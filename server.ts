@@ -152,8 +152,150 @@ const supabaseAuthServer = createClient(sanitizedSupabaseUrl, supabaseAnonKey ||
   },
 });
 
+// Cliente com service role (OPCIONAL, apenas servidor). Nunca usar prefixo VITE_ nesta chave.
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const supabaseAdminServer = supabaseServiceKey
+  ? createClient(sanitizedSupabaseUrl, supabaseServiceKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+  : null;
+
 interface AuthenticatedRequest extends express.Request {
   user?: any;
+  accessToken?: string;
+}
+
+/**
+ * Cliente Supabase que atua com o token do utilizador autenticado (respeita o RLS).
+ */
+function createUserClient(accessToken: string) {
+  return createClient(sanitizedSupabaseUrl, supabaseAnonKey || "placeholder-key", {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+  });
+}
+
+/**
+ * Admin = app_metadata.role === 'admin' (não editável pelo utilizador)
+ * ou profiles.role === 'admin' (lido com o token do próprio utilizador).
+ * Nunca confiar em user_metadata, que o utilizador controla.
+ */
+async function isAdminRequest(req: AuthenticatedRequest): Promise<boolean> {
+  const user = req.user;
+  if (!user || !req.accessToken) return false;
+  if (user.app_metadata?.role === "admin") return true;
+  try {
+    const { data } = await createUserClient(req.accessToken)
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+    return data?.role === "admin";
+  } catch {
+    return false;
+  }
+}
+
+const requireAdmin = async (
+  req: AuthenticatedRequest,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  if (await isAdminRequest(req)) return next();
+  return res.status(403).json({
+    error: "Acesso reservado a administradores.",
+    code: "FORBIDDEN_ADMIN_ONLY",
+  });
+};
+
+// Limitador de pedidos simples em memória (por chave e janela de tempo)
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+function hitRateLimit(key: string, max: number, windowMs: number): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(key);
+  if (!bucket || bucket.resetAt <= now) {
+    rateBuckets.set(key, { count: 1, resetAt: now + windowMs });
+    return false;
+  }
+  bucket.count += 1;
+  return bucket.count > max;
+}
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of rateBuckets) if (v.resetAt <= now) rateBuckets.delete(k);
+}, 60_000).unref();
+
+// Tipos de email que um utilizador normal pode despoletar a partir da app
+const USER_EMAIL_TYPES = new Set([
+  "welcome_client",
+  "chef_registration",
+  "booking_created_client",
+  "booking_created_chef",
+  "booking_confirmed_client",
+  "booking_confirmed_chef",
+  "payment_confirmed_client",
+  "booking_cancelled_client",
+  "booking_cancelled_chef",
+  "booking_reminder_client",
+  "booking_reminder_chef",
+]);
+
+/**
+ * Valida se o utilizador autenticado pode enviar este email.
+ * - Admin: livre.
+ * - Sem bookingId: o destinatário tem de ser o próprio email do utilizador.
+ * - Com bookingId: o utilizador tem de participar na reserva (RLS) e, se existir
+ *   SUPABASE_SERVICE_ROLE_KEY, o destinatário tem de ser o cliente ou o chef dessa reserva.
+ */
+async function checkEmailDispatchAllowed(
+  req: AuthenticatedRequest,
+  payload: any
+): Promise<{ ok: boolean; status?: number; error?: string }> {
+  if (await isAdminRequest(req)) return { ok: true };
+
+  const emailType = String(payload?.emailType || "");
+  const recipient = String(payload?.recipientEmail || "").toLowerCase().trim();
+  if (!USER_EMAIL_TYPES.has(emailType) || !recipient) {
+    return { ok: false, status: 400, error: "Tipo de email ou destinatário inválido." };
+  }
+
+  const userId = req.user?.id as string;
+  if (hitRateLimit(`email:user:${userId}`, 30, 60 * 60 * 1000) || hitRateLimit(`email:rcpt:${recipient}`, 10, 60 * 60 * 1000)) {
+    return { ok: false, status: 429, error: "Limite de envio de emails excedido. Tente mais tarde." };
+  }
+
+  const ownEmail = String(req.user?.email || "").toLowerCase().trim();
+  const bookingId = payload?.bookingId ? String(payload.bookingId) : "";
+
+  if (!bookingId) {
+    if (recipient === ownEmail) return { ok: true };
+    return { ok: false, status: 403, error: "Sem reserva associada, só pode enviar emails para o seu próprio endereço." };
+  }
+
+  try {
+    const { data: booking } = await createUserClient(req.accessToken as string)
+      .from("bookings")
+      .select("id, client_id, cook_id")
+      .eq("id", bookingId)
+      .maybeSingle();
+    if (!booking) {
+      return { ok: false, status: 403, error: "Reserva inexistente ou sem permissão." };
+    }
+
+    if (supabaseAdminServer) {
+      const { data: parties } = await supabaseAdminServer
+        .from("profiles")
+        .select("email")
+        .in("id", [booking.client_id, booking.cook_id].filter(Boolean));
+      const allowed = new Set((parties || []).map((p: any) => String(p.email || "").toLowerCase().trim()));
+      if (!allowed.has(recipient)) {
+        return { ok: false, status: 403, error: "O destinatário não pertence a esta reserva." };
+      }
+    }
+    return { ok: true };
+  } catch {
+    return { ok: false, status: 403, error: "Não foi possível validar a reserva." };
+  }
 }
 
 /**
@@ -164,17 +306,11 @@ const requireSupabaseAuth = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  // Exceção de segurança para healthcheck da infraestrutura, serviço de emails e disponibilidade de chefs
+  // Únicas rotas públicas: healthcheck e LEITURA da disponibilidade de um chef.
+  // (o req.path é relativo ao ponto de montagem "/api")
   if (
     req.path === "/health" ||
-    req.path === "/api/health" ||
-    req.originalUrl === "/api/health" ||
-    req.path.startsWith("/email") ||
-    req.path.startsWith("/api/email") ||
-    req.originalUrl.startsWith("/api/email") ||
-    req.path.startsWith("/chef/availability") ||
-    req.path.startsWith("/api/chef/availability") ||
-    req.originalUrl.startsWith("/api/chef/availability")
+    (req.method === "GET" && req.path === "/chef/availability")
   ) {
     return next();
   }
@@ -206,8 +342,9 @@ const requireSupabaseAuth = async (
       });
     }
 
-    // Anexar o utilizador autenticado ao objeto de requisição
+    // Anexar o utilizador autenticado e o respetivo token ao pedido
     req.user = user;
+    req.accessToken = token;
     return next();
   } catch (err: any) {
     return res.status(401).json({
@@ -220,6 +357,15 @@ const requireSupabaseAuth = async (
 
 // Registar o middleware de autenticação obrigatório para todas as rotas /api/*
 app.use("/api", requireSupabaseAuth);
+
+// Limite por utilizador nos endpoints de IA (protege a quota do Gemini)
+app.use("/api/gemini", (req: AuthenticatedRequest, res, next) => {
+  const key = `gemini:${req.user?.id || req.ip}`;
+  if (hitRateLimit(key, 40, 60 * 1000)) {
+    return res.status(429).json({ error: "Demasiados pedidos. Tente novamente dentro de instantes." });
+  }
+  next();
+});
 
 // AI Endpoints
 app.post("/api/gemini/recommendations", async (req, res) => {
@@ -515,7 +661,7 @@ app.post("/api/gemini/smart-search", async (req, res) => {
   }
 });
 
-app.post("/api/gemini/insights", async (req, res) => {
+app.post("/api/gemini/insights", requireAdmin, async (req, res) => {
   try {
     const { platformData } = req.body;
 
@@ -769,7 +915,7 @@ Responda APENAS em formato JSON com os seguintes campos:
 });
 
 // Email Integration Endpoints (Resend + Supabase Edge Functions + Fallback SMTP)
-app.get("/api/email/config-status", (req, res) => {
+app.get("/api/email/config-status", requireAdmin, (req, res) => {
   const host = process.env.SMTP_HOST || "smtp.gmail.com";
   const port = process.env.SMTP_PORT || "587";
   const user = process.env.SMTP_USER || "";
@@ -793,9 +939,18 @@ app.get("/api/email/config-status", (req, res) => {
 });
 
 // Central Transactional Email Dispatcher Endpoint
-app.post("/api/email/dispatch", async (req, res) => {
+app.post("/api/email/dispatch", async (req: AuthenticatedRequest, res) => {
   try {
     const payload = req.body;
+    const permission = await checkEmailDispatchAllowed(req, payload);
+    if (!permission.ok) {
+      return res.status(permission.status || 403).json({
+        success: false,
+        status: "failed",
+        provider: "emulated",
+        error: permission.error,
+      });
+    }
     const result = await dispatchTransactionalEmail(payload);
     return res.status(result.success ? 200 : (result.skipped ? 200 : 400)).json(result);
   } catch (err: any) {
@@ -810,7 +965,7 @@ app.post("/api/email/dispatch", async (req, res) => {
 });
 
 // Email Audit Logs Endpoint
-app.get("/api/email/events", async (req, res) => {
+app.get("/api/email/events", requireAdmin, async (req, res) => {
   try {
     const limit = Number(req.query.limit) || 100;
     const events = await getEmailEvents(limit);
@@ -822,7 +977,7 @@ app.get("/api/email/events", async (req, res) => {
 });
 
 // Email Retry Endpoint
-app.post("/api/email/retry", async (req, res) => {
+app.post("/api/email/retry", requireAdmin, async (req, res) => {
   try {
     const { eventId } = req.body;
     if (!eventId) {
@@ -837,7 +992,7 @@ app.post("/api/email/retry", async (req, res) => {
 });
 
 // Diagnostic Test Email Dispatch Endpoint
-app.post("/api/email/test", async (req, res) => {
+app.post("/api/email/test", requireAdmin, async (req, res) => {
   try {
     const { recipientEmail, emailType, language } = req.body;
     if (!recipientEmail) {
@@ -851,7 +1006,7 @@ app.post("/api/email/test", async (req, res) => {
   }
 });
 
-app.post("/api/email/test-smtp", async (req, res) => {
+app.post("/api/email/test-smtp", requireAdmin, async (req, res) => {
   try {
     const { testEmail } = req.body;
     const targetEmail = testEmail || process.env.SMTP_USER || "geral@cookr.pt";
@@ -903,7 +1058,7 @@ app.post("/api/email/test-smtp", async (req, res) => {
   }
 });
 
-app.post("/api/send-email", async (req, res) => {
+app.post("/api/send-email", requireAdmin, async (req, res) => {
   try {
     const { to, cc, bcc, subject, text, html } = req.body;
     if (!to || !subject) {
@@ -952,7 +1107,7 @@ Texto: ${text || "(Conteúdo HTML presente)"}
   }
 });
 
-app.post("/api/email/booking-status", async (req, res) => {
+app.post("/api/email/booking-status", requireAdmin, async (req, res) => {
   try {
     const { bookingId, event, clientEmail, cookEmail, booking } = req.body;
     if (!bookingId || !event) {
@@ -1173,12 +1328,17 @@ app.get("/api/chef/availability", async (req, res) => {
 });
 
 // POST availability for a chef (upsert)
-app.post("/api/chef/availability", async (req, res) => {
+app.post("/api/chef/availability", async (req: AuthenticatedRequest, res) => {
   try {
     const { chefId, date, slots, disponibilidade, isAvailable } = req.body || {};
 
     if (!chefId) {
       return res.status(400).json({ error: "chefId é obrigatório" });
+    }
+
+    // Só o próprio chef (ou um admin) pode alterar a sua disponibilidade
+    if (chefId !== req.user?.id && !(await isAdminRequest(req))) {
+      return res.status(403).json({ error: "Sem permissão para alterar a disponibilidade deste chef." });
     }
 
     const stored = getStoredAvailability();
@@ -1196,17 +1356,18 @@ app.post("/api/chef/availability", async (req, res) => {
     stored[chefId] = updatedDispo;
     saveStoredAvailability(stored);
 
-    // Attempt to sync with Supabase chefs table
+    // Persistir no Supabase com o token do utilizador (o RLS valida que é o dono)
     try {
-      await supabaseAuthServer
+      const { error: syncErr } = await createUserClient(req.accessToken as string)
         .from("chefs")
         .update({
           disponibilidade: updatedDispo,
           ...(isAvailable !== undefined ? { is_available: isAvailable } : {})
         })
         .eq("profile_id", chefId);
+      if (syncErr) console.warn("[Availability] Supabase sync note:", syncErr.message);
     } catch (e) {
-      // Non-blocking if table is restricted
+      // Non-blocking: o ficheiro local continua a servir de cache em desenvolvimento
     }
 
     return res.json({

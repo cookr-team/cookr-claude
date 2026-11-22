@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# dados de execução (podem conter emails e disponibilidades reais)
+data/*.json
