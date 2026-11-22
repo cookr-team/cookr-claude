@@ -1,0 +1,33 @@
+[
+  {
+    "id": "c63519ba-845b-4104-84d9-b7d4805146f3",
+    "user_id": null,
+    "booking_id": null,
+    "recipient_email": "teste@cookr.pt",
+    "recipient_name": "Utilizador de Teste",
+    "email_type": "welcome_client",
+    "status": "sent",
+    "provider": "emulated",
+    "provider_message_id": null,
+    "subject": "Bem-vindo à Cookr — A sua conta foi criada!",
+    "sent_at": "2026-09-27T15:50:25.592Z",
+    "failed_at": null,
+    "error_message": "RESEND_API_KEY não configurada no ficheiro .env. Email transacional registado e emulado nos logs do servidor.",
+    "idempotency_key": "global_welcome_client_teste@cookr.pt",
+    "metadata": {
+      "language": "pt",
+      "clientName": "Manuel Silva",
+      "cookName": "Chef Maria Garcia",
+      "experienceName": "Degustação Atlântica de 5 Momentos",
+      "date": "15 de Outubro de 2026",
+      "time": "20:00",
+      "guests": 4,
+      "address": "Avenida da Liberdade 120, Lisboa",
+      "totalAmount": 320,
+      "pin": "7412",
+      "cancellationReason": "Ajuste de agenda acordado entre o cliente e o Chef.",
+      "reminderType": "24h"
+    },
+    "created_at": "2026-09-27T15:50:25.592Z"
+  }
+]

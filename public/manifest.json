@@ -1,0 +1,97 @@
+{
+  "name": "Cookr · Elite Gastronómica",
+  "short_name": "Cookr",
+  "description": "Plataforma de chefs privados de elite em Portugal. Reserve chefs gourmet para jantares e eventos exclusivos.",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#FAF9F6",
+  "theme_color": "#FF6B00",
+  "orientation": "portrait",
+  "dir": "ltr",
+  "lang": "pt-PT",
+  "categories": [
+    "food",
+    "lifestyle",
+    "shopping"
+  ],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "72x72 96x96 128x128 144x144 152x152 192x192 384x384 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=192&auto=format&fit=crop",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=192&auto=format&fit=crop",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=512&auto=format&fit=crop",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=512&auto=format&fit=crop",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Explorar Chefs",
+      "short_name": "Explorar",
+      "url": "/?source=pwa_shortcut_explore",
+      "description": "Encontre chefs e rituais gastronómicos em Portugal.",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Agenda de Reservas",
+      "short_name": "Agenda",
+      "url": "/?source=pwa_shortcut_agenda",
+      "description": "Veja o plano das suas próximas refeições e rituais.",
+      "icons": [
+        {
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
