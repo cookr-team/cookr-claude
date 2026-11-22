@@ -30,7 +30,9 @@ const cookrFromEmail = process.env.COOKR_FROM_EMAIL || 'Cookr <onboarding@resend
 const rawSupabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://sirwzxcdnakhmxczfvth.supabase.co';
 const sanitizedSupabaseUrl = rawSupabaseUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
-const supabaseServerClient = createClient(sanitizedSupabaseUrl, supabaseAnonKey || 'placeholder-key', {
+// A tabela email_events só aceita escrita/leitura do service_role (RLS). Esta chave é APENAS de servidor.
+const supabaseServerKey = process.env.SUPABASE_SERVICE_ROLE_KEY || supabaseAnonKey;
+const supabaseServerClient = createClient(sanitizedSupabaseUrl, supabaseServerKey || 'placeholder-key', {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 

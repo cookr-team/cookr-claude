@@ -1,22 +1,60 @@
 // ==============================================================================
 // COOKR SUPABASE EDGE FUNCTION: send-email
 // ==============================================================================
-// Deploy command: supabase functions deploy send-email --no-verify-jwt
+// Deploy command: supabase functions deploy send-email
+//   (NÃO usar --no-verify-jwt: o gateway do Supabase deve validar o JWT)
 // Required Secrets:
 // - RESEND_API_KEY
 // - COOKR_FROM_EMAIL (e.g., "Cookr <hello@cookr.pt>" or "Cookr <onboarding@resend.dev>")
 // - APP_URL (e.g., "https://cookr.pt")
-// - SUPABASE_URL & SUPABASE_SERVICE_ROLE_KEY (injected by Supabase)
+// - EMAIL_FUNCTION_SECRET (>= 16 caracteres; para chamadas servidor-a-servidor, header x-cookr-internal-key)
+// - SUPABASE_URL, SUPABASE_ANON_KEY & SUPABASE_SERVICE_ROLE_KEY (injected by Supabase)
+//
+// Acesso: ou (a) chamada interna com x-cookr-internal-key, ou (b) utilizador autenticado,
+// que só pode enviar emails para o seu próprio endereço.
 // ==============================================================================
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.8";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Origin": Deno.env.get("APP_URL") || "https://cookr.pt",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-cookr-internal-key",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Vary": "Origin",
 };
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Escapa todos os valores de texto vindos do pedido antes de entrarem no HTML do email.
+function escapeDataForHtml(input: Record<string, any>): Record<string, any> {
+  const out: Record<string, any> = {};
+  for (const [k, v] of Object.entries(input || {})) {
+    out[k] = typeof v === "string" ? escapeHtml(v) : v;
+  }
+  return out;
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+function jsonResponse(body: unknown, status: number): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
 
 interface EmailPayload {
   emailType: string;
@@ -39,9 +77,32 @@ serve(async (req: Request) => {
     const cookrFromEmail = Deno.env.get("COOKR_FROM_EMAIL") || "Cookr <onboarding@resend.dev>";
     const appUrl = Deno.env.get("APP_URL") || "https://cookr.pt";
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || Deno.env.get("SUPABASE_ANON_KEY");
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+
+    // --- Autenticação: chamada interna (segredo) OU utilizador autenticado ---
+    const internalSecret = Deno.env.get("EMAIL_FUNCTION_SECRET") || "";
+    const providedSecret = req.headers.get("x-cookr-internal-key") || "";
+    const isInternal = internalSecret.length >= 16 && timingSafeEqual(providedSecret, internalSecret);
+
+    let callerEmail = "";
+    if (!isInternal) {
+      const token = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+      if (!token || !supabaseUrl || !supabaseAnonKey) {
+        return jsonResponse({ error: "Não autorizado." }, 401);
+      }
+      const { data: authData, error: authErr } = await createClient(supabaseUrl, supabaseAnonKey).auth.getUser(token);
+      if (authErr || !authData?.user) {
+        return jsonResponse({ error: "Token inválido ou expirado." }, 401);
+      }
+      callerEmail = String(authData.user.email || "").toLowerCase().trim();
+    }
 
     const payload: EmailPayload = await req.json();
+
+    if (!isInternal && String(payload?.recipientEmail || "").toLowerCase().trim() !== callerEmail) {
+      return jsonResponse({ error: "Só pode enviar emails para o seu próprio endereço." }, 403);
+    }
 
     const {
       emailType,
@@ -50,8 +111,10 @@ serve(async (req: Request) => {
       recipientEmail,
       recipientName,
       language = "pt",
-      data = {},
+      data: rawData = {},
     } = payload;
+    // Todo o conteúdo dinâmico é escapado antes de ir para o HTML.
+    const data = escapeDataForHtml(rawData);
 
     if (!recipientEmail || !emailType) {
       return new Response(
@@ -180,7 +243,7 @@ serve(async (req: Request) => {
             </div>
 
             <h2 style="margin: 0 0 12px 0; font-size: 22px; font-weight: 900; color: #0f172a; letter-spacing: -0.02em;">
-              Olá, ${recipientName || 'Estimado Utilizador'}!
+              Olá, ${escapeHtml(recipientName || 'Estimado Utilizador')}!
             </h2>
             <p style="color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;">
               ${subjectPrefix}
@@ -267,7 +330,7 @@ serve(async (req: Request) => {
             failed_at: providerStatus === "failed" ? new Date().toISOString() : null,
             error_message: errorMessage,
             idempotency_key: idempotencyKey,
-            metadata: { language, ...data },
+            metadata: { language, ...rawData },
           }, { onConflict: "idempotency_key" })
           .select("id")
           .maybeSingle();
