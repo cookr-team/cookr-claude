@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function() {
+        const OriginalWebSocket = window.WebSocket;
+        if (OriginalWebSocket) {
+          window.WebSocket = function(url, protocols) {
+            const isViteHmr = protocols === 'vite-hmr' || 
+                              (typeof protocols === 'string' && protocols.includes('vite')) ||
+                              (Array.isArray(protocols) && protocols.includes('vite-hmr'));
+            
+            if (isViteHmr) {
+              console.log("[Vite HMR] Safely bypassing HMR WebSocket connection (HMR is disabled in development mode).");
+              const listeners = {};
+              const mockWS = {
+                url: url,
+                readyState: 3, // CLOSED
+                bufferedAmount: 0,
+                extensions: "",
+                protocol: Array.isArray(protocols) ? protocols[0] : (protocols || ""),
+                binaryType: "blob",
+                addEventListener: function(event, callback) {
+                  if (!listeners[event]) listeners[event] = [];
+                  listeners[event].push(callback);
+                },
+                removeEventListener: function(event, callback) {
+                  if (!listeners[event]) return;
+                  listeners[event] = listeners[event].filter(cb => cb !== callback);
+                },
+                send: function() {},
+                close: function() {},
+              };
+              let _onopen = null, _onclose = null, _onerror = null, _onmessage = null;
+              Object.defineProperty(mockWS, 'onopen', { get() { return _onopen; }, set(val) { _onopen = val; } });
+              Object.defineProperty(mockWS, 'onclose', { get() { return _onclose; }, set(val) { _onclose = val; } });
+              Object.defineProperty(mockWS, 'onerror', { get() { return _onerror; }, set(val) { _onerror = val; } });
+              Object.defineProperty(mockWS, 'onmessage', { get() { return _onmessage; }, set(val) { _onmessage = val; } });
+              return mockWS;
+            }
+            return protocols !== undefined ? new OriginalWebSocket(url, protocols) : new OriginalWebSocket(url);
+          };
+          window.WebSocket.prototype = OriginalWebSocket.prototype;
+          window.WebSocket.CONNECTING = OriginalWebSocket.CONNECTING || 0;
+          window.WebSocket.OPEN = OriginalWebSocket.OPEN || 1;
+          window.WebSocket.CLOSING = OriginalWebSocket.CLOSING || 2;
+          window.WebSocket.CLOSED = OriginalWebSocket.CLOSED || 3;
+          for (const key in OriginalWebSocket) {
+            if (OriginalWebSocket.hasOwnProperty(key)) {
+              window.WebSocket[key] = OriginalWebSocket[key];
+            }
+          }
+        }
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Cookr · Elite Gastronómica</title>
+    
+    <!-- PWA configuration link and meta tags -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#FF6B00" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- iOS / Apple Mobile Web App configurations -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Cookr" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    
+    <!-- Preconnect & DNS Prefetch to speed up Google Fonts and image resource loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+  </head>
+  <body>
+    
+    
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
