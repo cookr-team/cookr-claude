@@ -317,7 +317,12 @@ async function checkEmailDispatchAllowed(
       return { ok: false, status: 403, error: "Reserva inexistente ou sem permissão." };
     }
 
-    if (supabaseAdminServer) {
+    if (!supabaseAdminServer) {
+      // Sem chave de serviço não dá para validar o destinatário: só aceita o próprio email.
+      if (recipient !== ownEmail) {
+        return { ok: false, status: 403, error: "Destinatário não validável: configure a chave de serviço do servidor." };
+      }
+    } else {
       const { data: parties } = await supabaseAdminServer
         .from("profiles")
         .select("email")
