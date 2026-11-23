@@ -305,62 +305,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       <div className="space-y-6 sm:space-y-8">
         {/* ================================================================= */}
-        {/* IDIOMA DE PREFERÊNCIA */}
-        {/* ================================================================= */}
-        <section className="bg-white p-5 sm:p-7 md:p-8 rounded-2xl border border-slate-200/80 shadow-xs space-y-5">
-          <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center border border-orange-100">
-                <Globe size={18} />
-              </div>
-              <div>
-                <h2 className="text-sm font-black uppercase tracking-wider text-slate-900">
-                  {t("settings.language_section") || tr("Idioma de Preferência")}
-                </h2>
-                <p className="text-[11px] text-slate-500 font-normal">
-                  {t("settings.language_desc") || tr("Escolha o idioma no qual pretende visualizar a plataforma. Toda a interface e notificações serão adaptadas.")}
-                </p>
-              </div>
-            </div>
-            <span className="px-2.5 py-1 bg-orange-50 text-orange-700 rounded-lg text-[10px] font-black uppercase tracking-wider shrink-0 border border-orange-100">
-              {language.toUpperCase()}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-            {availableLanguages.map((item) => {
-              const isCurrent = language === item.code;
-              return (
-                <button
-                  key={item.code}
-                  type="button"
-                  onClick={() => {
-                    setLanguage(item.code);
-                    onNotify?.(t("common.saved") || "Idioma atualizado com sucesso", "success");
-                  }}
-                  className={`p-3.5 rounded-xl border transition-all text-left flex flex-col justify-between cursor-pointer ${
-                    isCurrent
-                      ? "bg-orange-500 text-white border-orange-500 shadow-md ring-2 ring-orange-200 scale-[1.02]"
-                      : "bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-100"
-                  }`}
-                >
-                  <div className="flex items-center justify-between w-full mb-2">
-                    <span className="text-xl">{item.flag}</span>
-                    {isCurrent && <Check size={14} className="stroke-[3]" />}
-                  </div>
-                  <span className={`text-xs font-black uppercase tracking-wider ${isCurrent ? "text-white" : "text-slate-900"}`}>
-                    {tr(item.label as any) as any}
-                  </span>
-                  <span className={`text-[9px] font-mono mt-0.5 ${isCurrent ? "text-orange-100" : "text-slate-400"}`}>
-                    {item.code.toUpperCase()}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ================================================================= */}
         {/* 1. DADOS PESSOAIS / CONTA */}
         {/* ================================================================= */}
         <section className="bg-white p-5 sm:p-7 md:p-8 rounded-2xl border border-slate-200/80 shadow-xs space-y-6">
@@ -532,49 +476,55 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 </div>
               </div>
 
-              {/* Morada de Faturação */}
-              <div className="space-y-1.5 sm:col-span-2">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  {tr("Morada de Faturação")}
-                </label>
-                <input
-                  type="text"
-                  value={billingAddress}
-                  onChange={(e) => setBillingAddress(e.target.value)}
-                  placeholder={tr("Rua, número e andar")}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium"
-                />
-              </div>
-
-              {/* Cidade */}
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  {tr("Cidade")}
-                </label>
-                <input
-                  type="text"
-                  value={billingCity}
-                  onChange={(e) => setBillingCity(e.target.value)}
-                  placeholder={tr("Ex: Lisboa")}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium"
-                />
-              </div>
-
-              {/* Código Postal */}
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  {tr("Código Postal")}
-                </label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={billingZip}
-                  onChange={(e) => setBillingZip(formatPostalCode(e.target.value))}
-                  placeholder="1000-001"
-                  maxLength={8}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium font-mono"
-                />
-              </div>
+              {/* Morada de Faturação: escolhida entre as moradas guardadas no perfil */}
+              {user.role === UserRole.COOK ? (
+                <>
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block">{tr("Morada de Faturação")}</label>
+                    <input type="text" value={billingAddress} onChange={(e) => setBillingAddress(e.target.value)} placeholder={tr("Rua, número e andar")}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block">{tr("Cidade")}</label>
+                    <input type="text" value={billingCity} onChange={(e) => setBillingCity(e.target.value)} placeholder={tr("Ex: Lisboa")}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block">{tr("Código Postal")}</label>
+                    <input type="text" inputMode="numeric" value={billingZip} onChange={(e) => setBillingZip(formatPostalCode(e.target.value))} placeholder="1000-001" maxLength={8}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium font-mono" />
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-1.5 sm:col-span-2">
+                  <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 block">
+                    {tr("Morada de Faturação")}
+                  </label>
+                  {(user.addresses || []).length > 0 ? (
+                    <select
+                      value={(user.addresses || []).find((a) => [a.address, a.door_number && `, ${a.door_number}`].filter(Boolean).join("") === billingAddress && (a.city || "") === billingCity)?.id || ""}
+                      onChange={(e) => {
+                        const a = (user.addresses || []).find((x) => String(x.id) === e.target.value);
+                        if (!a) return;
+                        setBillingAddress([a.address, a.door_number, a.floor].filter(Boolean).join(", "));
+                        setBillingCity(a.city || "");
+                        setBillingZip(formatPostalCode(a.zip_code || ""));
+                      }}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 transition-all font-medium cursor-pointer"
+                    >
+                      <option value="">{billingAddress ? `${billingAddress}${billingCity ? `, ${billingCity}` : ""}` : tr("Selecione uma das suas moradas")}</option>
+                      {(user.addresses || []).map((a) => (
+                        <option key={a.id} value={a.id}>{[a.label, a.address, a.city].filter(Boolean).join(" · ")}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p className="text-xs text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5">
+                      {tr("Adicione primeiro uma morada no separador Moradas do seu perfil.")}
+                    </p>
+                  )}
+                  <p className="text-[11px] text-slate-400">{tr("As moradas gerem-se num único sítio: separador Moradas do perfil.")}</p>
+                </div>
+              )}
 
               {/* IBAN */}
               <div className="space-y-1.5 sm:col-span-2">
