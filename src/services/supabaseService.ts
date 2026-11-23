@@ -473,12 +473,14 @@ export const supabaseService = {
         throw authError || new Error('Email ou palavra-passe incorretos.');
       }
       // Conta autenticada mas sem perfil na base de dados: cria um perfil básico de cliente.
+      const wantsCook = authUser.user_metadata?.role === UserRole.COOK;
       const baseProfile = {
         id: authUser.id,
         email: sanitizedEmail,
         nome: authUser.user_metadata?.nome || sanitizedEmail.split('@')[0],
-        role: UserRole.CLIENT,
-        status: UserStatus.ACTIVE,
+        telefone: authUser.user_metadata?.telefone || null,
+        role: wantsCook ? UserRole.COOK : UserRole.CLIENT,
+        status: wantsCook ? UserStatus.UNDER_REVIEW : UserStatus.ACTIVE,
       };
       let createdRow: any = null;
       try {
@@ -2981,6 +2983,20 @@ export const sanitizeUserUrls = (user: any): any => {
     copy.is_available = copy.isAvailable;
   }
   return copy;
+};
+
+/**
+ * Devolve o id do utilizador com sessão Supabase válida, ou null.
+ * Em modo demonstração (Supabase não configurado) devolve undefined (sem verificação).
+ */
+export const getVerifiedSessionUserId = async (): Promise<string | null | undefined> => {
+  if (!isSupabaseConfigured()) return undefined;
+  try {
+    const { data } = await supabase.auth.getSession();
+    return data?.session?.user?.id || null;
+  } catch (_) {
+    return null;
+  }
 };
 
 export const waitForAuthInit = async (): Promise<void> => {
