@@ -94,6 +94,53 @@ export function parseFaqs(faqs: any): ChefFAQItem[] {
   });
 }
 
+/**
+ * Dados privados (IBAN, NIF, faturação) vivem em profile_private; o RLS só devolve
+ * linhas do próprio utilizador ou, para admin, de todos. Se a tabela ainda não existir
+ * (migração por aplicar) devolve as linhas inalteradas.
+ */
+async function attachPrivateProfileData<T extends { id?: string }>(rows: T[]): Promise<T[]> {
+  if (!rows || rows.length === 0 || !isSupabaseConfigured()) return rows;
+  try {
+    const ids = rows.map(r => r.id).filter(Boolean) as string[];
+    const [privRes, notesRes] = await Promise.all([
+      supabase.from('profile_private').select('*').in('id', ids),
+      supabase.from('profile_admin_notes').select('id, admin_notes').in('id', ids),
+    ]);
+    const priv = new Map<string, any>((privRes.data || []).map((r: any) => [r.id, r]));
+    const notes = new Map<string, any>((notesRes.data || []).map((r: any) => [r.id, r]));
+    return rows.map(r => {
+      const p = priv.get(r.id as string);
+      const n = notes.get(r.id as string);
+      if (!p && !n) return r;
+      const { id: _pid, updated_at: _pu, ...privFields } = p || {};
+      return { ...r, ...privFields, ...(n ? { admin_notes: n.admin_notes } : {}) };
+    });
+  } catch (_) {
+    return rows;
+  }
+}
+
+async function attachPrivateProfileDataOne(row: any): Promise<any> {
+  if (!row) return row;
+  const [merged] = await attachPrivateProfileData([row]);
+  return merged;
+}
+
+/** O PIN do serviço vive em booking_secrets (só o cliente da reserva e o admin o leem). */
+async function attachBookingPins(rows: any[]): Promise<any[]> {
+  if (!rows || rows.length === 0 || !isSupabaseConfigured()) return rows;
+  try {
+    const ids = rows.map(r => r.id).filter(Boolean);
+    const { data } = await supabase.from('booking_secrets').select('booking_id, service_pin').in('booking_id', ids);
+    if (!data || data.length === 0) return rows;
+    const pins = new Map<string, string>(data.map((r: any) => [r.booking_id, r.service_pin]));
+    return rows.map(r => (pins.has(r.id) ? { ...r, service_pin: pins.get(r.id) } : r));
+  } catch (_) {
+    return rows;
+  }
+}
+
 function mapProfileRowToUser(profile: any, chef?: any): User {
   const isChef = profile.role === UserRole.COOK;
   const mergedChef = chef || {};
@@ -442,7 +489,7 @@ export const supabaseService = {
         .maybeSingle();
 
       if (!profileErr && data) {
-        profile = data;
+        profile = authUser ? await attachPrivateProfileDataOne(data) : data;
       }
     } catch (err) {
       console.warn('[Supabase] Erro ao consultar perfil por email:', err);
@@ -552,7 +599,7 @@ export const supabaseService = {
         supabase.from('chefs').select('*'),
       ]);
 
-      const profiles = profilesRes.data || [];
+      const profiles = await attachPrivateProfileData(profilesRes.data || []);
       const chefsMap = new Map((chefsRes.data || []).map((c: any) => [c.profile_id, c]));
 
       // Integrar chefs em cache local
@@ -740,13 +787,14 @@ export const supabaseService = {
     if (!id) return null;
     if (isValidUUID(id)) {
       try {
-        const { data: profile, error } = await supabase
+        let { data: profile, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', id)
           .maybeSingle();
 
         if (!error && profile) {
+          profile = await attachPrivateProfileDataOne(profile);
           let chefData = null;
           if (profile.role === UserRole.COOK) {
             const { data: chef } = await supabase
@@ -780,13 +828,14 @@ export const supabaseService = {
     if (!email || typeof email !== 'string') return null;
     const sanitizedEmail = email.toLowerCase().trim();
     try {
-      const { data: profile, error } = await supabase
+      let { data: profile, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('email', sanitizedEmail)
         .maybeSingle();
 
       if (!error && profile) {
+        profile = await attachPrivateProfileDataOne(profile);
         let chefData = null;
         if (profile.role === UserRole.COOK) {
           const { data: chef } = await supabase
@@ -1513,7 +1562,7 @@ export const supabaseService = {
         .order('created_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
-        return data.map(mapBookingRowToBooking);
+        return (await attachBookingPins(data)).map(mapBookingRowToBooking);
       }
       return mockBookings;
     } catch (err) {
@@ -1541,7 +1590,8 @@ export const supabaseService = {
 
       const { data, error } = await query;
       if (!error && data && data.length > 0) {
-        return data.map(mapBookingRowToBooking);
+        const withPins = role === UserRole.COOK ? data : await attachBookingPins(data);
+        return withPins.map(mapBookingRowToBooking);
       }
 
       return mockBookings.filter(b => role === UserRole.COOK ? b.cookId === userId : b.clientId === userId);
@@ -1768,22 +1818,17 @@ export const supabaseService = {
 
   verifyPinAndComplete: async (bookingId: string, pin: string): Promise<boolean> => {
     if (!bookingId || !isValidUUID(bookingId)) return false;
-    const { data: booking } = await supabase.from('bookings').select('*').eq('id', bookingId).maybeSingle();
-    if (booking && String(booking.service_pin).trim() === String(pin).trim()) {
-      await supabase.from('bookings').update({ status: BookingStatus.COMPLETED, is_finalizing: false }).eq('id', bookingId);
-      if (booking.client_id && booking.valor_total) {
-        const points = Math.floor(Number(booking.valor_total));
-        if (points > 0) {
-          await supabaseService.awardLoyaltyPoints(
-            booking.client_id,
-            points,
-            `Reserva concluída: ${booking.menu_selected || ''}`
-          );
-        }
-      }
-      return true;
+    // A validação do PIN (e o limite de tentativas) é feita no servidor.
+    // Os pontos de fidelidade e o contador do chef são atribuídos por trigger na base de dados.
+    const { data, error } = await supabase.rpc('complete_booking_with_pin', {
+      p_booking_id: bookingId,
+      p_pin: String(pin ?? '').trim(),
+    });
+    if (error) {
+      console.warn('[Supabase] complete_booking_with_pin:', error.message);
+      return false;
     }
-    return false;
+    return data === true;
   },
 
   /**

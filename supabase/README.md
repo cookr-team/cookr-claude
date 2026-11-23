@@ -7,6 +7,7 @@ Ordem de aplicação (SQL Editor do projeto Supabase da Cookr):
    `is_admin()` antiga e o `FOR ALL TABLES` do Realtime.
 2. `migrations/20260927000000_create_email_events.sql`
 3. `migrations/20261122000000_security_hardening.sql` — correções de segurança (idempotente).
+4. `migrations/20261123000000_private_data.sql` — IBAN/NIF/faturação e PIN do serviço passam para tabelas privadas; PIN validado no servidor (idempotente). **Aplicar antes de fazer merge do código que o usa.**
 
 Depois do passo 3, confirme que o administrador existe em `public.profiles` com `role = 'admin'`:
 
