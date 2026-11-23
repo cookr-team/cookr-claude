@@ -3971,7 +3971,7 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
 
       {viewingDetail && (
         <div className="fixed inset-0 z-[1000] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
-          <div className="bg-white rounded-[3rem] md:rounded-[4rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide shadow-3xl relative">
+          <div className="bg-white rounded-[3rem] md:rounded-[4rem] max-w-2xl w-full max-h-[90dvh] overflow-y-auto scrollbar-hide shadow-3xl relative">
             {/* Header Background Accent */}
             <div className="absolute top-0 left-0 right-0 h-32 bg-slate-50 border-b border-slate-100" />
 

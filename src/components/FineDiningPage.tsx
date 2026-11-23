@@ -11,7 +11,7 @@ export const FineDiningPage: React.FC<FineDiningPageProps> = ({
   onOpenAuth,
 }) => {
   return (
-    <div className="min-h-screen bg-[#080C14] text-white font-sans selection:bg-[#FF5500] selection:text-white flex flex-col justify-between overflow-x-hidden relative">
+    <div className="min-h-dvh bg-[#080C14] text-white font-sans selection:bg-[#FF5500] selection:text-white flex flex-col justify-between overflow-x-hidden relative">
       {/* Background Subtle Ambient Lighting */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-radial from-[#FF5500]/10 via-transparent to-transparent blur-3xl opacity-60" />

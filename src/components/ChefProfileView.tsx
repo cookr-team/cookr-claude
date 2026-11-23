@@ -852,7 +852,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-white pb-32 animate-in fade-in duration-1000">
+    <div className="min-h-dvh bg-white pb-32 animate-in fade-in duration-1000">
       {/* 1. Summary Modal (Image 1) */}
       {bookingStep === "summary" && selectedMenu && (
         <div className="fixed inset-0 z-[150] overflow-y-auto flex items-start sm:items-center justify-center p-4 md:p-10 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-500">

@@ -1550,7 +1550,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   return (
-    <div id="command_center_viewport" className="min-h-screen bg-slate-50/50 text-slate-800 font-sans pb-24">
+    <div id="command_center_viewport" className="min-h-dvh bg-slate-50/50 text-slate-800 font-sans pb-24">
       {/* Premium Admin Header */}
       <div className="border-b border-slate-200/60 bg-white/70 backdrop-blur-md sticky top-0 z-40 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 py-3.5 sm:py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -2258,7 +2258,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             {selectedUser && (
               <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex justify-end animate-in fade-in duration-200">
-                <div className="w-full max-w-2xl bg-white border-l border-slate-200 h-screen overflow-y-auto p-4 sm:p-6 md:p-8 shadow-2xl flex flex-col justify-between text-slate-800">
+                <div className="w-full max-w-2xl bg-white border-l border-slate-200 h-dvh overflow-y-auto p-4 sm:p-6 md:p-8 shadow-2xl flex flex-col justify-between text-slate-800">
                   <div>
                     {/* Drawer header */}
                     <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">

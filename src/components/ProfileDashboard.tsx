@@ -2405,7 +2405,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       {/* Points Info Modal */}
       {showPointsInfoModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[3rem] w-full max-w-lg p-8 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300 max-h-[90vh] overflow-y-auto no-scrollbar">
+          <div className="bg-white rounded-[3rem] w-full max-w-lg p-8 md:p-10 shadow-2xl animate-in fade-in zoom-in duration-300 max-h-[90dvh] overflow-y-auto no-scrollbar">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center text-orange-500">
@@ -2720,7 +2720,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       {/* Detail Modal */}
       {viewingDetail && (
         <div className="fixed inset-0 z-[1000] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
-          <div className="bg-white rounded-[3rem] md:rounded-[4rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide shadow-3xl relative">
+          <div className="bg-white rounded-[3rem] md:rounded-[4rem] max-w-2xl w-full max-h-[90dvh] overflow-y-auto scrollbar-hide shadow-3xl relative">
             {/* Header Background Accent */}
             <div className="absolute top-0 left-0 right-0 h-32 bg-slate-50 border-b border-slate-100" />
 
