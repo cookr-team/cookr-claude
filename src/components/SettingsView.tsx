@@ -249,7 +249,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         onNotify(tr("Enviámos instruções de redefinição para {v0}. Verifique o seu email.", { v0: user.email }), "success");
       }
     } catch (err: any) {
-      if (onNotify) onNotify("Erro ao enviar pedido de recuperação: " + (err.message || "Tente mais tarde"), "error");
+      if (onNotify) onNotify(err?.message || tr("Erro ao enviar pedido de recuperação. Tente mais tarde."), "error");
     } finally {
       setIsResettingPassword(false);
     }
