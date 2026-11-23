@@ -1,5 +1,5 @@
 import React from "react";
-import { ICONS, PLATFORM_NAME } from "../constants";
+import { PLATFORM_NAME } from "../constants";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl";
@@ -54,11 +54,14 @@ const Logo: React.FC<LogoProps> = ({
       className={`flex items-center ${currentSize.gap} ${className} ${onClick ? "cursor-pointer active:scale-95 transition-transform" : ""}`}
       onClick={onClick}
     >
-      <div
-        className={`${currentSize.box} bg-[#FF6B00] ${currentSize.radius} flex items-center justify-center shadow-sm`}
-      >
-        <ICONS.ChefHat className="text-white" size={currentSize.icon} />
-      </div>
+      <img
+        src="/logo.png"
+        alt={PLATFORM_NAME}
+        width={512}
+        height={512}
+        draggable={false}
+        className={`${currentSize.box} rounded-full object-contain shrink-0 select-none shadow-sm`}
+      />
       {showText && (
         <span
           className={`${currentSize.text} font-black tracking-tighter ${variant === "light" ? "text-white" : "text-slate-950"}`}

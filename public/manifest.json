@@ -22,45 +22,27 @@
   ],
   "icons": [
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icon.svg",
-      "sizes": "72x72 96x96 128x128 144x144 152x152 192x192 384x384 512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=192&auto=format&fit=crop",
-      "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any"
-    },
-    {
-      "src": "https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=192&auto=format&fit=crop",
-      "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "maskable"
-    },
-    {
-      "src": "https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=512&auto=format&fit=crop",
+      "src": "/icon-maskable-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
-      "purpose": "any"
-    },
-    {
-      "src": "https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=512&auto=format&fit=crop",
-      "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
@@ -72,9 +54,9 @@
       "description": "Encontre chefs e rituais gastronómicos em Portugal.",
       "icons": [
         {
-          "src": "/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -85,9 +67,9 @@
       "description": "Veja o plano das suas próximas refeições e rituais.",
       "icons": [
         {
-          "src": "/icon.svg",
-          "sizes": "any",
-          "type": "image/svg+xml"
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }

@@ -13,8 +13,12 @@ export interface BookingEmailData {
   actionUrl?: string;
 }
 
+const APP_BASE_URL =
+  (typeof process !== 'undefined' && process.env && process.env.APP_URL) || 'https://cookr.pt';
+
 const COOKR_BRAND_HEADER = `
   <div style="text-align: center; padding: 28px 20px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 16px 16px 0 0;">
+    <img src="${APP_BASE_URL}/icon-192.png" width="56" height="56" alt="Cookr" style="display: block; margin: 0 auto 12px auto; border-radius: 50%; border: 0;" />
     <h1 style="color: #ea580c; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.05em; font-family: 'Montserrat', sans-serif;">
       COOK<span style="color: #ffffff;">R</span>
     </h1>
