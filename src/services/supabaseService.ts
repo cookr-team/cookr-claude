@@ -1,5 +1,5 @@
 export { supabase } from '../lib/supabaseClient';
-import { supabase } from '../lib/supabaseClient';
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { supabaseAuthService } from './supabaseAuthService';
 import { 
   User, 
@@ -283,7 +283,7 @@ export const saveLocalAuthCredentials = (email: string, password?: string, role?
     const creds: LocalCredential[] = raw ? JSON.parse(raw) : [];
     const sanitized = email.toLowerCase().trim();
     const updated = [
-      { email: sanitized, password, role, updatedAt: new Date().toISOString() },
+      { email: sanitized, password: isSupabaseConfigured() ? undefined : password, role, updatedAt: new Date().toISOString() },
       ...creds.filter(c => c.email.toLowerCase().trim() !== sanitized)
     ];
     localStorage.setItem(LOCAL_CREDENTIALS_KEY, JSON.stringify(updated));
@@ -466,7 +466,32 @@ export const supabaseService = {
         }
       }
       candidateUser = mapProfileRowToUser(profile, chefData);
+    } else if (isSupabaseConfigured()) {
+      // Com o Supabase configurado, a identidade vem SEMPRE do Supabase Auth.
+      // Nunca se usam contas locais ou de demonstração (permitiam entrar com qualquer password).
+      if (!authUser) {
+        throw authError || new Error('Email ou palavra-passe incorretos.');
+      }
+      // Conta autenticada mas sem perfil na base de dados: cria um perfil básico de cliente.
+      const baseProfile = {
+        id: authUser.id,
+        email: sanitizedEmail,
+        nome: authUser.user_metadata?.nome || sanitizedEmail.split('@')[0],
+        role: UserRole.CLIENT,
+        status: UserStatus.ACTIVE,
+      };
+      let createdRow: any = null;
+      try {
+        const { data: created } = await supabase
+          .from('profiles')
+          .upsert(baseProfile, { onConflict: 'id' })
+          .select('*')
+          .maybeSingle();
+        createdRow = created;
+      } catch (_) {}
+      candidateUser = mapProfileRowToUser(createdRow || baseProfile, null);
     } else {
+      // Modo demonstração (sem Supabase configurado)
       const localUser = getLocalCachedUsers().find(u => u.email.toLowerCase().trim() === sanitizedEmail);
       const candidateMock = mockUsers.find(u => u.email.toLowerCase().trim() === sanitizedEmail);
       candidateUser = localUser || candidateMock || null;
@@ -476,10 +501,14 @@ export const supabaseService = {
     if (candidateUser) {
       // Se autenticou no Supabase Auth com sucesso
       if (authUser) {
-        if (password) {
-          saveLocalAuthCredentials(sanitizedEmail, password, candidateUser.role);
-        }
+        // Nunca guardar passwords no browser; remove credenciais locais antigas.
+        try { localStorage.removeItem(LOCAL_CREDENTIALS_KEY); } catch (_) {}
         return candidateUser;
+      }
+
+      // Com o Supabase configurado, sem autenticação válida não há login.
+      if (isSupabaseConfigured()) {
+        throw authError || new Error('Email ou palavra-passe incorretos.');
       }
 
       // Se o Supabase Auth falhou (por rate-limit de emails, unconfirmed email, restrição de domínio ou utilizador criado localmente):
