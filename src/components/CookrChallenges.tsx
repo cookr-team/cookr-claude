@@ -238,19 +238,10 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
   );
 
   const activeChallenge = CHALLENGES_DATA[currentIndex];
-  const storageKey = "cookr_challenge_submissions";
 
   // Load submissions from localStorage and Supabase
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        setUserSubmissions(JSON.parse(saved));
-      }
-    } catch {
-      // Ignored
-    }
-
+    setUserSubmissions([]);
     if (currentUser?.id) {
       const loadSubmissions = async () => {
         try {
@@ -326,11 +317,6 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
       ),
     ];
     setUserSubmissions(updated);
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(updated));
-    } catch {
-      // Ignored
-    }
     if (onNotify) {
       onNotify(
         "Prato submetido com sucesso ao Desafio Cookr! Boa sorte!",
@@ -699,13 +685,12 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
     setError(null);
 
     const submissionData: ChallengeSubmission = {
-      id: existingSubmission?.id || `submission_${Date.now()}`,
+      id: existingSubmission?.id && /^[0-9a-f-]{36}$/i.test(existingSubmission.id) ? existingSubmission.id : crypto.randomUUID(),
       challengeId: challenge.id,
-      chefId: currentUser?.id || "chef_demo_id",
+      chefId: currentUser?.id || "",
       chefName: currentUser?.nome || "Chef Cookr",
       chefAvatar:
-        currentUser?.avatar ||
-        "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&q=80&w=400",
+        currentUser?.avatar_url || "",
       dishTitle: dishTitle.trim(),
       description: description.trim(),
       photoUrl: photoUrl.trim(),
@@ -717,28 +702,41 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
       status: "in_review",
     };
 
-    try {
-      // Also persist to Supabase if table exists
-      await supabase
-        .from("challenge_submissions")
-        .insert({
-          id: submissionData.id,
-          challenge_id: submissionData.challengeId,
-          chef_id: submissionData.chefId,
-          chef_name: submissionData.chefName,
-          chef_avatar: submissionData.chefAvatar,
-          dish_title: submissionData.dishTitle,
-          description: submissionData.description,
-          photo_url: submissionData.photoUrl,
-          course_type: submissionData.courseType,
-          prep_time: submissionData.prepTime,
-          allergens: submissionData.allergens,
-          pairing_notes: submissionData.pairingNotes,
-          submitted_at: submissionData.submittedAt,
-          status: submissionData.status,
-        });
-    } catch {
-      // Ignored for offline tolerance
+    if (!currentUser?.id) {
+      setError("Inicia sessão como chef para submeter um prato.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const { error: saveError } = await supabase.from("challenge_submissions").upsert(
+      {
+        id: submissionData.id,
+        challenge_id: submissionData.challengeId,
+        chef_id: submissionData.chefId,
+        chef_name: submissionData.chefName,
+        chef_avatar: submissionData.chefAvatar,
+        dish_title: submissionData.dishTitle,
+        description: submissionData.description,
+        photo_url: submissionData.photoUrl,
+        course_type: submissionData.courseType,
+        prep_time: submissionData.prepTime,
+        allergens: submissionData.allergens,
+        pairing_notes: submissionData.pairingNotes,
+        submitted_at: submissionData.submittedAt,
+        status: submissionData.status,
+      },
+      { onConflict: "challenge_id,chef_id" },
+    );
+
+    if (saveError) {
+      console.warn("[Challenges] submit error:", saveError);
+      setError(
+        navigator.onLine
+          ? "Não foi possível guardar a submissão. Tenta novamente dentro de instantes."
+          : "Sem ligação à internet. Volta a tentar quando estiveres online.",
+      );
+      setIsSubmitting(false);
+      return;
     }
 
     onSubmitSuccess(submissionData);
