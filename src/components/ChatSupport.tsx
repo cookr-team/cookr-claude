@@ -82,7 +82,7 @@ const ChatSupport: React.FC<ChatSupportProps> = ({ user }) => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-[320px] md:w-[380px] h-[500px] bg-white rounded-[2.5rem] shadow-3xl border border-slate-100 flex flex-col overflow-hidden"
+            className="mb-4 w-[calc(100vw-3rem)] max-w-[380px] h-[min(500px,calc(100dvh-8rem))] bg-white rounded-[2.5rem] shadow-3xl border border-slate-100 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="p-6 bg-slate-950 text-white flex items-center justify-between">
