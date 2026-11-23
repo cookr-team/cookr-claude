@@ -1462,6 +1462,18 @@ export const supabaseService = {
   /**
    * Atualizar calendário de slots do Chef
    */
+  /** Horários já ocupados de um chef (só data e hora, sem dados de clientes). */
+  getChefBusySlots: async (chefId: string): Promise<{ data: string; hora: string }[]> => {
+    if (!chefId || !isValidUUID(chefId) || !isSupabaseConfigured()) return [];
+    try {
+      const { data, error } = await supabase.rpc('get_chef_busy_slots', { p_chef: chefId });
+      if (error || !Array.isArray(data)) return [];
+      return data as { data: string; hora: string }[];
+    } catch (_) {
+      return [];
+    }
+  },
+
   updateChefAvailability: async (cookId: string, date: string, time: string, action: 'occupy' | 'free') => {
     if (!cookId || !isValidUUID(cookId)) return;
     try {

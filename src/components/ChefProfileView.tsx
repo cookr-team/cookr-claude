@@ -323,6 +323,19 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     | null
   >(initialStep || null);
   const [selectedDate, setSelectedDate] = useState<string>(initialDate || "");
+  // Horários ocupados por QUALQUER cliente (o cliente só vê as suas reservas por RLS).
+  const [remoteBusy, setRemoteBusy] = useState<{ data: string; hora: string }[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    if (chef?.id) {
+      supabaseService.getChefBusySlots(chef.id).then((rows) => {
+        if (!cancelled) setRemoteBusy(rows);
+      });
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [chef?.id]);
   const [selectedTime, setSelectedTime] = useState<string>(initialTime || "");
   const [numPessoas, setNumPessoas] = useState<number>(2);
   const [kitchenNotes, setKitchenNotes] = useState<string>("");
@@ -634,10 +647,16 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
     // Filtrar conflitos com reservas ativas existentes
     const busySlots = new Set<string>();
-    (bookings || []).forEach(b => {
-      const isChefBooking = b.cookId === chef.id || (b as any).chef_id === chef.id;
-      const isActive = b.status !== "cancelada" && b.status !== "rejeitada";
-      if (isChefBooking && b.data === selectedDate && isActive && b.hora) {
+    const inactive = ["cancelled", "cancelled_partial_refund", "rejected", "expired", "cancelada", "rejeitada"];
+    const ownBusy = (bookings || [])
+      .filter(b => {
+        const isChefBooking = b.cookId === chef.id || (b as any).chef_id === chef.id;
+        return isChefBooking && !inactive.includes(String(b.status)) && b.data && b.hora;
+      })
+      .map(b => ({ data: b.data as string, hora: b.hora as string }));
+
+    [...ownBusy, ...remoteBusy].forEach(b => {
+      if (b.data === selectedDate && b.hora) {
         busySlots.add(b.hora);
         // Bloquear janela de serviço de 90 minutos para evitar sobreposição
         const [bh, bm] = b.hora.split(":").map(Number);
@@ -658,7 +677,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     times = times.filter(t => !busySlots.has(t)).sort();
 
     return times;
-  }, [selectedDate, chef?.disponibilidade, chef?.isAvailable, bookings]);
+  }, [selectedDate, chef?.disponibilidade, chef?.isAvailable, bookings, remoteBusy]);
 
   // Efeito para validar e pre-encher data/hora
   useEffect(() => {
