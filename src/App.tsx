@@ -2244,7 +2244,7 @@ const App: React.FC = () => {
 
     const safeBookings = bookings || [];
 
-    if (currentView === "settings") {
+    if (currentView === "settings" && currentUser.role !== UserRole.CLIENT) {
       return (
         <SettingsView
           user={currentUser}
@@ -2394,7 +2394,7 @@ const App: React.FC = () => {
           onBack={() => navigateTo("home")}
         />
       );
-    if (currentView === "profile")
+    if (currentView === "profile" || (currentView === "settings" && currentUser.role === UserRole.CLIENT))
       return (
         <ProfileDashboard
           user={currentUser}
@@ -2405,7 +2405,7 @@ const App: React.FC = () => {
           onSelectChef={handleSelectChefFromDashboard}
           onNotify={addToast}
           onNavigate={navigateTo}
-          initialTab={currentTab}
+          initialTab={currentView === "settings" ? "definicoes" : currentTab}
         />
       );
 
