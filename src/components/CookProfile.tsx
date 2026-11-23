@@ -53,7 +53,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editedUser, setEditedUser] = useState(user);
-  const [uploading, setUploading] = useState<"avatar" | "cover" | null>(null);
+  const [uploading, setUploading] = useState<"avatar" | "cover" | "portfolio" | null>(null);
   const [activeTab, setActiveTab] = useState<
     "perfil" | "moradas" | "profissional" | "sustentabilidade" | "avaliacoes"
   >("perfil");
@@ -444,6 +444,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
+  const portfolioInputRef = useRef<HTMLInputElement>(null);
 
   const formatZipCode = (value: string) => {
     return formatPostalCode(value);
@@ -525,6 +526,30 @@ const CookProfile: React.FC<CookProfileProps> = ({
       } finally {
         setUploading(null);
       }
+    }
+  };
+
+  const handlePortfolioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const current = editedUser.portfolio_images || [];
+    if (current.length >= 6) {
+      onNotify?.("O limite máximo é de 6 fotografias no portefólio.", "error");
+      return;
+    }
+    setUploading("portfolio");
+    try {
+      const url = await supabaseService.uploadFile("covers", user.id, file, 1280);
+      if (!url) {
+        onNotify?.("Erro ao carregar imagem.", "error");
+        return;
+      }
+      setEditedUser((prev: any) => ({ ...prev, portfolio_images: [...(prev.portfolio_images || []), url].slice(0, 6) }));
+    } catch (err: any) {
+      onNotify?.(err.message || "Erro ao carregar imagem.", "error");
+    } finally {
+      setUploading(null);
     }
   };
 
@@ -1473,32 +1498,21 @@ const CookProfile: React.FC<CookProfileProps> = ({
                       </div>
                       {isEditing && (
                         <button
-                          onClick={() => {
-                            const current = editedUser.portfolio_images || [];
-                            if (current.length >= 6) {
-                              alert("O limite máximo é de 6 fotografias no portefólio.");
-                              return;
-                            }
-                            const placeholderUrl = `https://images.unsplash.com/photo-1544025162-811114bd0540?auto=format&fit=crop&q=80&w=800&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&random=${Math.random()}`; // Generic food placeholder, ideally we'd have an array
-                            // A better approach is to ask for a URL or just add a random culinary one from a preset
-                            const presets = [
-                              "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800",
-                              "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800",
-                              "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=800",
-                              "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&q=80&w=800",
-                              "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=800",
-                              "https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&q=80&w=800"
-                            ];
-                            const randomImage = presets[Math.floor(Math.random() * presets.length)];
-                            setEditedUser({
-                              ...editedUser,
-                              portfolio_images: [...current, randomImage]
-                            });
-                          }}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 transition-colors"
+                          type="button"
+                          disabled={uploading === "portfolio"}
+                          onClick={() => portfolioInputRef.current?.click()}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 transition-colors disabled:opacity-60"
                         >
                           <Plus size={12} strokeWidth={3} />
-                          <span className="text-[9px] font-black uppercase tracking-wider">Adicionar Imagem</span>
+                          <span className="text-[9px] font-black uppercase tracking-wider">{uploading === "portfolio" ? "A carregar..." : "Adicionar Imagem"}</span>
+                          <input
+                            type="file"
+                            ref={portfolioInputRef}
+                            accept="image/*"
+                            className="hidden"
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={handlePortfolioUpload}
+                          />
                         </button>
                       )}
                     </div>
