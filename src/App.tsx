@@ -995,6 +995,29 @@ const App: React.FC = () => {
       }
     );
 
+    // 3b. Chefs em tempo real: online/offline e agenda (horários livres/ocupados) chegam a todos na hora
+    channel.on(
+      "postgres_changes",
+      { event: "UPDATE", schema: "public", table: "chefs" },
+      (payload) => {
+        if (!isSubscribed) return;
+        const row = payload.new as any;
+        const chefId = row?.profile_id;
+        if (!chefId) return;
+        const patch: any = {};
+        if (row.is_available !== undefined && row.is_available !== null) {
+          patch.isAvailable = row.is_available;
+          patch.is_available = row.is_available;
+        }
+        if (row.disponibilidade !== undefined) {
+          patch.disponibilidade = row.disponibilidade;
+        }
+        if (Object.keys(patch).length === 0) return;
+        setUsers((prev) => (prev || []).map((u: any) => (u.id === chefId ? { ...u, ...patch } : u)));
+        setCurrentUser((prev: any) => (prev && prev.id === chefId ? { ...prev, ...patch } : prev));
+      }
+    );
+
     // 4. Menus em tempo real
     channel.on(
       "postgres_changes",

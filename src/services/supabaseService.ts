@@ -1432,25 +1432,16 @@ export const supabaseService = {
    */
   updateAvailability: async (id: string, isAvailable: boolean): Promise<void> => {
     if (!id || !isValidUUID(id)) return;
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      throw new Error(tr("Sem ligação à internet. O estado online/offline só muda quando estiver ligado."));
+    }
     supabaseService.invalidateCooksCache();
-    try {
-      const [chefRes, profileRes] = await Promise.all([
-        supabase.from('chefs').update({ is_available: isAvailable }).eq('profile_id', id),
-        supabase.from('profiles').update({ updated_at: new Date().toISOString() }).eq('id', id),
-      ]);
-      const err = chefRes.error || profileRes.error;
-      if (err) {
-        const isUnavailable = err.code === 'SUPABASE_UNAVAILABLE' || isNetworkError(err);
-        if (!isUnavailable) {
-          throw err;
-        }
-        console.warn('[Supabase] updateAvailability offline fallback note:', err.message || err);
+    const { error: chefErr } = await supabase.from('chefs').update({ is_available: isAvailable }).eq('profile_id', id);
+    if (chefErr) {
+      if (isNetworkError(chefErr) || chefErr.code === 'SUPABASE_UNAVAILABLE') {
+        throw new Error(tr("Sem ligação ao servidor. Tente novamente."));
       }
-    } catch (e: any) {
-      if (e?.code !== 'SUPABASE_UNAVAILABLE' && !isNetworkError(e)) {
-        throw e;
-      }
-      console.warn('[Supabase] updateAvailability offline fallback:', e?.message || e);
+      throw chefErr;
     }
 
     // Sincronizar caches locais após atualização
@@ -1528,64 +1519,45 @@ export const supabaseService = {
     chefId: string,
     date?: string
   ): Promise<{ slots: string[]; disponibilidade: Record<string, string[]> }> => {
+    // A base de dados é a única fonte de verdade (a cópia local pode estar desatualizada).
     let dispo: Record<string, string[]> = {};
-
-    // 1. Tentar consultar no endpoint do servidor
-    try {
-      const resp = await fetch(`/api/chef/availability?chefId=${encodeURIComponent(chefId)}${date ? `&date=${encodeURIComponent(date)}` : ''}`);
-      if (resp.ok) {
-        const json = await resp.json();
-        if (json.success && json.disponibilidade && typeof json.disponibilidade === 'object') {
-          dispo = json.disponibilidade;
-        }
+    if (isValidUUID(chefId) && (typeof navigator === 'undefined' || navigator.onLine)) {
+      const { data, error } = await supabase
+        .from('chefs')
+        .select('disponibilidade')
+        .eq('profile_id', chefId)
+        .maybeSingle();
+      if (!error && data?.disponibilidade) {
+        dispo = typeof data.disponibilidade === 'string' ? JSON.parse(data.disponibilidade) : data.disponibilidade;
+        return { slots: date ? (dispo[date] || []) : [], disponibilidade: dispo };
       }
-    } catch (e) {
-      // Non-blocking fallback
+      if (!error) return { slots: [], disponibilidade: {} };
     }
-
-    // 2. Se vazio, tentar Supabase chefs table
-    if (Object.keys(dispo).length === 0 && isValidUUID(chefId)) {
+    // Sem ligação: usa a última cópia local só para consulta.
+    if (typeof window !== 'undefined') {
       try {
-        const { data: chef } = await supabase
-          .from('chefs')
-          .select('disponibilidade')
-          .eq('profile_id', chefId)
-          .maybeSingle();
-
-        if (chef?.disponibilidade && typeof chef.disponibilidade === 'object') {
-          dispo = chef.disponibilidade;
-        }
-      } catch (e) {
-        // Non-blocking fallback
-      }
-    }
-
-    // 3. Fallback na cache local dedicada
-    if (Object.keys(dispo).length === 0 && typeof window !== 'undefined') {
-      try {
-        const localKey = `cookr_chef_availability_${chefId}`;
-        const rawLocal = localStorage.getItem(localKey);
-        if (rawLocal) {
-          dispo = JSON.parse(rawLocal);
-        }
+        const raw = localStorage.getItem(`cookr_chef_availability_${chefId}`);
+        if (raw) dispo = JSON.parse(raw);
       } catch (e) {}
     }
+    return { slots: date ? (dispo[date] || []) : [], disponibilidade: dispo };
+  },
 
-    // 4. Fallback no cookr_user
-    if (Object.keys(dispo).length === 0 && typeof window !== 'undefined') {
-      try {
-        const rawUser = localStorage.getItem('cookr_user');
-        if (rawUser) {
-          const parsed = JSON.parse(rawUser);
-          if (parsed?.id === chefId && parsed?.disponibilidade) {
-            dispo = parsed.disponibilidade;
-          }
-        }
-      } catch (e) {}
+  /**
+   * Grava os horários de um dia no servidor (atómico). Devolve os horários realmente guardados:
+   * os que colidem com reservas ativas (a menos de 3h) são removidos pelo servidor.
+   */
+  setChefDaySlots: async (date: string, slots: string[]): Promise<string[]> => {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      throw new Error(tr("Sem ligação à internet. A agenda só pode ser alterada quando estiver ligado."));
     }
-
-    const slots = date ? (dispo[date] || []) : [];
-    return { slots, disponibilidade: dispo };
+    const { data, error } = await supabase.rpc('set_chef_day_slots', { p_date: date, p_slots: slots });
+    if (error) {
+      if (isNetworkError(error)) throw new Error(tr("Sem ligação ao servidor. Tente novamente."));
+      throw error;
+    }
+    const saved: string[] = Array.isArray(data) ? (data as string[]) : [];
+    return saved;
   },
 
   /**
@@ -1807,10 +1779,7 @@ export const supabaseService = {
       const { error } = await supabase.from('bookings').insert(payload);
       if (error) throw error;
 
-      // Ocupar slot no calendário do Chef se houver hora
-      if (cookId && data.data && data.hora) {
-        supabaseService.updateChefAvailability(cookId, data.data, data.hora, 'occupy').catch(() => {});
-      }
+      // O horário do chef é ocupado/libertado no servidor (trigger sync_chef_slot_from_booking).
 
       // Notificar o Chef
       if (cookId) {
@@ -1842,7 +1811,7 @@ export const supabaseService = {
 
       return { id: bookingId };
     } catch (err: any) {
-      if (err?.code === '23505' || String(err?.message || '').includes('uq_bookings_active_slot')) {
+      if (err?.code === '23505' || err?.code === '23P01' || String(err?.message || '').includes('uq_bookings_active_slot') || String(err?.message || '').includes('slot_conflict')) {
         throw new Error(tr("Este horário acabou de ser reservado por outra pessoa. Escolha outro horário."));
       }
       // Só falhas de rede vão para a fila. Erros de permissão (RLS) são reais e têm de chegar ao utilizador;
@@ -1919,8 +1888,7 @@ export const supabaseService = {
             }
           })();
         } else if (status === BookingStatus.REJECTED || status === BookingStatus.CANCELLED || status === BookingStatus.CANCELLED_PARTIAL_REFUND) {
-          // Liberta a disponibilidade do Chef
-          supabaseService.updateChefAvailability(booking.cook_id, booking.data, booking.hora, 'free').catch(() => {});
+          // O horário do chef é libertado no servidor (trigger sync_chef_slot_from_booking).
 
           const targetUser = extraData?.cancelled_by === 'cook' ? booking.client_id : booking.cook_id;
           await supabaseService.createNotification(

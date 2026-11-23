@@ -337,7 +337,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [chef?.id]);
+  }, [chef?.id, chef?.disponibilidade]);
   const [selectedTime, setSelectedTime] = useState<string>(initialTime || "");
   const [numPessoas, setNumPessoas] = useState<number>(2);
   const [kitchenNotes, setKitchenNotes] = useState<string>("");
@@ -648,7 +648,6 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     }
 
     // Filtrar conflitos com reservas ativas existentes
-    const busySlots = new Set<string>();
     const inactive = ["cancelled", "cancelled_partial_refund", "rejected", "expired", "cancelada", "rejeitada"];
     const ownBusy = (bookings || [])
       .filter(b => {
@@ -657,29 +656,32 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       })
       .map(b => ({ data: b.data as string, hora: b.hora as string }));
 
+    // Mesma regra do servidor: duas reservas do mesmo chef têm de ficar a 3 horas ou mais de distância.
+    const busyMinutes: number[] = [];
     [...ownBusy, ...remoteBusy].forEach(b => {
       if (b.data === selectedDate && b.hora) {
-        busySlots.add(b.hora);
-        // Bloquear janela de serviço de 90 minutos para evitar sobreposição
         const [bh, bm] = b.hora.split(":").map(Number);
-        if (!isNaN(bh) && !isNaN(bm)) {
-          const bTotal = bh * 60 + bm;
-          for (let offset = 30; offset <= 90; offset += 30) {
-            const oMins = bTotal + offset;
-            const oh = Math.floor(oMins / 60);
-            const om = oMins % 60;
-            if (oh <= 23) {
-              busySlots.add(`${oh.toString().padStart(2, "0")}:${om.toString().padStart(2, "0")}`);
-            }
-          }
-        }
+        if (!isNaN(bh) && !isNaN(bm)) busyMinutes.push(bh * 60 + bm);
       }
     });
+    const isBusy = (t: string) => {
+      const [h, m] = t.split(":").map(Number);
+      const mins = h * 60 + m;
+      return busyMinutes.some((bmin) => Math.abs(bmin - mins) < 180);
+    };
 
-    times = times.filter(t => !busySlots.has(t)).sort();
+    times = times.filter(t => !isBusy(t)).sort();
 
     return times;
   }, [selectedDate, chef?.disponibilidade, chef?.isAvailable, bookings, remoteBusy]);
+
+  // Se o horário escolhido deixou de estar livre (outro cliente reservou, chef ficou offline), limpa a escolha.
+  useEffect(() => {
+    if (!selectedTime || bookingStep === "success" || bookingStep === "checkout") return;
+    if (availableTimes.length > 0 && !availableTimes.includes(selectedTime)) {
+      setSelectedTime("");
+    }
+  }, [availableTimes, selectedTime, bookingStep]);
 
   // Efeito para validar e pre-encher data/hora
   useEffect(() => {
