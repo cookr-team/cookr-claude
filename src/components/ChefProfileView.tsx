@@ -2254,6 +2254,77 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
               </div>
             </div>
 
+            {/* Menus Section (primeiro: é o que o cliente vem ver) */}
+            <div id="chef-menus" className="scroll-mt-20 bg-white rounded-xl border border-slate-100 p-4 shadow-sm space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3 text-left">
+                <div className="space-y-0.5">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 leading-none">
+                    {tr("Ementas do Chef")}
+                  </h3>
+                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">
+                    {activeTab === "experience"
+                      ? tr("Descobre as criações exclusivas do Chef")
+                      : activeTab === "dish"
+                        ? tr("Pratos individuais para o teu dia-a-dia")
+                        : tr("Packs semanais de refeições prontas")}
+                  </p>
+                </div>
+                <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                  <button
+                    onClick={() => setActiveTab("experience")}
+                    className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "experience" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
+                  >
+                    <ICONS.Sparkles size={11} className="shrink-0" />
+                    {tr("Rituais")}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("dish")}
+                    className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "dish" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
+                  >
+                    <ICONS.Utensils size={11} className="shrink-0" />
+                    {tr("Pratos")}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("daily")}
+                    className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "daily" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
+                  >
+                    <ICONS.Calendar size={11} className="shrink-0" />
+                    {tr("Daily")}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {isLoading ? (
+                  [...Array(4)].map((_, i) => (
+                    <MenuCardSkeleton key={i} />
+                  ))
+                ) : filteredMenus.length > 0 ? (
+                  filteredMenus.map((menu) => (
+                    <PublicMenuCard
+                      key={menu.id}
+                      menu={menu}
+                      selectedMenuId={selectedMenu?.id}
+                      chefId={chef.id}
+                      currentUserId={currentUser?.id}
+                      onSelectMenu={handleSelectMenu}
+                      onDeleteItem={handleRequestDeleteItem}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full py-12 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                    <ICONS.Utensils
+                      size={20}
+                      className="mx-auto text-slate-300 mb-1.5"
+                    />
+                    <p className="text-[7.5px] font-bold uppercase text-slate-400 tracking-wider">
+                      {tr("Sem itens nesta categoria.")}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* History Card */}
             <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm text-left space-y-2.5">
               <div className="space-y-0.5">
@@ -2536,77 +2607,6 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
               </div>
             )}
 
-            {/* Menus Section */}
-            <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3 text-left">
-                <div className="space-y-0.5">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 leading-none">
-                    {tr("Ementas do Chef")}
-                  </h3>
-                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">
-                    {activeTab === "experience"
-                      ? tr("Descobre as criações exclusivas do Chef")
-                      : activeTab === "dish"
-                        ? tr("Pratos individuais para o teu dia-a-dia")
-                        : tr("Packs semanais de refeições prontas")}
-                  </p>
-                </div>
-                <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
-                  <button
-                    onClick={() => setActiveTab("experience")}
-                    className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "experience" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
-                  >
-                    <ICONS.Sparkles size={11} className="shrink-0" />
-                    {tr("Rituais")}
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("dish")}
-                    className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "dish" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
-                  >
-                    <ICONS.Utensils size={11} className="shrink-0" />
-                    {tr("Pratos")}
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("daily")}
-                    className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "daily" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
-                  >
-                    <ICONS.Calendar size={11} className="shrink-0" />
-                    {tr("Daily")}
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {isLoading ? (
-                  [...Array(4)].map((_, i) => (
-                    <MenuCardSkeleton key={i} />
-                  ))
-                ) : filteredMenus.length > 0 ? (
-                  filteredMenus.map((menu) => (
-                    <PublicMenuCard
-                      key={menu.id}
-                      menu={menu}
-                      selectedMenuId={selectedMenu?.id}
-                      chefId={chef.id}
-                      currentUserId={currentUser?.id}
-                      onSelectMenu={handleSelectMenu}
-                      onDeleteItem={handleRequestDeleteItem}
-                    />
-                  ))
-                ) : (
-                  <div className="col-span-full py-12 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                    <ICONS.Utensils
-                      size={20}
-                      className="mx-auto text-slate-300 mb-1.5"
-                    />
-                    <p className="text-[7.5px] font-bold uppercase text-slate-400 tracking-wider">
-                      {tr("Sem itens nesta categoria.")}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Chef's Signature Recipes Section (Galeria de Especialidades) */}
             {(isLoading || (recipes && recipes.length > 0)) && (
               <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm text-left space-y-3">
@@ -2749,58 +2749,65 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
           </div>
 
           {/* RIGHT COLUMN: Float actions, stats, calendar widget (lg:col-span-4) */}
-          <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-4 text-left">
+          <div className="lg:col-span-4 space-y-4 lg:sticky lg:top-20 text-left">
             
             {/* Bento Stats Block */}
-            <div className="bg-slate-950 rounded-xl p-4 shadow-md relative overflow-hidden group">
+            <div className="bg-slate-950 rounded-2xl p-5 shadow-md relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -mr-12 -mt-12 blur-xl group-hover:bg-orange-500/10 transition-colors duration-1000" />
               
               <div className="grid grid-cols-3 gap-1 relative z-10 text-center divide-x divide-white/5">
                 <div className="space-y-1 px-1">
-                  <div className="w-6 h-6 bg-orange-500/15 text-orange-400 rounded-md flex items-center justify-center mx-auto">
-                    <ICONS.Star size={11} fill="currentColor" />
+                  <div className="w-8 h-8 bg-orange-500/15 text-orange-400 rounded-md flex items-center justify-center mx-auto">
+                    <ICONS.Star size={14} fill="currentColor" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-white tracking-tight leading-none">
+                    <p className="text-lg font-bold text-white tracking-tight leading-none">
                       {chef.rating || "5.0"}
                     </p>
-                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">{tr("Rating")}</p>
+                    <p className="text-[9px] font-bold text-white/45 uppercase tracking-wider mt-1">{tr("Rating")}</p>
                   </div>
                 </div>
 
                 <div className="space-y-1 px-1">
-                  <div className="w-6 h-6 bg-blue-500/15 text-blue-400 rounded-md flex items-center justify-center mx-auto">
-                    <ICONS.CheckCircle size={11} />
+                  <div className="w-8 h-8 bg-blue-500/15 text-blue-400 rounded-md flex items-center justify-center mx-auto">
+                    <ICONS.CheckCircle size={14} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-white tracking-tight leading-none">
+                    <p className="text-lg font-bold text-white tracking-tight leading-none">
                       {chef.total_reservas || "0"}
                     </p>
-                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">{tr("Reservas")}</p>
+                    <p className="text-[9px] font-bold text-white/45 uppercase tracking-wider mt-1">{tr("Reservas")}</p>
                   </div>
                 </div>
 
                 <div className="space-y-1 px-1">
-                  <div className="w-6 h-6 bg-emerald-500/15 text-emerald-400 rounded-md flex items-center justify-center mx-auto">
-                    <ICONS.Zap size={11} />
+                  <div className="w-8 h-8 bg-emerald-500/15 text-emerald-400 rounded-md flex items-center justify-center mx-auto">
+                    <ICONS.Zap size={14} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-white tracking-tight leading-none">&lt; 1h</p>
-                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">{tr("Resposta")}</p>
+                    <p className="text-lg font-bold text-white tracking-tight leading-none">&lt; 1h</p>
+                    <p className="text-[9px] font-bold text-white/45 uppercase tracking-wider mt-1">{tr("Resposta")}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions Card */}
-            <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm space-y-3">
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-800 border-b border-slate-50 pb-1.5 leading-none">
+            <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2 leading-none">
                 {tr("Opções Rápidas")}
               </h4>
               <div className="flex flex-col gap-2">
                 <button
+                  onClick={() => document.getElementById("chef-menus")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                  className="w-full h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-sm flex items-center justify-center gap-2"
+                >
+                  <ICONS.Calendar size={14} />
+                  <span>{tr("Ver Menus e Reservar")}</span>
+                </button>
+                <button
                   onClick={() => onOpenChat(chef.id)}
-                  className="w-full h-11 bg-slate-950 hover:bg-orange-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-sm flex items-center justify-center gap-1.5 group"
+                  className="w-full h-11 bg-slate-950 hover:bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-sm flex items-center justify-center gap-1.5 group"
                 >
                   <ICONS.MessageSquare size={12} className="group-hover:scale-105 transition-transform" />
                   <span>{tr("Mensagem Direta")}</span>
@@ -2809,7 +2816,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 {(!chef.isAvailable || availableDates.length === 0) && (
                   <button
                     onClick={() => setShowWaitlistModal(true)}
-                    className="w-full h-11 bg-white border border-slate-200 text-slate-800 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-slate-50 transition-all flex items-center justify-center gap-1.5 active:scale-95 group"
+                    className="w-full h-11 bg-white border border-slate-200 text-slate-800 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-all flex items-center justify-center gap-1.5 active:scale-95 group"
                   >
                     <ICONS.Bell size={12} className="text-orange-500" />
                     <span>{tr("Lista de Espera")}</span>
@@ -2819,24 +2826,24 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
             </div>
 
             {/* Pro Credentials Bento (Idiomas, Equipamento, etc) */}
-            <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm space-y-3.5">
-              <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-800 border-b border-slate-50 pb-1.5 leading-none">
+            <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2 leading-none">
                 {tr("Credenciais de Qualidade")}
               </h4>
 
-              <div className="space-y-3 text-[10px]">
+              <div className="space-y-4 text-xs">
                 {/* Languages */}
                 <div className="space-y-1">
-                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">{tr("Idiomas de Trabalho")}</p>
-                  <div className="flex flex-wrap gap-1">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{tr("Idiomas de Trabalho")}</p>
+                  <div className="flex flex-wrap gap-1.5">
                     {chef.idiomas && chef.idiomas.length > 0 ? (
                       chef.idiomas.map((lg) => (
-                        <span key={lg} className="px-2 py-0.5 bg-slate-100 text-slate-700 font-semibold rounded text-[7.5px] uppercase border border-slate-205/30">{lg}</span>
+                        <span key={lg} className="px-2.5 py-1 bg-slate-100 text-slate-700 font-semibold rounded-md text-[10px] uppercase border border-slate-205/30">{lg}</span>
                       ))
                     ) : (
                       <>
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 font-semibold rounded text-[7.5px] uppercase">{tr("Português (PT)")}</span>
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 font-semibold rounded text-[7.5px] uppercase">{tr("Inglês (EN)")}</span>
+                        <span className="px-2.5 py-1 bg-slate-100 text-slate-700 font-semibold rounded-md text-[10px] uppercase">{tr("Português (PT)")}</span>
+                        <span className="px-2.5 py-1 bg-slate-100 text-slate-700 font-semibold rounded-md text-[10px] uppercase">{tr("Inglês (EN)")}</span>
                       </>
                     )}
                   </div>
@@ -2844,17 +2851,17 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                 {/* Specialties / Equipamentos */}
                 <div className="space-y-1">
-                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">{tr("Equipamento Profissional")}</p>
-                  <div className="flex flex-wrap gap-1">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{tr("Equipamento Profissional")}</p>
+                  <div className="flex flex-wrap gap-1.5">
                     {chef.equipamento && chef.equipamento.length > 0 ? (
                       chef.equipamento.map((eq) => (
-                        <span key={eq} className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase border border-orange-100">{eq}</span>
+                        <span key={eq} className="px-2.5 py-1 bg-orange-50 text-orange-700 font-semibold rounded-md text-[10px] uppercase border border-orange-100">{eq}</span>
                       ))
                     ) : (
                       <>
-                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">{tr("Facas Profissionais")}</span>
-                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">{tr("Kit de Degustação")}</span>
-                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">{tr("Acessórios de Precisão")}</span>
+                        <span className="px-2.5 py-1 bg-orange-50 text-orange-700 font-semibold rounded-md text-[10px] uppercase">{tr("Facas Profissionais")}</span>
+                        <span className="px-2.5 py-1 bg-orange-50 text-orange-700 font-semibold rounded-md text-[10px] uppercase">{tr("Kit de Degustação")}</span>
+                        <span className="px-2.5 py-1 bg-orange-50 text-orange-700 font-semibold rounded-md text-[10px] uppercase">{tr("Acessórios de Precisão")}</span>
                       </>
                     )}
                   </div>
@@ -2862,16 +2869,16 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                 {/* Diferenciais / Selos */}
                 <div className="space-y-1">
-                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">Valores & Padrões</p>
-                  <div className="flex flex-wrap gap-1">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Valores & Padrões</p>
+                  <div className="flex flex-wrap gap-1.5">
                     {chef.diferenciais && chef.diferenciais.length > 0 ? (
                       chef.diferenciais.map((dif) => (
-                        <span key={dif} className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-semibold rounded text-[7.5px] uppercase border border-emerald-100">{dif}</span>
+                        <span key={dif} className="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold rounded-md text-[10px] uppercase border border-emerald-100">{dif}</span>
                       ))
                     ) : (
                       <>
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-semibold rounded text-[7.5px] uppercase">{tr("Higiene HACCP")}</span>
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-semibold rounded text-[7.5px] uppercase">{tr("Ingredientes Biológicos")}</span>
+                        <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold rounded-md text-[10px] uppercase">{tr("Higiene HACCP")}</span>
+                        <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 font-semibold rounded-md text-[10px] uppercase">{tr("Ingredientes Biológicos")}</span>
                       </>
                     )}
                   </div>

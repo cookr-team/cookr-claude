@@ -1784,5 +1784,6 @@
 "Não foi possível iniciar a configuração.": "Impossible de démarrer la configuration.",
 "Não foi possível iniciar o pagamento.": "Impossible de démarrer le paiement.",
 "Pagamento por concluir. O valor fica apenas retido e só é cobrado quando o chef aceitar a reserva.": "Paiement en attente. Le montant est seulement bloqué et débité lorsque le chef accepte la réservation.",
-"Pagar agora": "Payer maintenant"
+"Pagar agora": "Payer maintenant",
+"Ver Menus e Reservar": "Voir les menus et réserver"
 }
