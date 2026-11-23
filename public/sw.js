@@ -1,7 +1,7 @@
 // Cookr Native Service Worker - Offline & Cache Strategy (Self-contained, no external CDN dependencies)
 
-const CACHE_NAME = 'cookr-cache-v8';
-const IMAGES_CACHE_NAME = 'cookr-images-v8';
+const CACHE_NAME = 'cookr-cache-v9';
+const IMAGES_CACHE_NAME = 'cookr-images-v9';
 
 const PRECACHE_ASSETS = [
   '/manifest.json',
@@ -85,9 +85,24 @@ self.addEventListener('fetch', (event) => {
 
   // 1. Navigation requests (SPA routes)
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request).catch(() => caches.match('/index.html') || caches.match('/'))
-    );
+    // Rede primeiro; guarda a última página para a app abrir mesmo sem ligação.
+    event.respondWith((async () => {
+      try {
+        const response = await fetch(request);
+        if (response && response.ok) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put('/index.html', response.clone());
+        }
+        return response;
+      } catch (err) {
+        const cached = (await caches.match('/index.html')) || (await caches.match('/'));
+        if (cached) return cached;
+        return new Response('Sem ligação à internet. Volte a tentar quando estiver online.', {
+          status: 503,
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        });
+      }
+    })());
     return;
   }
 
@@ -105,7 +120,14 @@ self.addEventListener('fetch', (event) => {
         return fetch(request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             const responseClone = networkResponse.clone();
-            caches.open(IMAGES_CACHE_NAME).then((cache) => cache.put(request, responseClone));
+            caches.open(IMAGES_CACHE_NAME).then(async (cache) => {
+              await cache.put(request, responseClone);
+              // Limita a cache de imagens (evita encher o armazenamento do telemóvel).
+              const keys = await cache.keys();
+              if (keys.length > 200) {
+                await Promise.all(keys.slice(0, keys.length - 200).map((k) => cache.delete(k)));
+              }
+            });
           }
           return networkResponse;
         }).catch(() => {

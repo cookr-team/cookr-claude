@@ -1,3 +1,4 @@
+import { supabaseService } from "../services/supabaseService";
 import React, { useState, useEffect, useId } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -660,21 +661,16 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
   const fileInputId = useId();
 
   // Handle local image file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("A imagem deve ter tamanho inferior a 5MB.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setPhotoUrl(event.target.result as string);
-          setError(null);
-        }
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    try {
+      // Valida, reduz e comprime a foto antes de a guardar.
+      const url = await supabaseService.uploadFile("covers", "", file, 1280);
+      setPhotoUrl(url);
+      setError(null);
+    } catch (err: any) {
+      setError(err?.message || "Não foi possível carregar a imagem.");
     }
   };
 
