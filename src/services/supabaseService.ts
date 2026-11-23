@@ -1763,7 +1763,8 @@ export const supabaseService = {
         supabaseService.createNotification(
           cookId,
           `Nova reserva de ${data.clientName || 'Cliente'} para o dia ${data.data}!`,
-          'info'
+          'info',
+          'booking_updates'
         ).catch(() => {});
       }
 
@@ -1849,7 +1850,8 @@ export const supabaseService = {
           await supabaseService.createNotification(
             booking.client_id,
             `A sua reserva com o Chef ${booking.cook_name} foi confirmada!`,
-            'success'
+            'success',
+            'booking_updates'
           );
 
           // Disparo automático de confirmação para Cliente e Chef
@@ -2494,7 +2496,7 @@ export const supabaseService = {
   // NOTIFICAÇÕES (NOTIFICATIONS)
   // ===========================================================================
 
-  createNotification: async (userId: string, message: string, type: string = 'info') => {
+  createNotification: async (userId: string, message: string, type: string = 'info', category?: 'booking_updates' | 'booking_reminders' | 'chef_messages') => {
     if (!userId || !isValidUUID(userId)) return;
     try {
       const payload = {
@@ -2503,6 +2505,7 @@ export const supabaseService = {
         message,
         type,
         is_read: false,
+        ...(category ? { category } : {}),
       };
       await supabase.from('notifications').insert(payload);
     } catch (e) {
