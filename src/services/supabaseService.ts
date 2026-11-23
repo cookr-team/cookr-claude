@@ -209,11 +209,22 @@ function buildProfilePayload(targetId: string, sanitizedEmail: string, data: any
       address: data.morada,
       city: data.cidade || 'Lisboa',
       zip_code: data.zip_code || '',
-      isDefault: true
+      isDefault: true,
+      notes: data.kitchenNotes || ''
     }] : []),
     dietary_restrictions: data.dietary_restrictions || [],
     cuisine_preferences: data.cuisine_preferences || [],
     loyalty_points: data.loyalty_points ?? 0,
+    ...(data.consents ? {
+      notification_settings: {
+        email_enabled: true,
+        push_enabled: true,
+        sms_enabled: false,
+        booking_updates: true,
+        marketing_offers: !!data.consents.marketing_opt_in,
+        system_alerts: true,
+      },
+    } : {}),
   };
 }
 
@@ -1074,6 +1085,7 @@ export const supabaseService = {
           telefone: data.telefone,
           role,
           avatar_url: data.avatar_url,
+          consents: data.consents,
         });
         if (authResult?.user?.id) {
           authUserId = authResult.user.id;

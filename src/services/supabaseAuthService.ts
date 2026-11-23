@@ -7,6 +7,8 @@ export interface SignUpMetadata {
   telefone?: string;
   role: UserRole;
   avatar_url?: string;
+  /** Prova de consentimento (versão dos termos, data e opções). */
+  consents?: Record<string, unknown>;
 }
 
 /** Política de palavra-passe: mínimo 8 caracteres, com letras e números. */
@@ -33,6 +35,7 @@ export const supabaseAuthService = {
           telefone: metadata.telefone || null,
           role: metadata.role,
           avatar_url: metadata.avatar_url || null,
+          consents: metadata.consents || null,
         },
       },
     });

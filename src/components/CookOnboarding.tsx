@@ -5,6 +5,16 @@ import Logo from "./Logo";
 import PasswordStrength from "./PasswordStrength";
 import { FileText, Check, ShieldCheck } from "lucide-react";
 import { formatPostalCode } from "../utils/formatters";
+import {
+  isValidEmail,
+  isValidPhone,
+  isValidNIF,
+  isValidPostalCode,
+  isValidName,
+  formatPhoneInput,
+  LEGAL_VERSION,
+} from "../utils/validators";
+import ConsentSection, { ConsentState } from "./ConsentSection";
 
 import { tr } from "../lib/tr";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -54,6 +64,17 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
     haccp_accepted: false,
     terms_accepted: false,
   });
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const touch = (k: string) => setTouched((t) => ({ ...t, [k]: true }));
+  const [consents, setConsents] = useState<ConsentState>({
+    terms_accepted: false,
+    privacy_accepted: false,
+    age_confirmed: false,
+    marketing_opt_in: false,
+  });
+  const [truthDeclared, setTruthDeclared] = useState(false);
+  const FieldError: React.FC<{ show: boolean; msg: string }> = ({ show, msg }) =>
+    show ? <p role="alert" className="text-[11px] text-red-500 font-medium ml-2 mt-1">{msg}</p> : null;
 
   const formatZipCode = (value: string) => {
     return formatPostalCode(value);
@@ -72,11 +93,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
   };
 
   const handleComplete = async () => {
-    if (
-      formData.nome &&
-      formData.email &&
-      isPasswordStrong(formData.password)
-    ) {
+    if (isStepValid(1) && isStepValid(2) && isStepValid(5)) {
       setIsSubmitting(true);
       try {
         const fullBillingStreet = [
@@ -105,7 +122,18 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
           billing_country: formData.billing_country || "Portugal",
         };
 
-        const success = await onComplete(preparedData);
+        const success = await onComplete({
+          ...preparedData,
+          email: formData.email.trim().toLowerCase(),
+          nome: formData.nome.trim().replace(/\s+/g, " "),
+          consents: {
+            ...consents,
+            curation_accepted: formData.terms_accepted,
+            truth_declared: truthDeclared,
+            version: LEGAL_VERSION,
+            accepted_at: new Date().toISOString(),
+          },
+        });
         if (success) {
           setIsAccountCreated(true);
           // O ecrã de sucesso fica visível por 3.5 segundos antes do redirecionamento
@@ -116,10 +144,6 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
       } finally {
         setIsSubmitting(false);
       }
-    } else {
-      alert(
-        tr("Por favor, preencha todos os campos obrigatórios e garanta uma palavra-passe segura."),
-      );
     }
   };
 
@@ -131,15 +155,29 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
     switch (s) {
       case 1:
         return (
-          formData.nome &&
-          formData.email &&
+          isValidName(formData.nome) &&
+          isValidEmail(formData.email) &&
           isPasswordStrong(formData.password) &&
-          formData.telefone
+          isValidPhone(formData.telefone)
         );
       case 2:
-        return formData.experiencia > 0 && formData.nif && formData.cidade;
+        return (
+          Number.isInteger(formData.experiencia) &&
+          formData.experiencia >= 0 &&
+          formData.experiencia <= 60 &&
+          isValidNIF(formData.nif) &&
+          !!formData.cidade
+        );
       case 5:
-        return formData.morada && formData.zip_code && formData.terms_accepted;
+        return (
+          !!formData.morada.trim() &&
+          isValidPostalCode(formData.zip_code) &&
+          formData.terms_accepted &&
+          consents.terms_accepted &&
+          consents.privacy_accepted &&
+          consents.age_confirmed &&
+          truthDeclared
+        );
       default:
         return true;
     }
@@ -297,14 +335,6 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6"
                 >
-                  {/* Profile Image Placeholder */}
-                  <div className="w-20 h-20 mx-auto border-2 border-dashed border-slate-100 rounded-2xl flex items-center justify-center group cursor-pointer hover:border-orange-500 hover:bg-orange-50/30 transition-all">
-                    <ICONS.Plus
-                      size={20}
-                      className="text-slate-300 group-hover:text-orange-500 transition-colors"
-                    />
-                  </div>
-
                   <div className="space-y-2">
                     <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
                       {tr("Identidade")} <span className="text-orange-500">{tr("Chef.")}</span>
@@ -323,11 +353,15 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                           placeholder={tr("Ex: Chef Silva")}
+                          autoComplete="name"
+                          maxLength={80}
                           value={formData.nome}
+                          onBlur={() => touch("nome")}
                           onChange={(e) =>
                             setFormData({ ...formData, nome: e.target.value })
                           }
                         />
+                        <FieldError show={!!touched.nome && !isValidName(formData.nome)} msg={tr("Indique o seu nome.")} />
                       </div>
                       <div className="group relative text-left space-y-1.5">
                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
@@ -335,15 +369,20 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder={tr("Telemóvel")}
+                          placeholder={tr("9xx xxx xxx")}
+                          type="tel"
+                          inputMode="tel"
+                          autoComplete="tel"
                           value={formData.telefone}
+                          onBlur={() => touch("telefone")}
                           onChange={(e) =>
                             setFormData({
                               ...formData,
-                              telefone: e.target.value,
+                              telefone: formatPhoneInput(e.target.value),
                             })
                           }
                         />
+                        <FieldError show={!!touched.telefone && !isValidPhone(formData.telefone)} msg={tr("Indique um telemóvel válido (ex.: 912 345 678).")} />
                       </div>
                     </div>
                     <div className="text-left space-y-1.5">
@@ -352,12 +391,20 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       </label>
                       <input
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                        placeholder={tr("Email")}
+                        placeholder={tr("seu@email.com")}
+                        type="email"
+                        inputMode="email"
+                        autoComplete="email"
+                        autoCapitalize="none"
+                        autoCorrect="off"
+                        spellCheck={false}
                         value={formData.email}
+                        onBlur={() => touch("email")}
                         onChange={(e) =>
                           setFormData({ ...formData, email: e.target.value })
                         }
                       />
+                      <FieldError show={!!touched.email && !isValidEmail(formData.email)} msg={tr("Indique um email válido.")} />
                     </div>
                     <div className="relative text-left space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
@@ -365,6 +412,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       </label>
                       <input
                         type={showPassword ? "text" : "password"}
+                        autoComplete="new-password"
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                         placeholder={tr("Mínimo 8 caracteres")}
                         value={formData.password}
@@ -375,6 +423,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? tr("Ocultar palavra-passe") : tr("Mostrar palavra-passe")}
                         className="absolute right-4 bottom-3 text-slate-300 hover:text-slate-950 transition-colors"
                       >
                         {showPassword ? (
@@ -430,13 +479,16 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                         </label>
                         <input
                           type="number"
+                          min={0}
+                          max={60}
+                          inputMode="numeric"
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                           placeholder="1"
                           value={formData.experiencia}
                           onChange={(e) =>
                             setFormData({
                               ...formData,
-                              experiencia: Number(e.target.value),
+                              experiencia: Math.max(0, Math.min(60, Math.floor(Number(e.target.value) || 0))),
                             })
                           }
                         />
@@ -448,11 +500,15 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                           placeholder={tr("NIF")}
+                          inputMode="numeric"
+                          maxLength={9}
                           value={formData.nif}
+                          onBlur={() => touch("nif")}
                           onChange={(e) =>
-                            setFormData({ ...formData, nif: e.target.value })
+                            setFormData({ ...formData, nif: e.target.value.replace(/\D/g, "").slice(0, 9) })
                           }
                         />
+                        <FieldError show={!!touched.nif && !isValidNIF(formData.nif)} msg={tr("NIF inválido. Confirme os 9 dígitos.")} />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
@@ -1100,6 +1156,9 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                           placeholder={tr("Cód. Postal")}
                           value={formData.zip_code}
                           maxLength={8}
+                          inputMode="numeric"
+                          autoComplete="postal-code"
+                          onBlur={() => touch("zip_code")}
                           onChange={(e) =>
                             setFormData({
                               ...formData,
@@ -1107,6 +1166,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                             })
                           }
                         />
+                        <FieldError show={!!touched.zip_code && !isValidPostalCode(formData.zip_code)} msg={tr("Formato 0000-000.")} />
                         <div className="relative">
                           <select
                             className="w-full h-12 px-5 bg-white rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all text-slate-900 appearance-none cursor-pointer shadow-sm"
@@ -1138,44 +1198,33 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                           {tr("Certificação HACCP")}
                         </h4>
                         <p className="text-[9px] text-slate-400 italic">
-                          {tr("Upload do certificado de higiene e segurança.")}
+                          {tr("O certificado de higiene e segurança é submetido no seu perfil, depois de criar a conta. A aprovação exige-o.")}
                         </p>
                       </div>
-                      <button className="px-5 py-2.5 bg-white rounded-lg border border-slate-100 flex items-center gap-2 font-black text-[9px] uppercase tracking-widest text-slate-950 hover:border-orange-500 hover:text-orange-500 transition-all shadow-sm cursor-pointer">
-                        <ICONS.Camera size={14} />
-                        {tr("Upload")}
-                      </button>
+                      <span className="px-4 py-2 rounded-lg bg-white border border-slate-100 text-[9px] font-black uppercase tracking-widest text-slate-500">
+                        {tr("Submeta no seu perfil")}
+                      </span>
                     </div>
 
-                    {/* Terms Section */}
-                    <button
-                      onClick={() =>
-                        setFormData({
-                          ...formData,
-                          terms_accepted: !formData.terms_accepted,
-                        })
-                      }
-                      className={`w-full p-4 rounded-xl flex items-center gap-4 transition-all border text-left ${
-                        formData.terms_accepted
-                          ? "bg-orange-50/50 border-orange-100 shadow-inner"
-                          : "bg-slate-50/30 border-transparent hover:bg-slate-50"
-                      }`}
-                    >
-                      <div
-                        className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all flex-shrink-0 ${
-                          formData.terms_accepted
-                            ? "bg-orange-500 text-white shadow-md rotate-3"
-                            : "bg-white border border-slate-100"
-                        }`}
-                      >
-                        {formData.terms_accepted && (
-                          <ICONS.CheckCircle size={14} />
-                        )}
-                      </div>
-                      <span className="text-[10px] font-black text-slate-950 uppercase tracking-widest">
-                        {tr("Aceito os Termos de Curadoria Profissional Cookr")}
-                      </span>
-                    </button>
+                    {/* Consentimentos e declarações */}
+                    <ConsentSection
+                      value={consents}
+                      onChange={setConsents}
+                      extra={[
+                        {
+                          id: "curation",
+                          checked: formData.terms_accepted,
+                          onToggle: () => setFormData((f) => ({ ...f, terms_accepted: !f.terms_accepted })),
+                          label: <>{tr("Aceito os Termos de Curadoria Profissional Cookr.")}</>,
+                        },
+                        {
+                          id: "truth",
+                          checked: truthDeclared,
+                          onToggle: () => setTruthDeclared((v) => !v),
+                          label: <>{tr("Declaro que os dados são verdadeiros e que tenho (ou terei antes do primeiro serviço) a atividade profissional regularizada junto das Finanças.")}</>,
+                        },
+                      ]}
+                    />
                   </div>
 
                   <div className="flex gap-4">
