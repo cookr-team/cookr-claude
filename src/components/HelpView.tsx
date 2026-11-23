@@ -195,7 +195,7 @@ const HelpView: React.FC<HelpViewProps> = ({ currentUser, onOpenChat, onBack }) 
                     {cat.icon}
                   </div>
                   <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950">
-                    {cat.title}
+                    {tr(cat.title as any) as any}
                   </h3>
                 </div>
 

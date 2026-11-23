@@ -212,7 +212,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
               <div
                 className={`absolute -bottom-5 text-[7px] font-black uppercase tracking-widest transition-opacity duration-300 whitespace-nowrap ${step === s.id ? "opacity-100 text-orange-500" : "opacity-0"}`}
               >
-                {s.label}
+                {tr(s.label as any) as any}
               </div>
             </button>
           ))}

@@ -114,7 +114,7 @@ const HaccpPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <div className="flex items-center gap-4">
                   <div className="w-8 h-px bg-orange-500 group-hover:w-12 transition-all duration-500" />
                   <h4 className="text-xs font-black uppercase tracking-[0.3em] font-sans text-slate-950">
-                    {section.title}
+                    {tr(section.title as any) as any}
                   </h4>
                 </div>
                 <p className="text-lg text-slate-500 font-light leading-relaxed">

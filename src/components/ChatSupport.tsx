@@ -128,7 +128,7 @@ const ChatSupport: React.FC<ChatSupportProps> = ({ user }) => {
                     }`}
                   >
                     <p className="text-xs font-medium leading-relaxed">
-                      {msg.text}
+                      {tr(msg.text as any) as any}
                     </p>
                   </div>
                 </div>

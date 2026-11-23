@@ -74,7 +74,7 @@ const TermsConditions: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <div className="flex flex-col md:flex-row gap-8 md:gap-16">
                   <div className="md:w-1/3">
                     <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950 group-hover:text-orange-500 transition-colors duration-500">
-                      {section.title}
+                      {tr(section.title as any) as any}
                     </h3>
                   </div>
                   <div className="md:w-2/3">

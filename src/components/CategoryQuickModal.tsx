@@ -118,7 +118,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
                 <span>{data.count}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black uppercase italic tracking-tight text-white drop-shadow-md">
-                {data.title}
+                {tr(data.title as any) as any}
               </h3>
             </div>
             <Crown size={22} className="text-[#FF5500] opacity-80 mb-1" />
@@ -128,7 +128,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
         {/* Content Body */}
         <div className="p-6 sm:p-7 space-y-5">
           <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-            {data.description}
+            {tr(data.description as any) as any}
           </p>
 
           {/* Highlights Micro-Pills */}
@@ -165,7 +165,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
                 }}
                 className="w-full py-2.5 text-center text-xs text-slate-400 hover:text-white font-bold uppercase tracking-wider transition-colors inline-flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <span>{tr("Ver página com detalhes de")} {data.title}</span>
+                <span>{tr("Ver página com detalhes de")} {tr(data.title as any) as any}</span>
                 <ExternalLink size={13} className="text-[#FF5500]" />
               </button>
             )}

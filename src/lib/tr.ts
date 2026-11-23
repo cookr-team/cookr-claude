@@ -26,8 +26,9 @@ export const setTrLanguage = (lang: string) => {
 };
 export const getTrLanguage = (): Lang => current;
 
-export const tr = (text: string, vars?: Record<string, string | number>): string => {
-  let out = text;
+export const tr = (text: any, vars?: Record<string, string | number>): any => {
+  if (typeof text !== "string") return text;
+  let out: string = text;
   if (current !== "pt" && text) {
     const hit = DICT[current]?.[text] ?? DICT[current]?.[text.trim()];
     if (hit) out = hit;

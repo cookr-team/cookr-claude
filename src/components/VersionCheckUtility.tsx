@@ -1,10 +1,12 @@
 import React, { useEffect, useCallback } from "react";
 
 import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 // Retrieve build timestamp compiled at build time
 const LOCAL_BUILD_TIMESTAMP = process.env.BUILD_TIMESTAMP || "dev";
 
 export const VersionCheckUtility: React.FC = () => {
+  useLanguage();
   // Disable in development or preview mode to avoid reload loops
   if (import.meta.env.DEV || LOCAL_BUILD_TIMESTAMP === "dev") {
     return null;

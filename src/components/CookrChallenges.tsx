@@ -343,7 +343,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
             className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-[9px] md:text-[10px] tracking-widest uppercase shadow-sm"
           >
             <Trophy size={13} className="text-slate-950 shrink-0" />
-            <span>{activeChallenge.badge}</span>
+            <span>{tr(activeChallenge.badge as any) as any}</span>
           </div>
 
           <span className="text-[10px] font-bold text-amber-300/90 uppercase tracking-wider hidden sm:inline-flex items-center gap-1">
@@ -504,7 +504,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold text-slate-800 uppercase">
-                          {c.label}
+                          {tr(c.label as any) as any}
                         </span>
                         <span className="text-[10px] font-black text-orange-600">
                           {c.weight}%
@@ -517,7 +517,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
                         />
                       </div>
                       <p className="text-[9px] text-slate-500 leading-tight">
-                        {c.desc}
+                        {tr(c.desc as any) as any}
                       </p>
                     </div>
                   ))}
@@ -871,7 +871,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                         {photoUrl === preset.url && (
                           <Check size={11} className="text-orange-600 shrink-0" />
                         )}
-                        <span className="truncate">{preset.label}</span>
+                        <span className="truncate">{tr(preset.label as any) as any}</span>
                       </button>
                     ))}
                   </div>

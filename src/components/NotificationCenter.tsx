@@ -14,7 +14,7 @@ import {
   Trash2 
 } from "lucide-react";
 
-import { tr } from "../lib/tr";
+import { tr, trLocale } from "../lib/tr";
 import { useLanguage } from "../contexts/LanguageContext";
 interface Notification {
   id: string;
@@ -214,7 +214,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     if (diffHours < 24) return `Há ${diffHours} h`;
     if (diffDays === 1) return "Ontem";
     if (diffDays < 7) return `Há ${diffDays} dias`;
-    return d.toLocaleDateString("pt-PT", { day: "2-digit", month: "short" });
+    return d.toLocaleDateString(trLocale(), { day: "2-digit", month: "short" });
   };
 
   if (!isOpen) return null;
@@ -306,7 +306,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                     : "bg-slate-50 border-slate-100 text-slate-500 hover:bg-slate-100"
                   }`}
               >
-                {f.label}
+                {tr(f.label as any) as any}
               </button>
             ))}
           </div>

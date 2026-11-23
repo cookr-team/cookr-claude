@@ -22,7 +22,7 @@ import { DietaryBadges } from "./DietaryBadges";
 import { useLanguage } from "../contexts/LanguageContext";
 import { todayLocal } from "../lib/dateUtils";
 
-import { tr } from "../lib/tr";
+import { tr, trLocale } from "../lib/tr";
 const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ chef, bookings }) => {
   useLanguage();
   const [activeModule, setActiveModule] = useState<"checklist" | "service_log">("service_log"); // Default to service_log as requested
@@ -475,10 +475,10 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                       </div>
                       <div className="space-y-1">
                         <p className="text-[10px] font-black uppercase tracking-tight text-slate-900 leading-none">
-                          {item.title}
+                          {tr(item.title as any) as any}
                         </p>
                         <p className="text-[8.5px] text-slate-400 font-semibold leading-relaxed">
-                          {item.desc}
+                          {tr(item.desc as any) as any}
                         </p>
                       </div>
                     </div>
@@ -574,7 +574,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                 <div className="space-y-3">
                   {checklists.map((log) => {
                     const isExpanded = expandedChecklistId === log.id;
-                    const dateStr = log.createdAt ? new Date(log.createdAt).toLocaleDateString("pt-PT", {
+                    const dateStr = log.createdAt ? new Date(log.createdAt).toLocaleDateString(trLocale(), {
                       day: "2-digit",
                       month: "long",
                       year: "numeric",
@@ -666,7 +666,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                                         <ICONS.XCircle size={12} className="text-red-400 shrink-0" />
                                       )}
                                       <span className={`text-[10px] font-bold ${item.checked ? "text-slate-800" : "text-slate-400 font-medium"}`}>
-                                        {item.label}
+                                        {tr(item.label as any) as any}
                                       </span>
                                     </li>
                                   ))}
@@ -878,7 +878,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                       </div>
                       <div className="space-y-1">
                         <p className="text-[10px] font-black uppercase tracking-tight text-slate-900 leading-none flex items-center gap-1.5">
-                          {item.title}
+                          {tr(item.title as any) as any}
                           {!item.state && (
                             <span className="text-[7px] font-black bg-red-100 text-red-700 px-1.5 py-0.5 rounded uppercase">
                               {tr("Alerta")}
@@ -886,7 +886,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                           )}
                         </p>
                         <p className="text-[8.5px] text-slate-400 font-semibold leading-relaxed">
-                          {item.desc}
+                          {tr(item.desc as any) as any}
                         </p>
                       </div>
                     </div>
@@ -982,7 +982,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                 <div className="space-y-3">
                   {serviceLogs.map((log) => {
                     const isExpanded = expandedLogId === log.id;
-                    const dateStr = log.createdAt ? new Date(log.createdAt).toLocaleDateString("pt-PT", {
+                    const dateStr = log.createdAt ? new Date(log.createdAt).toLocaleDateString(trLocale(), {
                       day: "2-digit",
                       month: "long",
                       year: "numeric",
@@ -1070,7 +1070,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                                         <ICONS.XCircle size={12} className="text-red-500 shrink-0" />
                                       )}
                                       <span className={`text-[10px] font-bold ${item.checked ? "text-slate-800" : "text-slate-400 font-medium"}`}>
-                                        {item.label}
+                                        {tr(item.label as any) as any}
                                       </span>
                                     </li>
                                   ))}
@@ -1208,7 +1208,7 @@ const ProductEmptyState: React.FC<ProductEmptyStateProps> = ({
         <div className="flex-1 space-y-3 text-center md:text-left">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
             <span className="px-2.5 py-0.5 rounded-full bg-orange-100/70 text-orange-700 text-[9px] font-black uppercase tracking-wider">
-              {config.badge}
+              {tr(config.badge as any) as any}
             </span>
             <span className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">
               {tr("Catálogo Vazio")}
@@ -1216,11 +1216,11 @@ const ProductEmptyState: React.FC<ProductEmptyStateProps> = ({
           </div>
 
           <h3 className="text-lg md:text-2xl font-black text-slate-900 uppercase tracking-tight">
-            {config.title}
+            {tr(config.title as any) as any}
           </h3>
 
           <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed max-w-xl">
-            {config.description}
+            {tr(config.description as any) as any}
           </p>
 
           {/* Highlights */}
@@ -1380,10 +1380,10 @@ const KitchenGuideModal: React.FC<{
           </div>
           <div>
             <h3 className="text-base md:text-lg font-black text-slate-950 uppercase tracking-tight">
-              {content.title}
+              {tr(content.title as any) as any}
             </h3>
             <p className="text-[11px] text-slate-400 font-medium">
-              {content.subtitle}
+              {tr(content.subtitle as any) as any}
             </p>
           </div>
         </div>
@@ -1395,10 +1395,10 @@ const KitchenGuideModal: React.FC<{
                 <span className="w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-black flex items-center justify-center shrink-0">
                   {idx + 1}
                 </span>
-                {tip.title}
+                {tr(tip.title as any) as any}
               </h4>
               <p className="text-[11px] text-slate-500 pl-7 leading-relaxed font-medium">
-                {tip.desc}
+                {tr(tip.desc as any) as any}
               </p>
             </div>
           ))}
@@ -1775,7 +1775,7 @@ const KitchenManager: React.FC<KitchenManagerProps> = React.memo(({
             <p className="text-slate-500 text-center text-[10px] font-black uppercase tracking-widest mb-8">
               {tr("Tem a certeza que deseja eliminar o")}{" "}
               {itemToDelete.type.toLowerCase()}{" "}
-              <span className="text-slate-900">"{itemToDelete.name}"</span>{tr("? Esta ação não pode ser desfeita.")}
+              <span className="text-slate-900">"{tr(itemToDelete.name as any) as any}"</span>{tr("? Esta ação não pode ser desfeita.")}
             </p>
             <div className="flex flex-col gap-3">
               <button
@@ -2018,7 +2018,7 @@ const KitchenManager: React.FC<KitchenManagerProps> = React.memo(({
                     <option value="">{tr("Selecionar Cozinha")}</option>
                     {CUISINES.map((c) => (
                       <option key={c.id} value={c.label}>
-                        {c.label}
+                        {tr(c.label as any) as any}
                       </option>
                     ))}
                   </select>
@@ -3606,7 +3606,7 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
                     isActive ? "text-slate-300" : "text-slate-400"
                   }`}
                 >
-                  {stat.label}
+                  {tr(stat.label as any) as any}
                 </span>
                 <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-300 ${
                   isActive ? "bg-white/10 text-white" : stat.color
@@ -3648,7 +3648,7 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
                             : "text-slate-500 hover:text-slate-900"
                         }`}
                       >
-                        {tab.label}
+                        {tr(tab.label as any) as any}
                         {count > 0 && (
                           <span
                             className={`inline-flex items-center justify-center min-w-[14px] h-3.5 px-1 rounded-full text-[8.5px] font-extrabold leading-none transition-colors ${

@@ -17,7 +17,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-import { tr } from "../lib/tr";
+import { tr, trLocale } from "../lib/tr";
 import { useLanguage } from "../contexts/LanguageContext";
 interface ProfileDashboardProps {
   user: User;
@@ -928,7 +928,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       }`}
                     >
                       {t.icon}
-                      {t.label}
+                      {tr(t.label as any) as any}
                     </button>
                   ))}
                 </div>
@@ -956,7 +956,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-100/50"
                       }`}
                     >
-                      {p.label}
+                      {tr(p.label as any) as any}
                     </button>
                   ))}
                 </div>
@@ -1657,11 +1657,11 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       </div>
                       <div className="space-y-0.5">
                         <h4 className="text-sm font-black text-slate-950 uppercase italic tracking-tight">
-                          {item.description}
+                          {tr(item.description as any) as any}
                         </h4>
                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                           {new Date(item.created_at).toLocaleDateString(
-                            "pt-PT",
+                            trLocale(),
                           )}
                         </p>
                       </div>

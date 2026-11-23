@@ -6,7 +6,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { formatPostalCode } from "../utils/formatters";
 import { Trash2, Plus, Edit3, Award, GraduationCap, ShieldCheck, CheckCircle2, Medal, X, Sparkles, HelpCircle, ChevronDown, ChevronUp, Lightbulb, Leaf } from "lucide-react";
 
-import { tr } from "../lib/tr";
+import { tr, trLocale } from "../lib/tr";
 const PRESET_FAQS = [
   {
     category: 'alergias' as const,
@@ -817,7 +817,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 >
                   <div className="space-y-0.5">
                     <p className="font-bold text-xs uppercase tracking-wider">
-                      {addr.label}
+                      {tr(addr.label as any) as any}
                     </p>
                     <p className="text-[9px] font-semibold opacity-60 uppercase italic">
                       {addr.address}, {addr.city}
@@ -1162,7 +1162,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                   className={`w-full h-9.5 px-4 rounded-lg flex items-center gap-3 font-bold text-[8.5px] uppercase tracking-wider transition-all ${activeTab === tab.id ? "bg-orange-500 text-white shadow-md shadow-orange-500/10" : "text-slate-400 hover:bg-slate-50 hover:text-slate-950"}`}
                 >
                   {tab.icon}
-                  {tab.label}
+                  {tr(tab.label as any) as any}
                 </button>
               ))}
             </div>
@@ -1255,7 +1255,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                             }}
                             className={`px-3 py-1.5 rounded-lg text-[8.5px] font-bold uppercase tracking-wider transition-all border ${isSelected ? "bg-orange-500 text-white border-orange-500 shadow-sm" : "bg-slate-50 text-slate-400 border-slate-100 hover:border-slate-200 hover:bg-slate-100"}`}
                           >
-                            {c.label}
+                            {tr(c.label as any) as any}
                           </button>
                         );
                       })}
@@ -1311,7 +1311,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                 onClick={() => toggleItem("idiomas", lang.id)}
                                 className={`px-2 py-1 rounded text-[7.5px] font-bold uppercase tracking-wider transition-all border ${isSelected ? "bg-slate-950 text-white border-slate-950 shadow-sm" : "bg-white text-slate-400 border-slate-100 hover:border-slate-200"}`}
                               >
-                                {lang.label}
+                                {tr(lang.label as any) as any}
                               </button>
                             );
                           })}
@@ -1458,7 +1458,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
                               <div>
                                 <h4 className="text-[11px] font-bold text-slate-900 leading-snug">
-                                  {cert.title}
+                                  {tr(cert.title as any) as any}
                                 </h4>
                                 <p className="text-[9px] font-semibold text-slate-500">
                                   {cert.issuer}
@@ -1467,7 +1467,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
                               {cert.description && (
                                 <p className="text-[8.5px] text-slate-600 leading-relaxed italic border-l-2 border-orange-400/60 pl-2">
-                                  "{cert.description}"
+                                  "{tr(cert.description as any) as any}"
                                 </p>
                               )}
 
@@ -1624,10 +1624,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               <div className="flex items-start justify-between gap-3">
                                 <div className="space-y-1">
                                   <span className={`px-2 py-0.5 rounded text-[7px] font-black uppercase tracking-wider border ${catInfo.bg}`}>
-                                    {catInfo.label}
+                                    {tr(catInfo.label as any) as any}
                                   </span>
                                   <h4 className="text-[11.5px] font-extrabold text-slate-900 leading-snug">
-                                    {faq.question}
+                                    {tr(faq.question as any) as any}
                                   </h4>
                                 </div>
 
@@ -1658,7 +1658,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               </div>
 
                               <p className="text-[10px] font-medium text-slate-600 leading-relaxed bg-slate-50/80 p-2.5 rounded-xl border border-slate-100">
-                                {faq.answer}
+                                {tr(faq.answer as any) as any}
                               </p>
                             </div>
                           );
@@ -2023,7 +2023,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               >
                                 {item.icon}
                               </div>
-                              {item.label}
+                              {tr(item.label as any) as any}
                             </button>
                           );
                         })}
@@ -2074,7 +2074,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               >
                                 {item.icon}
                               </div>
-                              {item.label}
+                              {tr(item.label as any) as any}
                             </button>
                           );
                         })}
@@ -2124,10 +2124,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                       ].map((benefit, idx) => (
                         <div key={idx} className="bg-white/60 border border-slate-100 rounded-lg p-2.5 space-y-1">
                           <p className="text-[8px] font-black text-orange-600 uppercase tracking-tight">
-                            {benefit.title}
+                            {tr(benefit.title as any) as any}
                           </p>
                           <p className="text-[7.5px] text-slate-500 font-medium leading-snug">
-                            {benefit.desc}
+                            {tr(benefit.desc as any) as any}
                           </p>
                         </div>
                       ))}
@@ -2559,7 +2559,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               <div>
                                 <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-wider">{rev.clientName || tr("Cliente Cookr")}</h4>
                                 <p className="text-[7.5px] text-zinc-400 font-bold uppercase tracking-wider">
-                                  {rev.created_at ? new Date(rev.created_at).toLocaleDateString("pt-PT") : tr("Recentemente")}
+                                  {rev.created_at ? new Date(rev.created_at).toLocaleDateString(trLocale()) : tr("Recentemente")}
                                 </p>
                               </div>
                             </div>
@@ -2698,7 +2698,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         }`}
                       >
                         {t.icon}
-                        <span>{t.label}</span>
+                        <span>{tr(t.label as any) as any}</span>
                       </button>
                     );
                   })}
@@ -2881,7 +2881,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                             : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                         }`}
                       >
-                        {c.label}
+                        {tr(c.label as any) as any}
                       </button>
                     );
                   })}
@@ -2905,7 +2905,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         onClick={() => handleApplyPresetFaq(preset)}
                         className="text-left px-2 py-1 bg-white hover:bg-amber-100/60 border border-amber-200 rounded-lg text-[8px] font-bold text-slate-800 transition-all shadow-2xs"
                       >
-                        "{preset.question}"
+                        "{tr(preset.question as any) as any}"
                       </button>
                     ))}
                   </div>

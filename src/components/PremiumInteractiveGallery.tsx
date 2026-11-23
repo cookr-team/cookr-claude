@@ -219,10 +219,10 @@ export const PremiumInteractiveGallery: React.FC = () => {
           {/* Glassmorphic Minimal Card Details */}
           <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/10 text-left opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
             <p className="text-[8px] font-black uppercase text-orange-400 tracking-wider">
-              {GALLERY_DATA[0].label}
+              {tr(GALLERY_DATA[0].label as any) as any}
             </p>
             <h4 className="text-xs font-black text-white uppercase tracking-tight mt-0.5">
-              {GALLERY_DATA[0].images[slotIndices[0]].title}
+              {tr(GALLERY_DATA[0].images[slotIndices[0]].title as any) as any}
             </h4>
           </div>
 
@@ -257,10 +257,10 @@ export const PremiumInteractiveGallery: React.FC = () => {
             
             <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/10 text-left opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
               <p className="text-[8px] font-black uppercase text-orange-400 tracking-wider">
-                {GALLERY_DATA[1].label}
+                {tr(GALLERY_DATA[1].label as any) as any}
               </p>
               <h4 className="text-xs font-black text-white uppercase tracking-tight mt-0.5">
-                {GALLERY_DATA[1].images[slotIndices[1]].title}
+                {tr(GALLERY_DATA[1].images[slotIndices[1]].title as any) as any}
               </h4>
             </div>
 
@@ -293,10 +293,10 @@ export const PremiumInteractiveGallery: React.FC = () => {
             
             <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/10 text-left opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
               <p className="text-[8px] font-black uppercase text-orange-400 tracking-wider">
-                {GALLERY_DATA[2].label}
+                {tr(GALLERY_DATA[2].label as any) as any}
               </p>
               <h4 className="text-xs font-black text-white uppercase tracking-tight mt-0.5">
-                {GALLERY_DATA[2].images[slotIndices[2]].title}
+                {tr(GALLERY_DATA[2].images[slotIndices[2]].title as any) as any}
               </h4>
             </div>
 
@@ -330,10 +330,10 @@ export const PremiumInteractiveGallery: React.FC = () => {
           
           <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/10 text-left opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
             <p className="text-[8px] font-black uppercase text-orange-400 tracking-wider">
-              {GALLERY_DATA[3].label}
+              {tr(GALLERY_DATA[3].label as any) as any}
             </p>
             <h4 className="text-xs font-black text-white uppercase tracking-tight mt-0.5">
-              {GALLERY_DATA[3].images[slotIndices[3]].title}
+              {tr(GALLERY_DATA[3].images[slotIndices[3]].title as any) as any}
             </h4>
           </div>
 
@@ -368,10 +368,10 @@ export const PremiumInteractiveGallery: React.FC = () => {
             
             <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/10 text-left opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
               <p className="text-[8px] font-black uppercase text-orange-400 tracking-wider">
-                {GALLERY_DATA[4].label}
+                {tr(GALLERY_DATA[4].label as any) as any}
               </p>
               <h4 className="text-xs font-black text-white uppercase tracking-tight mt-0.5">
-                {GALLERY_DATA[4].images[slotIndices[4]].title}
+                {tr(GALLERY_DATA[4].images[slotIndices[4]].title as any) as any}
               </h4>
             </div>
 
@@ -465,7 +465,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                 <div className="absolute top-4 left-4 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/15 flex items-center gap-1.5 text-white">
                   <ChefHat size={12} className="text-orange-500" />
                   <span className="text-[9px] font-black uppercase tracking-widest">
-                    {GALLERY_DATA[lightboxIndex].label}
+                    {tr(GALLERY_DATA[lightboxIndex].label as any) as any}
                   </span>
                 </div>
               </motion.div>
@@ -473,10 +473,10 @@ export const PremiumInteractiveGallery: React.FC = () => {
               {/* Informative text below the image */}
               <div className="text-center max-w-xl space-y-2">
                 <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight">
-                  {GALLERY_DATA[lightboxIndex].images[slotIndices[lightboxIndex]].title}
+                  {tr(GALLERY_DATA[lightboxIndex].images[slotIndices[lightboxIndex]].title as any) as any}
                 </h3>
                 <p className="text-xs md:text-sm font-medium text-slate-300 leading-relaxed">
-                  {GALLERY_DATA[lightboxIndex].images[slotIndices[lightboxIndex]].desc}
+                  {tr(GALLERY_DATA[lightboxIndex].images[slotIndices[lightboxIndex]].desc as any) as any}
                 </p>
                 <div className="pt-2 flex items-center justify-center gap-1">
                   {GALLERY_DATA.map((_, i) => (

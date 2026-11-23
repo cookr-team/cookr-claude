@@ -137,7 +137,7 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password = "" }) =>
                     isMet ? "text-emerald-950 font-black" : "text-slate-400 font-bold"
                   }`}
                 >
-                  {rule.label}
+                  {tr(rule.label as any) as any}
                 </span>
               </div>
               {isMet && (

@@ -1,5 +1,7 @@
 import React from "react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface DietaryBadgeConfig {
   bg: string;
   short: string;
@@ -102,6 +104,7 @@ export const DietaryBadges: React.FC<DietaryBadgesProps> = ({
   compact = false,
   maxTags = 4
 }) => {
+  useLanguage();
   if (!tags || tags.length === 0) return null;
 
   const displayTags = tags.slice(0, maxTags);
@@ -131,7 +134,7 @@ export const DietaryBadges: React.FC<DietaryBadgesProps> = ({
             title={config.label}
           >
             <span>{config.icon}</span>
-            <span>{config.label}</span>
+            <span>{tr(config.label as any) as any}</span>
           </div>
         );
       })}

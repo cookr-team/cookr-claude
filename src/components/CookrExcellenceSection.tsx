@@ -114,10 +114,10 @@ export const CookrExcellenceSection: React.FC<CookrExcellenceSectionProps> = ({ 
                 <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between gap-6">
                   <div className="space-y-3">
                     <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight group-hover:text-orange-600 transition-colors duration-200">
-                      {card.title}
+                      {tr(card.title as any) as any}
                     </h3>
                     <p className="text-sm text-slate-600 leading-relaxed font-normal">
-                      {card.description}
+                      {tr(card.description as any) as any}
                     </p>
                   </div>
 
@@ -129,7 +129,7 @@ export const CookrExcellenceSection: React.FC<CookrExcellenceSectionProps> = ({ 
                         strokeWidth: 1.5,
                         className: "text-amber-400 shrink-0",
                       })}
-                      {card.badge}
+                      {tr(card.badge as any) as any}
                     </span>
                   </div>
                 </div>

@@ -968,7 +968,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     className="text-orange-500 fill-orange-500 md:w-3 md:h-3"
                   />
                   <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">
-                    {currentBanner.tag}
+                    {tr(currentBanner.tag as any) as any}
                   </span>
                 </motion.div>
               </div>
@@ -981,7 +981,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                   transition={{ delay: 0.4 }}
                   className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tighter uppercase leading-tight"
                 >
-                  {currentBanner.title} <br />
+                  {tr(currentBanner.title as any) as any} <br />
                   <span className="text-orange-500">
                     {currentBanner.highlight}
                   </span>
@@ -994,7 +994,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     transition={{ delay: 0.5 }}
                     className="text-white/80 text-[10px] sm:text-xs md:text-sm font-medium max-w-xl italic leading-relaxed"
                   >
-                    "{currentBanner.description}"
+                    "{tr(currentBanner.description as any) as any}"
                   </motion.p>
                 )}
               </div>
@@ -1075,7 +1075,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                         <optgroup label={tr("Meus Endereços (Raio Validado)")}>
                           {currentUser.addresses.map((addr, addrIdx) => (
                             <option key={addr.id || `addr-${addrIdx}`} value={addr.id}>
-                              📍 {addr.label} ({addr.city})
+                              📍 {tr(addr.label as any) as any} ({addr.city})
                             </option>
                           ))}
                         </optgroup>
@@ -1299,7 +1299,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 <span
                   className={`text-[9px] md:text-[10px] font-black uppercase transition-colors ${selectedCuisine === cuisine.id ? "text-orange-600" : "text-slate-400"}`}
                 >
-                  {cuisine.label}
+                  {tr(cuisine.label as any) as any}
                 </span>
               </button>
             ))}
@@ -1313,7 +1313,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 {language === "pt" ? tr("Chefs em") : language === "en" ? tr("Chefs in") : tr("Chefs à")} <span className="text-orange-500">{selectedCity}</span>
                 {activeCollectionId && (
                   <span className="text-slate-300 ml-2">
-                    / {activeCollection?.title}
+                    / {tr(activeCollection?.title as any) as any}
                   </span>
                 )}
               </h2>
@@ -1927,7 +1927,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     ))}
                   </div>
                   <p className="text-[11px] md:text-base font-medium text-slate-600 leading-relaxed italic">
-                    "{rev.text}"
+                    "{tr(rev.text as any) as any}"
                   </p>
                 </div>
                 <div className="flex items-center gap-3 pt-4 border-t border-slate-50">
@@ -1941,7 +1941,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                   </div>
                   <div className="space-y-0.5">
                     <p className="font-black text-[10px] uppercase tracking-tighter text-slate-950">
-                      {rev.name}
+                      {tr(rev.name as any) as any}
                     </p>
                     <p className="text-[7px] font-black text-orange-500 uppercase tracking-widest">
                       {rev.role}
@@ -2017,7 +2017,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                             : "bg-white/5 text-slate-300 hover:bg-white/10 border border-white/5"
                         }`}
                       >
-                        {cuisine.label}
+                        {tr(cuisine.label as any) as any}
                       </button>
                     );
                   })}
@@ -2049,7 +2049,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                             : "bg-white/5 text-slate-300 hover:bg-white/10 border border-white/5"
                         }`}
                       >
-                        {res.label}
+                        {tr(res.label as any) as any}
                       </button>
                     );
                   })}
@@ -2252,10 +2252,10 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                   {item.icon}
                 </div>
                 <h4 className="font-black text-slate-950 md:text-sm uppercase tracking-tight">
-                  {item.title}
+                  {tr(item.title as any) as any}
                 </h4>
                 <p className="text-[7px] md:text-xs text-slate-500 font-medium leading-tight">
-                  {item.desc}
+                  {tr(item.desc as any) as any}
                 </p>
               </div>
             ))}
@@ -2330,7 +2330,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                               : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350 hover:bg-slate-100"
                           }`}
                         >
-                          {range.label}
+                          {tr(range.label as any) as any}
                         </button>
                       );
                     })}
@@ -2358,7 +2358,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                       <option value="all">{t("select_cuisine")}</option>
                       {CUISINES.map((cuisine) => (
                         <option key={cuisine.id} value={cuisine.id}>
-                          {cuisine.label}
+                          {tr(cuisine.label as any) as any}
                         </option>
                       ))}
                     </select>
@@ -2393,7 +2393,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                               : "bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350 hover:bg-slate-100"
                           }`}
                         >
-                          {opt.label}
+                          {tr(opt.label as any) as any}
                         </button>
                       );
                     })}
@@ -2435,7 +2435,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                           }`}
                         >
                           {isSelected && <ICONS.CheckCircle size={10} />}
-                          {diet.label}
+                          {tr(diet.label as any) as any}
                         </button>
                       );
                     })}

@@ -159,7 +159,7 @@ export const PremiumToast: React.FC<PremiumToastProps> = ({ toast, onClose }) =>
       <div className="flex-1 text-left select-none pr-4">
         <div className="flex items-center gap-1.5 leading-none">
           <span className="text-[9px] font-black tracking-widest text-slate-200 uppercase">
-            {meta.title}
+            {tr(meta.title as any) as any}
           </span>
           <span className="w-1 h-1 rounded-full bg-slate-600"></span>
           <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider">

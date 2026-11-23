@@ -17,7 +17,7 @@ import { GoogleAddressAutocomplete, AddressData } from "./GoogleAddressAutocompl
 import { formatPostalCode } from "../utils/formatters";
 import { toLocalDateStr } from "../lib/dateUtils";
 
-import { tr } from "../lib/tr";
+import { tr, trLocale } from "../lib/tr";
 export interface WineOption {
   id: string;
   nome: string;
@@ -2033,7 +2033,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
             <p className="text-slate-500 text-center text-[10px] font-black uppercase tracking-widest mb-8">
               {tr("Tem a certeza que deseja eliminar o")}{" "}
               {itemToDelete.type.toLowerCase()}{" "}
-              <span className="text-slate-900">"{itemToDelete.name}"</span>{tr("? Esta ação não pode ser desfeita.")}
+              <span className="text-slate-900">"{tr(itemToDelete.name as any) as any}"</span>{tr("? Esta ação não pode ser desfeita.")}
             </p>
             <div className="flex flex-col gap-3">
               <button
@@ -2346,7 +2346,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                         <div>
                           <h4 className="text-[10.5px] font-extrabold text-slate-900 leading-tight">
-                            {cert.title}
+                            {tr(cert.title as any) as any}
                           </h4>
                           <p className="text-[8.5px] font-semibold text-slate-500">
                             {cert.issuer}
@@ -2355,7 +2355,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                         {cert.description && (
                           <p className="text-[8px] text-slate-600 leading-relaxed italic border-l border-orange-400/50 pl-2">
-                            "{cert.description}"
+                            "{tr(cert.description as any) as any}"
                           </p>
                         )}
                       </div>
@@ -2508,16 +2508,16 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className={`px-1.5 py-0.5 rounded text-[6.5px] font-black uppercase tracking-wider border ${catInfo.color}`}>
-                            {catInfo.label}
+                            {tr(catInfo.label as any) as any}
                           </span>
                         </div>
 
                         <h4 className="text-[11px] font-bold text-slate-900 leading-snug">
-                          {faq.question}
+                          {tr(faq.question as any) as any}
                         </h4>
 
                         <p className="text-[9.5px] font-medium text-slate-600 leading-relaxed pt-0.5 border-t border-slate-200/50">
-                          {faq.answer}
+                          {tr(faq.answer as any) as any}
                         </p>
                       </div>
                     );
@@ -2692,7 +2692,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                           <div>
                             <p className="font-bold text-slate-800 text-[10px] leading-none uppercase">{rev.clientName || tr("Cliente")}</p>
                             <span className="text-[7.5px] text-slate-400 font-semibold uppercase tracking-wider">
-                              {rev.created_at ? new Date(rev.created_at).toLocaleDateString("pt-PT") : tr("Recentemente")}
+                              {rev.created_at ? new Date(rev.created_at).toLocaleDateString(trLocale()) : tr("Recentemente")}
                             </span>
                           </div>
                         </div>

@@ -270,7 +270,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
               <div
                 className={`absolute -bottom-5 text-[7px] font-black uppercase tracking-widest transition-opacity duration-300 whitespace-nowrap ${step === s.id ? "opacity-100 text-orange-500 font-black" : "opacity-0 text-slate-300"}`}
               >
-                {s.label}
+                {tr(s.label as any) as any}
               </div>
             </button>
           ))}
@@ -723,7 +723,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                               }`}
                             >
                               {item.icon}
-                              {item.label}
+                              {tr(item.label as any) as any}
                             </button>
                           );
                         })}
@@ -838,7 +838,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                             >
                               {item.icon}
                             </div>
-                            <span className="truncate">{item.label}</span>
+                            <span className="truncate">{tr(item.label as any) as any}</span>
                           </button>
                         );
                       })}
@@ -972,7 +972,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                                   : "bg-white text-slate-400 border-slate-100 hover:border-slate-200 hover:bg-slate-50"
                               }`}
                             >
-                              {lang.label}
+                              {tr(lang.label as any) as any}
                             </button>
                           );
                         })}

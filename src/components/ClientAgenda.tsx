@@ -90,7 +90,7 @@ const UpcomingBookingCard: React.FC<UpcomingBookingCardProps> = React.memo(({
       <div className="flex-1 text-left space-y-2">
         <div className="flex items-center flex-wrap gap-1.5">
           <span className={statusConfig.classes}>
-            {statusConfig.label}
+            {tr(statusConfig.label as any) as any}
           </span>
 
           {isToday && (

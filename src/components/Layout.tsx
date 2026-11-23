@@ -273,7 +273,7 @@ const Layout: React.FC<LayoutProps> = ({
                     }`}
                   />
                   <span className="hidden lg:block text-[11px] font-bold uppercase tracking-wider truncate">
-                    {item.label}
+                    {tr(item.label as any) as any}
                   </span>
                 </button>
               );
@@ -506,7 +506,7 @@ const Layout: React.FC<LayoutProps> = ({
                     >
                       <item.icon size={18} className={`shrink-0 ${isActive ? "text-orange-500" : "text-current"}`} />
                       <span className="text-xs font-bold uppercase tracking-wider truncate">
-                        {item.label}
+                        {tr(item.label as any) as any}
                       </span>
                     </button>
                   );

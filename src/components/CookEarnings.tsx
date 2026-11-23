@@ -15,7 +15,7 @@ import {
 import { useLanguage, getLangText } from "../contexts/LanguageContext";
 import { todayLocal } from "../lib/dateUtils";
 
-import { tr } from "../lib/tr";
+import { tr, trLocale } from "../lib/tr";
 interface CookEarningsProps {
   bookings: Booking[];
 }
@@ -148,7 +148,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
     doc.setFontSize(11);
     doc.setTextColor(100);
     doc.text(
-      `Data de emissao: ${new Date().toLocaleDateString("pt-PT")} | Filtro: ${timeFilter}`,
+      `Data de emissao: ${new Date().toLocaleDateString(trLocale())} | Filtro: ${timeFilter}`,
       14,
       30,
     );

@@ -240,7 +240,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                     <div className="p-5 flex-1 flex flex-col justify-between relative bg-white border-t border-slate-200">
                       <div className="space-y-1">
                         <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-tight line-clamp-1">
-                          {teaser.title}
+                          {tr(teaser.title as any) as any}
                         </h3>
                         <p className="text-[11px] text-slate-500 font-medium line-clamp-2">
                           {teaser.tagline}

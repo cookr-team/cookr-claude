@@ -124,7 +124,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     }`}
                   >
                     <span className="text-xs">{item.flag}</span>
-                    <span>{item.label}</span>
+                    <span>{tr(item.label as any) as any}</span>
                   </button>
                 ))}
               </div>
@@ -239,7 +239,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     {stat.value}
                   </p>
                   <p className="text-[6.5px] md:text-[8px] font-black text-slate-600 uppercase tracking-[0.2em] md:tracking-[0.3em]">
-                    {stat.label}
+                    {tr(stat.label as any) as any}
                   </p>
                 </div>
               </div>
@@ -306,10 +306,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     {step.id}
                   </span>
                   <h3 className="text-lg md:text-xl font-black text-slate-950 uppercase italic tracking-tighter">
-                    {step.title}
+                    {tr(step.title as any) as any}
                   </h3>
                   <p className="text-xs md:text-sm font-medium text-slate-400 leading-relaxed">
-                    {step.desc}
+                    {tr(step.desc as any) as any}
                   </p>
                 </div>
               </div>
@@ -399,7 +399,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/20 to-transparent" />
                 <div className="absolute bottom-5 left-5 text-left">
                   <h4 className="text-lg font-black text-white uppercase italic tracking-tighter">
-                    {cat.title}
+                    {tr(cat.title as any) as any}
                   </h4>
                   <p className="text-[8px] font-black text-orange-500 uppercase tracking-widest mt-0.5">
                     {cat.count}
@@ -537,7 +537,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 onClick={() => onNavigate(typeof link.view === "function" ? "terms" : link.view)}
                 className="text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors"
                >
-                {link.label}
+                {tr(link.label as any) as any}
               </button>
             ))}
           </div>

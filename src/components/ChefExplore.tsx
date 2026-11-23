@@ -621,7 +621,7 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
                 </div>
               </div>
               <h3 className="text-xs font-bold text-slate-900 uppercase tracking-tight leading-tight">
-                {trend.title}
+                {tr(trend.title as any) as any}
               </h3>
               <p className="text-[7.5px] font-mono font-bold text-slate-400 uppercase tracking-wider mt-0.5">
                 {trend.count} {trend.count === 1 ? tr("prato ativo") : tr("pratos ativos")}
@@ -630,7 +630,7 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
             </div>
             {/* Real-time Dynamic Market Insight description */}
             <p className="text-[8.5px] text-slate-500 leading-normal mt-3 pt-2.5 border-t border-slate-100 italic transition-colors group-hover:text-slate-700">
-              {trend.desc}
+              {tr(trend.desc as any) as any}
             </p>
           </div>
         ))}

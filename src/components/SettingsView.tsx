@@ -349,7 +349,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     {isCurrent && <Check size={14} className="stroke-[3]" />}
                   </div>
                   <span className={`text-xs font-black uppercase tracking-wider ${isCurrent ? "text-white" : "text-slate-900"}`}>
-                    {item.label}
+                    {tr(item.label as any) as any}
                   </span>
                   <span className={`text-[9px] font-mono mt-0.5 ${isCurrent ? "text-orange-100" : "text-slate-400"}`}>
                     {item.code.toUpperCase()}
