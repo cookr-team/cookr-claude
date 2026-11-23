@@ -337,6 +337,11 @@ const App: React.FC = () => {
   const [loginPassword, setLoginPassword] = useState("");
   const [isLoginPending, setIsLoginPending] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [showRecoveryModal, setShowRecoveryModal] = useState(false);
+  const [recoveryPassword, setRecoveryPassword] = useState("");
+  const [recoveryPassword2, setRecoveryPassword2] = useState("");
+  const [recoveryError, setRecoveryError] = useState<string | null>(null);
+  const [isRecoveryPending, setIsRecoveryPending] = useState(false);
 
   const [googlePendingUser, setGooglePendingUser] = useState<any | null>(null);
   const [showRoleSelectionModal, setShowRoleSelectionModal] =
@@ -1224,6 +1229,64 @@ const App: React.FC = () => {
     };
   }, []);
 
+  // Link de recuperação de palavra-passe recebido por email: abre o ecrã para definir a nova.
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setRecoveryError(null);
+        setShowRecoveryModal(true);
+      }
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
+
+  const handleForgotPassword = async () => {
+    const email = loginEmail.toLowerCase().trim();
+    if (!email || !email.includes("@")) {
+      setLoginError("Escreva primeiro o seu email e volte a clicar em \"Esqueci-me da palavra-passe\".");
+      return;
+    }
+    setLoginError(null);
+    try {
+      await supabaseService.resetPasswordForEmail(email);
+    } catch (_) {
+      // Resposta igual com ou sem conta, para não revelar que emails existem.
+    }
+    addToast(
+      "Se existir uma conta com esse email, enviámos instruções para definir uma nova palavra-passe.",
+      "success",
+    );
+  };
+
+  const handleRecoverySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRecoveryError(null);
+    if (recoveryPassword.length < 8) {
+      setRecoveryError("A palavra-passe deve ter pelo menos 8 caracteres.");
+      return;
+    }
+    if (recoveryPassword !== recoveryPassword2) {
+      setRecoveryError("As palavras-passe não coincidem.");
+      return;
+    }
+    setIsRecoveryPending(true);
+    try {
+      await supabaseService.updatePassword(recoveryPassword);
+      await supabase.auth.signOut().catch(() => {});
+      try { localStorage.removeItem("cookr_user"); } catch (_) {}
+      setShowRecoveryModal(false);
+      setRecoveryPassword("");
+      setRecoveryPassword2("");
+      addToast("Palavra-passe atualizada! Entre com a nova palavra-passe.", "success");
+      navigateTo("login-selection");
+    } catch (err: any) {
+      setRecoveryError(err?.message || "Não foi possível atualizar a palavra-passe. Peça um novo link.");
+    } finally {
+      setIsRecoveryPending(false);
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const sanitizedEmail = loginEmail.toLowerCase().trim();
@@ -1313,6 +1376,17 @@ const App: React.FC = () => {
         } catch (e) {
           // ignore parsing error, fallback to raw message
         }
+      }
+
+      const lowerMsg = String(msg).toLowerCase();
+      if (lowerMsg.includes("invalid login credentials")) {
+        msg = "Email ou palavra-passe incorretos.";
+      } else if (lowerMsg.includes("email not confirmed")) {
+        msg = "Confirme primeiro o seu email: abra a mensagem que lhe enviámos e clique no link.";
+      } else if (lowerMsg.includes("rate limit") || lowerMsg.includes("too many")) {
+        msg = "Demasiadas tentativas. Aguarde um minuto e tente de novo.";
+      } else if (lowerMsg.includes("failed to fetch") || lowerMsg.includes("network")) {
+        msg = "Sem ligação à internet. Verifique a rede e tente de novo.";
       }
 
       if (msg === "Palavra-passe incorreta.") {
@@ -1586,6 +1660,14 @@ const App: React.FC = () => {
                 d,
                 UserRole.CLIENT,
               );
+              if (user && (user as any).pendingEmailConfirmation) {
+                addToast(
+                  "Conta criada! Enviámos um email para confirmar o seu endereço. Confirme e depois entre com a sua palavra-passe.",
+                  "success",
+                );
+                setTimeout(() => navigateTo("login-selection"), 4000);
+                return true;
+              }
               if (user) {
                 saveAndSetUser(user);
                 await refreshData(user);
@@ -1619,7 +1701,9 @@ const App: React.FC = () => {
               if (user) {
                 await refreshData();
                 addToast(
-                  "Candidatura submetida com sucesso! Aguarde a nossa curadoria.",
+                  (user as any).pendingEmailConfirmation
+                    ? "Candidatura recebida! Confirme primeiro o seu email (enviámos-lhe uma mensagem). Depois aguarde a nossa curadoria."
+                    : "Candidatura submetida com sucesso! Aguarde a nossa curadoria.",
                   "success",
                 );
                 setTimeout(() => navigateTo("landing"), 4000); // Redirect after overlay
@@ -1810,7 +1894,17 @@ const App: React.FC = () => {
                   placeholder="••••••••"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
+                  autoComplete="current-password"
                 />
+                <div className="flex justify-end pr-1 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    className="text-[11px] font-bold text-slate-500 hover:text-orange-500 underline-offset-2 hover:underline transition-colors cursor-pointer py-1"
+                  >
+                    Esqueci-me da palavra-passe
+                  </button>
+                </div>
               </div>
 
               {loginError && (
@@ -2363,6 +2457,54 @@ const App: React.FC = () => {
       <Suspense fallback={<ViewLoadingPlaceholder />}>
         {renderView()}
       </Suspense>
+
+      {showRecoveryModal && (
+        <div className="fixed inset-0 z-[10000] overflow-y-auto flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xl animate-in fade-in duration-300">
+          <form
+            onSubmit={handleRecoverySubmit}
+            className="bg-white rounded-[2rem] p-7 md:p-10 max-w-sm w-full shadow-2xl space-y-5 my-auto"
+          >
+            <div className="text-center space-y-2">
+              <h3 className="text-xl font-black tracking-tight">Nova palavra-passe</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Escolha uma palavra-passe nova, com pelo menos 8 caracteres.
+              </p>
+            </div>
+            <input
+              type="password"
+              required
+              minLength={8}
+              autoComplete="new-password"
+              placeholder="Nova palavra-passe"
+              value={recoveryPassword}
+              onChange={(e) => setRecoveryPassword(e.target.value)}
+              className="w-full h-12 px-5 bg-slate-50 border-2 border-transparent rounded-xl focus:border-orange-500 focus:bg-white outline-none font-bold text-sm"
+            />
+            <input
+              type="password"
+              required
+              minLength={8}
+              autoComplete="new-password"
+              placeholder="Repita a palavra-passe"
+              value={recoveryPassword2}
+              onChange={(e) => setRecoveryPassword2(e.target.value)}
+              className="w-full h-12 px-5 bg-slate-50 border-2 border-transparent rounded-xl focus:border-orange-500 focus:bg-white outline-none font-bold text-sm"
+            />
+            {recoveryError && (
+              <p role="alert" className="text-xs font-bold text-red-600 bg-red-50 border border-red-100 rounded-xl p-3">
+                {recoveryError}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={isRecoveryPending}
+              className="w-full h-12 bg-slate-950 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {isRecoveryPending ? "A guardar..." : "Guardar palavra-passe"}
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* Role Selection Overlay for Google Signups */}
       {showRoleSelectionModal && googlePendingUser && (
