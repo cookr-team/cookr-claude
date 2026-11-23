@@ -1722,5 +1722,13 @@
 "Como posso elevar a sua experiência gastronómica hoje?": "Comment puis-je sublimer votre expérience gastronomique aujourd'hui ?",
 "Lamento imenso, tive um pequeno contratempo técnico. Como posso ajudar de outra forma?": "Je suis vraiment désolé, j'ai eu un petit contretemps technique. Comment puis-je vous aider autrement ?",
 "Desculpe, tive um pequeno precalço na cozinha. Pode repetir?": "Désolé, petit contretemps en cuisine. Pouvez-vous répéter ?",
-"Não foi possível guardar as alterações no servidor. Termine a sessão, entre de novo e tente outra vez.": "Les modifications n'ont pas pu être enregistrées sur le serveur. Déconnectez-vous, reconnectez-vous et réessayez."
+"Não foi possível guardar as alterações no servidor. Termine a sessão, entre de novo e tente outra vez.": "Les modifications n'ont pas pu être enregistrées sur le serveur. Déconnectez-vous, reconnectez-vous et réessayez.",
+"Não foi possível atualizar os favoritos.": "Impossible de mettre à jour vos favoris.",
+"Não foi possível entrar na lista de espera.": "Impossible de rejoindre la liste d'attente.",
+"Não foi possível guardar a checklist HACCP.": "Impossible d'enregistrer la checklist HACCP.",
+"Não foi possível guardar o registo HACCP.": "Impossible d'enregistrer le relevé HACCP.",
+"Só pode avaliar reservas concluídas e uma única vez por reserva.": "Vous ne pouvez évaluer que des réservations terminées, une seule fois par réservation.",
+"Sem ligação ao servidor. A avaliação não foi enviada, tente novamente.": "Pas de connexion au serveur. Votre avis n'a pas été envoyé, veuillez réessayer.",
+"Adicionado à lista de espera! Notificaremos se houver desistências para o dia {date}": "Ajouté à la liste d'attente ! Nous vous préviendrons en cas d'annulation pour le {date}.",
+"O chef já tem outra reserva perto dessa hora. Escolha um horário com pelo menos 3 horas de diferença.": "Le chef a déjà une autre réservation proche de cet horaire. Choisissez un créneau à au moins 3 heures d'écart."
 }

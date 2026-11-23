@@ -8,6 +8,13 @@ Ordem de aplicação (SQL Editor do projeto Supabase da Cookr):
 2. `migrations/20260927000000_create_email_events.sql`
 3. `migrations/20261122000000_security_hardening.sql` — correções de segurança (idempotente).
 4. `migrations/20261123000000_private_data.sql` — IBAN/NIF/faturação e PIN do serviço passam para tabelas privadas; PIN validado no servidor (idempotente). **Aplicar antes de fazer merge do código que o usa.**
+5. `migrations/20261123010000_agenda_slots.sql` — horários ocupados/libertados no servidor, sem dupla reserva.
+6. `migrations/20261123020000_storage_buckets.sql` — buckets `avatars` e `covers` e respetivas políticas.
+7. `migrations/20261123030000_busy_slots.sql` — função com os horários ocupados de um chef.
+8. `migrations/20261123040000_notifications.sql` — preferências de notificação e lembretes de reserva.
+9. `migrations/20261123050000_challenge_submissions.sql` — candidaturas a desafios do chef.
+10. `migrations/20261123060000_chef_live_agenda.sql` — chef online/offline em tempo real e reservas sem sobreposição (3 h).
+11. `migrations/20261123070000_haccp_favoritos_espera.sql` — tabelas e permissões de HACCP, favoritos e lista de espera.
 
 Depois do passo 3, confirme que o administrador existe em `public.profiles` com `role = 'admin'`:
 

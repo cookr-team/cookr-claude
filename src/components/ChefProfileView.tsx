@@ -17,6 +17,7 @@ import { GoogleAddressAutocomplete, AddressData } from "./GoogleAddressAutocompl
 import { formatPostalCode } from "../utils/formatters";
 import { toLocalDateStr } from "../lib/dateUtils";
 
+import { GIFT_CARDS_ENABLED } from "../config/features";
 import { tr, trLocale } from "../lib/tr";
 export interface WineOption {
   id: string;
@@ -548,14 +549,18 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
   const handleToggleFavorite = async () => {
     if (!currentUser) return;
-    const result = await supabaseService.toggleFavorite(
-      currentUser.id,
-      chef.id,
-    );
-    setIsFavorite(result);
-    if (result) {
-      onNotify?.(tr("Chef adicionado aos favoritos!"), "success");
-      onNavigate("profile", "favorites");
+    try {
+      const result = await supabaseService.toggleFavorite(
+        currentUser.id,
+        chef.id,
+      );
+      setIsFavorite(result);
+      if (result) {
+        onNotify?.(tr("Chef adicionado aos favoritos!"), "success");
+        onNavigate("profile", "favorites");
+      }
+    } catch (e: any) {
+      onNotify?.(e?.message || tr("Não foi possível atualizar os favoritos."), "error");
     }
   };
 
@@ -837,8 +842,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
         preferred_date: waitlistDate,
       });
       onNotify?.(
-        "Adicionado à lista de espera! Notificaremos se houver desistências para o dia " +
-          waitlistDate,
+        tr("Adicionado à lista de espera! Notificaremos se houver desistências para o dia {date}", { date: waitlistDate }),
         "success",
       );
       setShowWaitlistModal(false);
@@ -1812,6 +1816,8 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                 <div className="h-px bg-white/10 relative z-10" />
 
+                {GIFT_CARDS_ENABLED && (
+                <>
                 {/* Gift Card Redemption Section */}
                 <div className="space-y-2 bg-white/[0.02] border border-white/5 rounded-lg p-2.5 relative z-10">
                   <p className="text-[8px] font-bold text-white/40 uppercase tracking-wider">
@@ -1854,6 +1860,8 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     </p>
                   )}
                 </div>
+                </>
+                )}
 
                 <div className="h-px bg-white/10 relative z-10" />
 
