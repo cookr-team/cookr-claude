@@ -2941,22 +2941,90 @@ export const supabaseService = {
   // UPLOADS DE FICHEIROS / IMAGENS
   // ===========================================================================
 
-  uploadFile: async (bucket: string, path: string, file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    });
+  /**
+   * Upload de imagens: valida o ficheiro, reduz e comprime no dispositivo (JPEG) e envia para o
+   * Supabase Storage, devolvendo o URL público. Se o Storage não estiver disponível, devolve uma
+   * imagem pequena em base64 (nunca a foto original de vários MB).
+   */
+  uploadFile: async (bucket: string, path: string, file: File, maxDimension = 1280): Promise<string> => {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
+    if (!file || (file.type && !allowed.includes(file.type.toLowerCase()))) {
+      throw new Error('Formato de imagem não suportado. Use JPG, PNG ou WebP.');
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      throw new Error('A imagem é demasiado grande (máximo 20 MB).');
+    }
+
+    const toBlob = (canvas: HTMLCanvasElement, quality: number) =>
+      new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+
+    const compress = async (maxDim: number, quality: number): Promise<Blob> => {
+      let bitmap: ImageBitmap | HTMLImageElement;
+      try {
+        bitmap = await createImageBitmap(file);
+      } catch (_) {
+        throw new Error('Não foi possível ler a imagem. Tente outro ficheiro (JPG ou PNG).');
+      }
+      const w = (bitmap as ImageBitmap).width;
+      const h = (bitmap as ImageBitmap).height;
+      const scale = Math.min(1, maxDim / Math.max(w, h));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(w * scale));
+      canvas.height = Math.max(1, Math.round(h * scale));
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Não foi possível processar a imagem.');
+      ctx.fillStyle = '#ffffff'; // PNG com transparência fica sobre fundo branco
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bitmap as ImageBitmap, 0, 0, canvas.width, canvas.height);
+      (bitmap as ImageBitmap).close?.();
+      const blob = await toBlob(canvas, quality);
+      if (!blob) throw new Error('Não foi possível comprimir a imagem.');
+      return blob;
+    };
+
+    const blobToDataUrl = (blob: Blob) =>
+      new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error('Falha ao ler a imagem.'));
+        reader.readAsDataURL(blob);
+      });
+
+    const blob = await compress(maxDimension, 0.82);
+
+    // 1. Supabase Storage (pasta do próprio utilizador, exigida pelas políticas)
+    if (isSupabaseConfigured()) {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const uid = sessionData?.session?.user?.id;
+        if (uid) {
+          const objectPath = `${uid}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+          const { error } = await supabase.storage
+            .from(bucket)
+            .upload(objectPath, blob, { contentType: 'image/jpeg', cacheControl: '31536000', upsert: false });
+          if (!error) {
+            const { data } = supabase.storage.from(bucket).getPublicUrl(objectPath);
+            if (data?.publicUrl) return data.publicUrl;
+          } else {
+            console.warn('[Storage] upload falhou, a usar imagem reduzida:', error.message);
+          }
+        }
+      } catch (e) {
+        console.warn('[Storage] indisponível, a usar imagem reduzida:', e);
+      }
+    }
+
+    // 2. Fallback: imagem pequena em base64 (≈ até 150 KB)
+    const small = await compress(Math.min(maxDimension, 640), 0.7);
+    return blobToDataUrl(small);
   },
 
   uploadAvatar: async (userId: string, file: File): Promise<string> => {
-    return supabaseService.uploadFile('avatars', userId, file);
+    return supabaseService.uploadFile('avatars', userId, file, 800);
   },
 
   uploadCover: async (userId: string, file: File): Promise<string> => {
-    return supabaseService.uploadFile('covers', userId, file);
+    return supabaseService.uploadFile('covers', userId, file, 1600);
   },
 
   // ===========================================================================
