@@ -142,6 +142,148 @@ async function attachBookingPins(rows: any[]): Promise<any[]> {
   }
 }
 
+const PENDING_SIGNUP_PREFIX = 'cookr_pending_signup_';
+
+function savePendingSignup(email: string, data: any, role: UserRole) {
+  try {
+    const { password: _pw, ...safe } = data || {};
+    localStorage.setItem(PENDING_SIGNUP_PREFIX + email, JSON.stringify({ data: safe, role, savedAt: Date.now() }));
+  } catch (_) {}
+}
+
+function takePendingSignup(email: string): { data: any; role: UserRole } | null {
+  try {
+    const raw = localStorage.getItem(PENDING_SIGNUP_PREFIX + email);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // Válido por 30 dias
+    if (!parsed?.savedAt || Date.now() - parsed.savedAt > 30 * 24 * 3600 * 1000) {
+      localStorage.removeItem(PENDING_SIGNUP_PREFIX + email);
+      return null;
+    }
+    return { data: parsed.data, role: parsed.role };
+  } catch (_) {
+    return null;
+  }
+}
+
+function clearPendingSignup(email: string) {
+  try { localStorage.removeItem(PENDING_SIGNUP_PREFIX + email); } catch (_) {}
+}
+
+function buildProfilePayload(targetId: string, sanitizedEmail: string, data: any, role: UserRole): any {
+  const fullBillingAddress = data.billing_address || [
+    data.billing_street,
+    data.billing_number ? `nº ${data.billing_number}` : '',
+    data.billing_floor
+  ].filter(Boolean).join(', ') || data.morada || null;
+
+  return {
+    id: targetId,
+    email: sanitizedEmail,
+    nome: data.nome,
+    telefone: data.telefone || null,
+    role: role,
+    status: role === UserRole.COOK ? UserStatus.UNDER_REVIEW : UserStatus.ACTIVE,
+    avatar_url: data.avatar_url || null,
+    cover_url: data.cover_url || null,
+    morada: data.morada || fullBillingAddress || null,
+    cidade: data.cidade || data.billing_city || null,
+    localizacao: data.localizacao || data.distrito || data.cidade || data.billing_city || null,
+    zip_code: data.zip_code || data.billing_zip || null,
+    nif: data.nif || null,
+    iban: data.iban || null,
+    fiscal_name: data.fiscal_name || data.nome || null,
+    billing_address: fullBillingAddress,
+    billing_street: data.billing_street || null,
+    billing_number: data.billing_number || null,
+    billing_floor: data.billing_floor || null,
+    billing_zip: data.billing_zip || data.zip_code || null,
+    billing_city: data.billing_city || data.cidade || null,
+    billing_country: data.billing_country || 'Portugal',
+    addresses: data.addresses || (data.morada ? [{
+      id: crypto.randomUUID(),
+      label: 'Cozinha Principal',
+      address: data.morada,
+      city: data.cidade || 'Lisboa',
+      zip_code: data.zip_code || '',
+      isDefault: true
+    }] : []),
+    dietary_restrictions: data.dietary_restrictions || [],
+    cuisine_preferences: data.cuisine_preferences || [],
+    loyalty_points: data.loyalty_points ?? 0,
+  };
+}
+
+function buildChefPayload(targetId: string, data: any): any {
+  return {
+    profile_id: targetId,
+    biografia: data.biografia || '',
+    especialidades: data.especialidades || [],
+    experiencia_anos: data.experiencia || 0,
+    preco_medio: data.precoMedio || 0,
+    distrito: data.distrito || data.cidade || '',
+    concelho: data.concelho || '',
+    localizacao: data.localizacao || data.distrito || data.cidade || '',
+    idiomas: data.idiomas || ['Português'],
+    equipamento: data.equipamento || [],
+    diferenciais: data.diferenciais || [],
+    certifications_and_awards: data.certifications_and_awards || [],
+    faqs: data.faqs || [],
+    sustainability_badges: data.sustainability_badges || [],
+    sustainability_notes: data.sustainability_notes || '',
+    allergen_certifications: data.allergen_certifications || [],
+    allergen_notes: data.allergen_notes || '',
+    portfolio_images: data.portfolio_images || [],
+    disponibilidade: data.disponibilidade || {},
+    is_available: true,
+    offers_wine_pairing: data.offers_wine_pairing || false,
+    approved_by_admin: false,
+    bypass_haccp_restrictions: false,
+    kitchen_notes: data.kitchenNotes || '',
+  };
+}
+
+/** Grava o perfil (e a linha de chef) na base de dados; exige sessão ativa do próprio utilizador. */
+async function persistNewProfile(targetId: string, sanitizedEmail: string, data: any, role: UserRole) {
+  const profilePayload = buildProfilePayload(targetId, sanitizedEmail, data, role);
+
+  try {
+    const { error: profileErr } = await supabase
+      .from('profiles')
+      .upsert(profilePayload, { onConflict: 'id' });
+    if (profileErr) {
+      console.warn('[Supabase Profiles] Aviso ao gravar perfil:', profileErr.message || profileErr);
+    }
+  } catch (upsertErr: any) {
+    console.warn('[Supabase Profiles] Erro ao gravar perfil na nuvem:', upsertErr?.message || upsertErr);
+  }
+
+  let chefData: any = null;
+  if (role === UserRole.COOK) {
+    const chefPayload = buildChefPayload(targetId, data);
+    try {
+      const { data: insertedChef, error: chefErr } = await supabase
+        .from('chefs')
+        .upsert(chefPayload, { onConflict: 'profile_id' })
+        .select()
+        .maybeSingle();
+      if (chefErr) {
+        console.warn('[Supabase Chefs] Aviso ao gravar chef:', chefErr.message || chefErr);
+        chefData = chefPayload;
+      } else {
+        chefData = insertedChef || chefPayload;
+      }
+    } catch (chefEx: any) {
+      console.warn('[Supabase Chefs] Exceção ao gravar chef:', chefEx?.message || chefEx);
+      chefData = chefPayload;
+    }
+    saveChefToLocalCache(chefData);
+  }
+
+  return { profilePayload, chefData };
+}
+
 function mapProfileRowToUser(profile: any, chef?: any): User {
   const isChef = profile.role === UserRole.COOK;
   const mergedChef = chef || {};
@@ -491,6 +633,7 @@ export const supabaseService = {
 
       if (!profileErr && data) {
         profile = authUser ? await attachPrivateProfileDataOne(data) : data;
+        if (authUser) clearPendingSignup(sanitizedEmail);
       }
     } catch (err) {
       console.warn('[Supabase] Erro ao consultar perfil por email:', err);
@@ -520,6 +663,13 @@ export const supabaseService = {
       if (!authUser) {
         throw authError || new Error('Email ou palavra-passe incorretos.');
       }
+      // Registo feito com confirmação de email: grava agora o formulário guardado no dispositivo.
+      const pending = takePendingSignup(sanitizedEmail);
+      if (pending) {
+        const persisted = await persistNewProfile(authUser.id, sanitizedEmail, pending.data, pending.role);
+        clearPendingSignup(sanitizedEmail);
+        candidateUser = mapProfileRowToUser(persisted.profilePayload, persisted.chefData);
+      } else {
       // Conta autenticada mas sem perfil na base de dados: cria um perfil básico de cliente.
       const wantsCook = authUser.user_metadata?.role === UserRole.COOK;
       const baseProfile = {
@@ -540,6 +690,7 @@ export const supabaseService = {
         createdRow = created;
       } catch (_) {}
       candidateUser = mapProfileRowToUser(createdRow || baseProfile, null);
+      }
     } else {
       // Modo demonstração (sem Supabase configurado)
       const localUser = getLocalCachedUsers().find(u => u.email.toLowerCase().trim() === sanitizedEmail);
@@ -870,10 +1021,17 @@ export const supabaseService = {
   createProfile: async (data: any, role: UserRole): Promise<User | null> => {
     try {
       const sanitizedEmail = data.email.toLowerCase().trim();
-      const password = data.password || 'TemporaryPassword123!';
+      const configured = isSupabaseConfigured();
 
-      // 1. Criar no Supabase Auth passando metadados para o trigger se possível
+      // Nunca criar contas com uma password por defeito conhecida.
+      if (configured && !data.password) {
+        throw new Error('Defina uma palavra-passe para criar a conta.');
+      }
+      const password = data.password || 'TemporaryPassword123!'; // só em modo demonstração
+
+      // 1. Criar no Supabase Auth
       let authUserId: string | null = null;
+      let hasSession = false;
       try {
         const authResult = await supabaseAuthService.signUp(sanitizedEmail, password, {
           nome: data.nome,
@@ -884,122 +1042,52 @@ export const supabaseService = {
         if (authResult?.user?.id) {
           authUserId = authResult.user.id;
         }
+        hasSession = !!authResult?.session;
+        // Email já registado: o Supabase devolve um utilizador "falso" sem identidades.
+        if (configured && authResult?.user && Array.isArray(authResult.user.identities) && authResult.user.identities.length === 0) {
+          throw new Error('Este email já tem conta. Entre com a sua palavra-passe ou use "Esqueci-me da palavra-passe".');
+        }
       } catch (authErr: any) {
+        if (configured) {
+          // Com o Supabase configurado, um erro de registo é um erro real: nunca fingir sucesso.
+          const m = String(authErr?.message || '').toLowerCase();
+          if (m.includes('já tem conta')) throw authErr;
+          if (m.includes('already') || m.includes('registered')) {
+            throw new Error('Este email já tem conta. Entre com a sua palavra-passe.');
+          }
+          if (m.includes('password')) {
+            throw new Error('A palavra-passe é demasiado fraca. Use pelo menos 8 caracteres, com letras e números.');
+          }
+          if (m.includes('rate') || m.includes('too many') || m.includes('seconds')) {
+            throw new Error('Demasiadas tentativas. Aguarde um minuto e tente de novo.');
+          }
+          if (m.includes('invalid') && m.includes('email')) {
+            throw new Error('O email indicado não é válido.');
+          }
+          throw new Error(authErr?.message || 'Não foi possível criar a conta. Tente novamente.');
+        }
         console.warn('[Supabase] SignUp fallback note:', authErr?.message || authErr);
       }
 
       const targetId = authUserId || (data.id && isValidUUID(data.id) ? data.id : crypto.randomUUID());
 
-      // 2. Garantir persistência em profiles
-      const fullBillingAddress = data.billing_address || [
-        data.billing_street,
-        data.billing_number ? `nº ${data.billing_number}` : '',
-        data.billing_floor
-      ].filter(Boolean).join(', ') || data.morada || null;
-
-      const profilePayload: any = {
-        id: targetId,
-        email: sanitizedEmail,
-        nome: data.nome,
-        telefone: data.telefone || null,
-        role: role,
-        status: role === UserRole.COOK ? UserStatus.UNDER_REVIEW : UserStatus.ACTIVE,
-        avatar_url: data.avatar_url || null,
-        cover_url: data.cover_url || null,
-        morada: data.morada || fullBillingAddress || null,
-        cidade: data.cidade || data.billing_city || null,
-        localizacao: data.localizacao || data.distrito || data.cidade || data.billing_city || null,
-        zip_code: data.zip_code || data.billing_zip || null,
-        nif: data.nif || null,
-        iban: data.iban || null,
-        fiscal_name: data.fiscal_name || data.nome || null,
-        billing_address: fullBillingAddress,
-        billing_street: data.billing_street || null,
-        billing_number: data.billing_number || null,
-        billing_floor: data.billing_floor || null,
-        billing_zip: data.billing_zip || data.zip_code || null,
-        billing_city: data.billing_city || data.cidade || null,
-        billing_country: data.billing_country || 'Portugal',
-        addresses: data.addresses || (data.morada ? [{
-          id: crypto.randomUUID(),
-          label: 'Cozinha Principal',
-          address: data.morada,
-          city: data.cidade || 'Lisboa',
-          zip_code: data.zip_code || '',
-          isDefault: true
-        }] : []),
-        dietary_restrictions: data.dietary_restrictions || [],
-        cuisine_preferences: data.cuisine_preferences || [],
-        loyalty_points: data.loyalty_points ?? 0,
-      };
-
-      try {
-        const { error: profileErr } = await supabase
-          .from('profiles')
-          .upsert(profilePayload, { onConflict: 'id' });
-
-        if (profileErr) {
-          console.warn('[Supabase Profiles] Aviso de permissão/RLS (persistência local resiliente ativa):', profileErr.message || profileErr);
-        }
-      } catch (upsertErr: any) {
-        console.warn('[Supabase Profiles] Erro ao gravar perfil na nuvem:', upsertErr?.message || upsertErr);
+      // 2. Com confirmação de email ativa não há sessão: o perfil só pode ser gravado após o primeiro login.
+      //    Guarda-se o formulário (apenas neste dispositivo) para completar nessa altura.
+      if (configured && authUserId && !hasSession) {
+        savePendingSignup(sanitizedEmail, data, role);
+        const pendingUser = buildProfilePayload(targetId, sanitizedEmail, data, role);
+        const mapped: any = mapProfileRowToUser(pendingUser, null);
+        mapped.pendingEmailConfirmation = true;
+        return mapped as User;
       }
 
-      // 3. Se for Chef, persistir dados na tabela chefs
-      let chefData: any = null;
-      if (role === UserRole.COOK) {
-        const chefPayload = {
-          profile_id: targetId,
-          biografia: data.biografia || '',
-          especialidades: data.especialidades || [],
-          experiencia_anos: data.experiencia || 0,
-          preco_medio: data.precoMedio || 0,
-          distrito: data.distrito || data.cidade || '',
-          concelho: data.concelho || '',
-          localizacao: data.localizacao || data.distrito || data.cidade || '',
-          idiomas: data.idiomas || ['Português'],
-          equipamento: data.equipamento || [],
-          diferenciais: data.diferenciais || [],
-          certifications_and_awards: data.certifications_and_awards || [],
-          faqs: data.faqs || [],
-          sustainability_badges: data.sustainability_badges || [],
-          sustainability_notes: data.sustainability_notes || '',
-          allergen_certifications: data.allergen_certifications || [],
-          allergen_notes: data.allergen_notes || '',
-          portfolio_images: data.portfolio_images || [],
-          disponibilidade: data.disponibilidade || {},
-          is_available: true,
-          offers_wine_pairing: data.offers_wine_pairing || false,
-          approved_by_admin: false,
-          bypass_haccp_restrictions: false,
-          kitchen_notes: data.kitchenNotes || '',
-        };
-
-        try {
-          const { data: insertedChef, error: chefErr } = await supabase
-            .from('chefs')
-            .upsert(chefPayload, { onConflict: 'profile_id' })
-            .select()
-            .maybeSingle();
-
-          if (chefErr) {
-            console.warn('[Supabase Chefs] Aviso ao gravar chef na nuvem:', chefErr.message || chefErr);
-            chefData = chefPayload;
-          } else {
-            chefData = insertedChef || chefPayload;
-          }
-        } catch (chefEx: any) {
-          console.warn('[Supabase Chefs] Exceção ao gravar chef na nuvem:', chefEx?.message || chefEx);
-          chefData = chefPayload;
-        }
-
-        saveChefToLocalCache(chefData);
-      }
+      // 3. Garantir persistência em profiles (e chefs)
+      const { profilePayload, chefData } = await persistNewProfile(targetId, sanitizedEmail, data, role);
 
       const createdUser: User = mapProfileRowToUser(profilePayload, chefData);
 
-      // Guardar credenciais de autenticação local para resiliência offline e de rate-limit
-      if (password) {
+      // Só em modo demonstração (sem Supabase) se guardam credenciais locais.
+      if (password && !isSupabaseConfigured()) {
         saveLocalAuthCredentials(sanitizedEmail, password, role);
       }
 
