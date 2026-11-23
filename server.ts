@@ -104,6 +104,16 @@ function isErrorUnavailable(err: any): boolean {
          fullText.includes("ETIMEDOUT");
 }
 
+// Idioma escolhido pelo utilizador na app (pt, en, es, fr) → instrução para a IA
+function langName(lang: any): string {
+  switch (String(lang || "pt").slice(0, 2)) {
+    case "en": return "English";
+    case "es": return "español (España)";
+    case "fr": return "français";
+    default: return "português de Portugal";
+  }
+}
+
 // Resilient wrapper to call Gemini with retries and fallback models
 async function callGeminiWithRetry(params: any, retries = 2, delay = 1000): Promise<any> {
   let lastError: any = null;
@@ -371,7 +381,7 @@ app.use("/api/gemini", (req: AuthenticatedRequest, res, next) => {
 // AI Endpoints
 app.post("/api/gemini/recommendations", async (req, res) => {
   try {
-    const { cuisinesToUse, restrictionsToUse, lightweightMenus } = req.body;
+    const { cuisinesToUse, restrictionsToUse, lightweightMenus, language } = req.body;
 
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY is not configured on the server.");
@@ -392,6 +402,7 @@ Por favor, escolha exatamente os top 3 menus mais adequados para este cliente. S
 Para cada um dos 3 menus selecionados, preencha as propriedades requeridas de acordo com o esquema definido.
 
 REGRAS DE FORMATAÇÃO CRÍTICAS:
+- Escreva os textos 'explanation', 'highlight' e 'winePairingSuggestion' em ${langName(language)}.
 - NUNCA use aspas duplas adicionais não escapadas dentro de qualquer valor textual de string (por exemplo, na 'explanation' ou 'winePairingSuggestion'). Se desejar enfatizar ou citar conceitos como 'chef at home', use SEMPRE aspas simples (') em vez de aspas duplas.
 - Certifique-se de que a resposta JSON é 100% válida e bem formatada.`;
 
@@ -440,38 +451,15 @@ REGRAS DE FORMATAÇÃO CRÍTICAS:
 
     res.json({ text: responseText });
   } catch (error: any) {
-    console.log(`[Info] /api/gemini/recommendations fallback activated: ${error.message || error}`);
-    
-    // Graceful high-quality fallback curation
-    const menus = req.body.lightweightMenus || [];
-    const items = [];
-    const fallbackLabels = ["Seleção de Autor", "Harmonia Exclusiva", "Alta Gastronomia", "Puro Sabor"];
-    const fallbackWines = ["Vinho Tinto Barca Velha", "Espumante Murganheira Bruto", "Vinho Branco Quinta da Bacalhoa", "Cartuxa Colheita Selecionada"];
-    const fallbackExplanations = [
-      "Uma curadoria que celebra a essência culinária portuguesa, perfeitamente alinhada com as suas restrições e gostos sofisticados.",
-      "Um percurso gastronómico refinado, preparado especialmente para criar momentos memoráveis no conforto do seu lar.",
-      "Pratos de assinatura criados por chefs de elite, proporcionando uma simbiose perfeita de sabores, frescura e rigor técnico."
-    ];
-
-    const limit = Math.min(3, menus.length > 0 ? menus.length : 3);
-    for (let i = 0; i < limit; i++) {
-      const menuId = menus[i]?.id || String(i + 1);
-      items.push({
-        menuId,
-        matchScore: 95 - (i * 4),
-        explanation: fallbackExplanations[i % fallbackExplanations.length],
-        highlight: fallbackLabels[i % fallbackLabels.length],
-        winePairingSuggestion: fallbackWines[i % fallbackWines.length]
-      });
-    }
-    
-    res.json({ text: JSON.stringify(items) });
+    console.log(`[Info] /api/gemini/recommendations unavailable: ${error.message || error}`);
+    // Sem IA não inventamos recomendações: o cliente usa o seu motor local (baseado nos menus reais).
+    res.status(503).json({ error: "ai_unavailable" });
   }
 });
 
 app.post("/api/gemini/chat", async (req, res) => {
   try {
-    const { userName, userRole, message, history } = req.body;
+    const { userName, userRole, message, history, language } = req.body;
 
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY is not configured on the server.");
@@ -486,16 +474,16 @@ app.post("/api/gemini/chat", async (req, res) => {
           REGRAS CRÍTICAS: 
           1. Nunca uses itálico ou formatação de markdown complexa. 
           2. Mantém as respostas extremamente curtas (máximo 2-3 frases). 
-          3. Usa Português de Portugal (ex: "está à sua espera", "por favor").
+          3. Responde sempre em ${langName(language)}.
           4. Se perguntarem sobre reservas, incentiva a explorar os menus dos chefs.`,
       },
       contents: [...(history || []), { role: "user", parts: [{ text: message }] }],
     });
 
-    res.json({ text: response.text?.trim() || "Como posso elevar a sua experiência gastronómica hoje?" });
+    res.json({ text: response.text?.trim() || "" });
   } catch (error: any) {
-    console.log(`[Info] /api/gemini/chat fallback activated: ${error.message || error}`);
-    res.json({ text: "Com certeza, como seu Concierge Cookr pessoal estou inteiramente à sua disposição. Posso propor-lhe menus requintados de alta gastronomia portuguesa ou ajudá-lo a selecionar chefs renomados. O que gostaria de explorar hoje?" });
+    console.log(`[Info] /api/gemini/chat unavailable: ${error.message || error}`);
+    res.status(503).json({ error: "ai_unavailable" });
   }
 });
 
@@ -573,7 +561,7 @@ app.post("/api/gemini/city-coords", async (req, res) => {
 
 app.post("/api/gemini/suggest-bio", async (req, res) => {
   try {
-    const { name, specialties } = req.body;
+    const { name, specialties, language } = req.body;
 
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY is not configured on the server.");
@@ -581,16 +569,14 @@ app.post("/api/gemini/suggest-bio", async (req, res) => {
 
     const response = await callGeminiWithRetry({
       model: "gemini-3.1-flash-lite",
-      contents: `Gera uma biografia profissional curta (máximo 160 caracteres) para o chef ${name}, mestre em ${(specialties || []).join(", ")}. Tom luxuoso, direto e inspirador. Sem markdown.`,
+      contents: `Gera uma biografia profissional curta (máximo 160 caracteres) para o chef ${name}, mestre em ${(specialties || []).join(", ")}. Tom luxuoso, direto e inspirador. Sem markdown. Escreve em ${langName(language)}.`,
     });
 
     const bio = response.text?.replace(/[*_#]/g, "").trim() || "";
     res.json({ bio });
   } catch (error: any) {
-    console.log(`[Info] /api/gemini/suggest-bio fallback activated: ${error.message || error}`);
-    const specs = req.body.specialties || [];
-    const specsStr = specs.length > 0 ? specs.slice(0, 3).join(", ") : "alta gastronomia";
-    res.json({ bio: `Chef de elite comprometido com a excelência, trazendo sabores inesquecíveis e experiências de 'chef em casa' focadas em ${specsStr}.` });
+    console.log(`[Info] /api/gemini/suggest-bio unavailable: ${error.message || error}`);
+    res.status(503).json({ error: "ai_unavailable" });
   }
 });
 
@@ -695,40 +681,34 @@ app.post("/api/gemini/insights", requireAdmin, async (req, res) => {
 
 app.post("/api/gemini/chat-support", async (req, res) => {
   try {
-    const { userName, userRole, userLocation, userMessage } = req.body;
+    const { userName, userRole, userLocation, userMessage, history, language } = req.body;
 
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY is not configured on the server.");
     }
 
+    const past = Array.isArray(history)
+      ? history.slice(-10).filter((m: any) => m && typeof m.text === "string").map((m: any) => ({
+          role: m.role === "ai" || m.role === "model" ? "model" : "user",
+          parts: [{ text: String(m.text).slice(0, 1500) }],
+        }))
+      : [];
     const response = await callGeminiWithRetry({
       model: "gemini-3.1-flash-lite",
-      contents: [
-        {
-          parts: [
-            {
-              text: `Você é o Concierge Cookr, um assistente de elite para uma plataforma de chefs privados em Portugal. 
-            Seu tom é sofisticado, prestativo e apaixonado por gastronomia.
-            Ajude o usuário (${userName}, papel: ${userRole}) com dúvidas sobre a plataforma, sugestões de menus ou como encontrar chefs.
-            Mantenha as respostas concisas e elegantes.
-            
-            Contexto do usuário:
-            Nome: ${userName}
-            Papel: ${userRole}
-            Localização: ${userLocation}
-            
-            Mensagem do usuário: ${userMessage}`,
-            },
-          ],
-        },
-      ],
+      config: {
+        systemInstruction: `És o Concierge Cookr, assistente de uma plataforma de chefs privados ao domicílio em Portugal.
+Tom sofisticado, prestável e apaixonado por gastronomia. Ajuda com dúvidas sobre a plataforma, menus e como encontrar chefs. Respostas concisas e elegantes, sem markdown complexo.
+Responde sempre em ${langName(language)}.
+Não inventes preços, políticas, reservas nem dados que não conheces: se não souberes, diz que a equipa de suporte da Cookr pode ajudar.
+Utilizador: ${String(userName || "").slice(0, 80)} (papel: ${String(userRole || "").slice(0, 20)}, localização: ${String(userLocation || "").slice(0, 80)}).`,
+      },
+      contents: [...past, { role: "user", parts: [{ text: String(userMessage || "").slice(0, 2000) }] }],
     });
 
-    res.json({ text: response.text || "Desculpe, tive um pequeno precalço na cozinha. Pode repetir?" });
+    res.json({ text: response.text || "" });
   } catch (error: any) {
-    console.log(`[Info] /api/gemini/chat-support fallback activated: ${error.message || error}`);
-    const uName = req.body.userName || "estimado cliente";
-    res.json({ text: `Olá ${uName}! Sou o Concierge Cookr. Estou inteiramente ao seu dispor para guiar a sua jornada gastronómica, ajudar na seleção do chef privado ideal para o seu evento ou personalizar as suas preferências alimentares. Como o posso auxiliar neste momento?` });
+    console.log(`[Info] /api/gemini/chat-support unavailable: ${error.message || error}`);
+    res.status(503).json({ error: "ai_unavailable" });
   }
 });
 
@@ -850,9 +830,10 @@ Responda APENAS em formato JSON com os seguintes campos:
     const dishLower = (req.body.dish || "").toLowerCase();
     const allergiesList = req.body.allergies || [];
     
-    let isSafe = true;
-    let riskRating = "Baixo";
-    let explanation = "Não detetámos nenhum ingrediente de risco imediato para os alergénios indicados neste prato. É uma escolha excelente e segura para o seu ritual gastronómico.";
+    // IA indisponível: só uma análise por palavras-chave. Nunca declaramos o prato "seguro" sem verificação.
+    let isSafe = false;
+    let riskRating = "Desconhecido";
+    let explanation = "Não foi possível verificar este prato neste momento. Confirme sempre os ingredientes e alergénios diretamente com o chef antes da reserva.";
     let riskIngredients: string[] = [];
     let safeSubstitutions: string[] = [];
     let chefTip = "Comunique sempre as suas alergias ao chef privado para garantir que todos os utensílios são higienizados individualmente antes da confeção.";

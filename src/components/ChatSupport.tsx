@@ -4,7 +4,7 @@ import { User } from "../types";
 import { motion, AnimatePresence } from "motion/react";
 import { apiFetch } from "../lib/apiClient";
 
-import { tr } from "../lib/tr";
+import { tr, getTrLanguage } from "../lib/tr";
 import { useLanguage } from "../contexts/LanguageContext";
 interface ChatSupportProps {
   user: User;
@@ -48,6 +48,8 @@ const ChatSupport: React.FC<ChatSupportProps> = ({ user }) => {
           userRole: user.role,
           userLocation: user.localizacao,
           userMessage,
+          history: messages.slice(-10),
+          language: getTrLanguage(),
         }),
       });
 
@@ -56,9 +58,7 @@ const ChatSupport: React.FC<ChatSupportProps> = ({ user }) => {
       }
 
       const resData = await response.json();
-      const aiText =
-        resData.text ||
-        "Desculpe, tive um pequeno precalço na cozinha. Pode repetir?";
+      const aiText = resData.text || tr("Desculpe, tive um pequeno precalço na cozinha. Pode repetir?");
       setMessages((prev) => [...prev, { role: "ai", text: aiText }]);
     } catch (error) {
       console.error("AI Error:", error);
@@ -66,7 +66,7 @@ const ChatSupport: React.FC<ChatSupportProps> = ({ user }) => {
         ...prev,
         {
           role: "ai",
-          text: "Lamento, estou com dificuldades técnicas. Por favor, tente mais tarde.",
+          text: tr("Lamento, estou com dificuldades técnicas. Por favor, tente mais tarde."),
         },
       ]);
     } finally {
