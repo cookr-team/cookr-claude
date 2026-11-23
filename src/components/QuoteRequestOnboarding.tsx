@@ -7,6 +7,8 @@ import { GoogleAddressAutocomplete } from "./GoogleAddressAutocomplete";
 import { formatPostalCode } from "../utils/formatters";
 import { todayLocal } from "../lib/dateUtils";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface QuoteRequestOnboardingProps {
   chef: User;
   currentUser: User | null;
@@ -32,6 +34,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
   onSuccess,
   onNotify,
 }) => {
+  useLanguage();
   const [step, setStep] = useState<Step>("intro");
   const [requestType, setRequestType] = useState<"dish" | "experience" | null>(
     null,
@@ -170,19 +173,18 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
             </div>
             <div className="space-y-4">
               <h2 className="text-3xl font-black text-white italic uppercase tracking-tighter">
-                Pedir Orçamento
+                {tr("Pedir Orçamento")}
               </h2>
               <p className="text-white/60 text-sm leading-relaxed max-w-xs mx-auto">
-                Personalize a sua experiência gastronómica com o Chef{" "}
-                {chef.nome}. Conte-nos o que procura e receba uma proposta
-                exclusiva.
+                {tr("Personalize a sua experiência gastronómica com o Chef")}{" "}
+                {chef.nome}{tr(". Conte-nos o que procura e receba uma proposta exclusiva.")}
               </p>
             </div>
             <button
               onClick={handleNext}
               className="w-full py-5 bg-white text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-xl active:scale-95"
             >
-              Começar
+              {tr("Começar")}
             </button>
           </motion.div>
         );
@@ -197,10 +199,10 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
           >
             <div className="space-y-2">
               <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">
-                O que procura?
+                {tr("O que procura?")}
               </h2>
               <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">
-                Selecione o tipo de serviço
+                {tr("Selecione o tipo de serviço")}
               </p>
             </div>
 
@@ -221,10 +223,10 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                   )}
                 </div>
                 <h3 className="text-lg font-black text-white italic uppercase tracking-tighter">
-                  Um Prato Específico
+                  {tr("Um Prato Específico")}
                 </h3>
                 <p className="text-white/40 text-[9px] font-medium mt-1">
-                  Deseja um prato que não está na ementa ou algo personalizado.
+                  {tr("Deseja um prato que não está na ementa ou algo personalizado.")}
                 </p>
               </button>
 
@@ -244,10 +246,10 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                   )}
                 </div>
                 <h3 className="text-lg font-black text-white italic uppercase tracking-tighter">
-                  Experiência Completa
+                  {tr("Experiência Completa")}
                 </h3>
                 <p className="text-white/40 text-[9px] font-medium mt-1">
-                  Um evento completo, com vários pratos e serviço personalizado.
+                  {tr("Um evento completo, com vários pratos e serviço personalizado.")}
                 </p>
               </button>
             </div>
@@ -264,12 +266,12 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
           >
             <div className="space-y-2">
               <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">
-                Detalhes do Pedido
+                {tr("Detalhes do Pedido")}
               </h2>
               <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">
                 {requestType === "dish"
-                  ? "Escolha o prato e defina o grupo"
-                  : "Dê um nome e defina o grupo"}
+                  ? tr("Escolha o prato e defina o grupo")
+                  : tr("Dê um nome e defina o grupo")}
               </p>
             </div>
 
@@ -277,7 +279,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
               {requestType === "dish" && (
                 <div className="space-y-3">
                   <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                    Escolha um Prato
+                    {tr("Escolha um Prato")}
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     {chefMenus
@@ -321,7 +323,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                       0 && (
                       <div className="col-span-2 py-8 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
                         <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
-                          Nenhum prato disponível
+                          {tr("Nenhum prato disponível")}
                         </p>
                       </div>
                     )}
@@ -331,11 +333,11 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
 
               <div className="space-y-2">
                 <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                  Nome do Evento / Pedido
+                  {tr("Nome do Evento / Pedido")}
                 </label>
                 <input
                   type="text"
-                  placeholder="Ex: Jantar de Aniversário, Almoço de Família..."
+                  placeholder={tr("Ex: Jantar de Aniversário, Almoço de Família...")}
                   className="w-full h-16 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-bold text-sm outline-none focus:border-orange-500 transition-all"
                   value={requestName}
                   onChange={(e) => setRequestName(e.target.value)}
@@ -344,7 +346,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
 
               <div className="space-y-2">
                 <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                  Número de Pessoas
+                  {tr("Número de Pessoas")}
                 </label>
                 <div className="flex items-center gap-4">
                   <button
@@ -358,7 +360,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                       {numPeople}
                     </span>
                     <span className="text-[10px] font-black text-white/20 uppercase ml-2">
-                      Pax
+                      {tr("Pax")}
                     </span>
                   </div>
                   <button
@@ -385,7 +387,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 }
                 className="flex-1 h-16 bg-white text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all disabled:opacity-20"
               >
-                Continuar
+                {tr("Continuar")}
               </button>
             </div>
           </motion.div>
@@ -401,10 +403,10 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
           >
             <div className="space-y-2">
               <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">
-                Quando e Onde?
+                {tr("Quando e Onde?")}
               </h2>
               <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">
-                Defina a data e local pretendidos
+                {tr("Defina a data e local pretendidos")}
               </p>
             </div>
 
@@ -412,7 +414,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
               {/* Saved Addresses Suggestion */}
               <div className="space-y-3">
                 <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                  Moradas Guardadas
+                  {tr("Moradas Guardadas")}
                 </label>
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                   {/* Manual Entry Option */}
@@ -430,11 +432,11 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                     <div className="flex items-center gap-2 mb-1">
                       <ICONS.Plus size={12} className="text-orange-500" />
                       <span className="text-[10px] font-black text-white uppercase truncate">
-                        Nova Morada
+                        {tr("Nova Morada")}
                       </span>
                     </div>
                     <p className="text-[8px] text-white/40 leading-tight">
-                      Inserir manualmente
+                      {tr("Inserir manualmente")}
                     </p>
                   </button>
 
@@ -454,7 +456,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                       <div className="flex items-center gap-2 mb-1">
                         <ICONS.MapPin size={12} className="text-orange-500" />
                         <span className="text-[10px] font-black text-white uppercase truncate">
-                          {addr.label || "Morada"}
+                          {addr.label || tr("Morada")}
                         </span>
                       </div>
                       <p className="text-[8px] text-white/40 line-clamp-2 leading-tight">
@@ -468,7 +470,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                    Data
+                    {tr("Data")}
                   </label>
                   <div className="relative">
                     <input
@@ -482,7 +484,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 </div>
                 <div className="space-y-2">
                   <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                    Hora
+                    {tr("Hora")}
                   </label>
                   <div className="relative">
                     <input
@@ -497,11 +499,11 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
 
               <div className="space-y-2">
                 <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                  Rua / Morada
+                  {tr("Rua / Morada")}
                 </label>
                 <GoogleAddressAutocomplete
                   theme="dark"
-                  placeholder="Ex: Rua das Flores"
+                  placeholder={tr("Ex: Rua das Flores")}
                   disabled={!isManualAddress}
                   className={`w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-bold text-sm outline-none focus:border-orange-500 transition-all ${!isManualAddress ? "opacity-50 cursor-not-allowed" : ""}`}
                   value={location}
@@ -518,11 +520,11 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                    Número / Porta
+                    {tr("Número / Porta")}
                   </label>
                   <input
                     type="text"
-                    placeholder="Ex: 123"
+                    placeholder={tr("Ex: 123")}
                     readOnly={!isManualAddress}
                     className={`w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-bold text-sm outline-none focus:border-orange-500 transition-all ${!isManualAddress ? "opacity-50 cursor-not-allowed" : ""}`}
                     value={doorNumber}
@@ -531,11 +533,11 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 </div>
                 <div className="space-y-2">
                   <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                    Andar / Apart.
+                    {tr("Andar / Apart.")}
                   </label>
                   <input
                     type="text"
-                    placeholder="Ex: 2º Esq"
+                    placeholder={tr("Ex: 2º Esq")}
                     readOnly={!isManualAddress}
                     className={`w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-bold text-sm outline-none focus:border-orange-500 transition-all ${!isManualAddress ? "opacity-50 cursor-not-allowed" : ""}`}
                     value={floor}
@@ -547,13 +549,13 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                    Código Postal
+                    {tr("Código Postal")}
                   </label>
                   <input
                     type="text"
                     inputMode="numeric"
                     maxLength={8}
-                    placeholder="Ex: 1000-001"
+                    placeholder={tr("Ex: 1000-001")}
                     readOnly={!isManualAddress}
                     className={`w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-bold text-sm outline-none focus:border-orange-500 transition-all ${!isManualAddress ? "opacity-50 cursor-not-allowed" : ""} ${isManualAddress && zipCode && !isZipCodeValid(zipCode) ? "border-red-500/50" : ""}`}
                     value={zipCode}
@@ -562,11 +564,11 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 </div>
                 <div className="space-y-2">
                   <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                    Cidade
+                    {tr("Cidade")}
                   </label>
                   <input
                     type="text"
-                    placeholder="Ex: Lisboa"
+                    placeholder={tr("Ex: Lisboa")}
                     readOnly={!isManualAddress}
                     className={`w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-bold text-sm outline-none focus:border-orange-500 transition-all ${!isManualAddress ? "opacity-50 cursor-not-allowed" : ""}`}
                     value={city}
@@ -593,7 +595,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 }
                 className="flex-1 h-14 bg-white text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all disabled:opacity-20"
               >
-                Continuar
+                {tr("Continuar")}
               </button>
             </div>
           </motion.div>
@@ -609,20 +611,20 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
           >
             <div className="space-y-2">
               <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">
-                Requisitos
+                {tr("Requisitos")}
               </h2>
               <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">
-                Conte-nos mais sobre as suas preferências
+                {tr("Conte-nos mais sobre as suas preferências")}
               </p>
             </div>
 
             <div className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                  Notas, Alergias ou Desejos
+                  {tr("Notas, Alergias ou Desejos")}
                 </label>
                 <textarea
-                  placeholder="Ex: Alergia a marisco, preferência por cozinha mediterrânica, cozinha equipada com forno a lenha..."
+                  placeholder={tr("Ex: Alergia a marisco, preferência por cozinha mediterrânica, cozinha equipada com forno a lenha...")}
                   className="w-full h-40 bg-white/5 border border-white/10 rounded-3xl p-6 text-white font-bold text-sm outline-none focus:border-orange-500 transition-all resize-none"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
@@ -641,7 +643,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 onClick={handleNext}
                 className="flex-1 h-16 bg-white text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all"
               >
-                Resumo
+                {tr("Resumo")}
               </button>
             </div>
           </motion.div>
@@ -657,10 +659,10 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
           >
             <div className="space-y-2">
               <h2 className="text-2xl font-black text-white italic uppercase tracking-tighter">
-                Resumo do Pedido
+                {tr("Resumo do Pedido")}
               </h2>
               <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">
-                Confirme os dados antes de enviar
+                {tr("Confirme os dados antes de enviar")}
               </p>
             </div>
 
@@ -669,27 +671,27 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-[8px] font-black text-white/20 uppercase tracking-widest">
-                      Tipo de Serviço
+                      {tr("Tipo de Serviço")}
                     </p>
                     <p className="text-sm font-black text-orange-500 italic uppercase tracking-tighter">
                       {requestType === "dish"
-                        ? "Prato Personalizado"
-                        : "Experiência Completa"}
+                        ? tr("Prato Personalizado")
+                        : tr("Experiência Completa")}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-[8px] font-black text-white/20 uppercase tracking-widest">
-                      Pessoas
+                      {tr("Pessoas")}
                     </p>
                     <p className="text-sm font-black text-white italic uppercase tracking-tighter">
-                      {numPeople} Pax
+                      {numPeople} {tr("Pax")}
                     </p>
                   </div>
                 </div>
 
                 <div>
                   <p className="text-[8px] font-black text-white/20 uppercase tracking-widest">
-                    Nome do Pedido
+                    {tr("Nome do Pedido")}
                   </p>
                   <p className="text-sm font-black text-white italic uppercase tracking-tighter">
                     {requestName}
@@ -699,25 +701,25 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-[8px] font-black text-white/20 uppercase tracking-widest">
-                      Data
+                      {tr("Data")}
                     </p>
                     <p className="text-sm font-black text-white italic uppercase tracking-tighter">
-                      {preferredDate || "A definir"}
+                      {preferredDate || tr("A definir")}
                     </p>
                   </div>
                   <div>
                     <p className="text-[8px] font-black text-white/20 uppercase tracking-widest">
-                      Hora
+                      {tr("Hora")}
                     </p>
                     <p className="text-sm font-black text-white italic uppercase tracking-tighter">
-                      {preferredTime || "A definir"}
+                      {preferredTime || tr("A definir")}
                     </p>
                   </div>
                 </div>
 
                 <div>
                   <p className="text-[8px] font-black text-white/20 uppercase tracking-widest">
-                    Localização
+                    {tr("Localização")}
                   </p>
                   <p className="text-sm font-black text-white italic uppercase tracking-tighter">
                     {location}
@@ -748,7 +750,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                 ) : (
                   <>
                     <ICONS.Send size={18} />
-                    Enviar Pedido
+                    {tr("Enviar Pedido")}
                   </>
                 )}
               </button>

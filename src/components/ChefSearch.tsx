@@ -17,6 +17,7 @@ import { DietaryBadges } from "./DietaryBadges";
 import { useLanguage } from "../contexts/LanguageContext";
 import { todayLocal, toLocalDateStr } from "../lib/dateUtils";
 
+import { tr } from "../lib/tr";
 const CuisineImage = ({ src, alt }: { src: string; alt: string }) => {
   const [hasError, setHasError] = useState(false);
 
@@ -1071,15 +1072,15 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                         }}
                         className="w-full bg-transparent font-black text-[10px] sm:text-[11px] md:text-xs uppercase outline-none text-slate-900 cursor-pointer min-w-0 truncate leading-tight pr-1"
                       >
-                        <optgroup label="Meus Endereços (Raio Validado)">
+                        <optgroup label={tr("Meus Endereços (Raio Validado)")}>
                           {currentUser.addresses.map((addr, addrIdx) => (
                             <option key={addr.id || `addr-${addrIdx}`} value={addr.id}>
                               📍 {addr.label} ({addr.city})
                             </option>
                           ))}
                         </optgroup>
-                        <optgroup label="Todas as Cidades">
-                          <option value="Todas">Portugal Inteiro</option>
+                        <optgroup label={tr("Todas as Cidades")}>
+                          <option value="Todas">{tr("Portugal Inteiro")}</option>
                           {PORTUGAL_CITIES.map((city) => (
                             <option key={city} value={city}>
                               {city}
@@ -1093,7 +1094,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                         onChange={(e) => setSelectedCity(e.target.value)}
                         className="w-full bg-transparent font-black text-[10px] sm:text-[11px] md:text-xs uppercase outline-none text-slate-900 cursor-pointer min-w-0 truncate leading-tight pr-1"
                       >
-                        <option value="Todas">Portugal</option>
+                        <option value="Todas">{tr("Portugal")}</option>
                         {PORTUGAL_CITIES.map((city) => (
                           <option key={city} value={city}>
                             {city}
@@ -1182,7 +1183,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                       className="text-orange-500 group-hover/magic:text-white transition-colors"
                     />
                     <span className="text-[9px] font-black uppercase tracking-widest">
-                      Magic
+                      {tr("Magic")}
                     </span>
                   </>
                 )}
@@ -1234,14 +1235,14 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 <ICONS.MapPin size={10} />
               </span>
               <span>
-                A pesquisar para: <strong className="text-slate-950 font-black">{
-                  currentUser.addresses.find(a => a.city === selectedCity)?.label || "Localização Atual"
+                {tr("A pesquisar para:")} <strong className="text-slate-950 font-black">{
+                  currentUser.addresses.find(a => a.city === selectedCity)?.label || tr("Localização Atual")
                 }</strong> {currentUser.addresses.find(a => a.city === selectedCity)?.address ? `(${currentUser.addresses.find(a => a.city === selectedCity)?.address})` : `(${selectedCity})`}
               </span>
             </div>
             <div className="flex items-center gap-1.5 text-[9px] font-black uppercase text-orange-600 tracking-wider bg-orange-50 px-2.5 py-1 rounded-full border border-orange-100/50">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-              Raio de Cobertura Validado
+              {tr("Raio de Cobertura Validado")}
             </div>
           </motion.div>
         )}
@@ -1260,7 +1261,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 <div className="w-full h-full rounded-full overflow-hidden border-2 border-white">
                   <CuisineImage
                     src={ALL_CUISINES_IMG}
-                    alt={t("all") || "Todos"}
+                    alt={t("all") || tr("Todos")}
                   />
                 </div>
               </div>
@@ -1309,7 +1310,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-1">
             <div className="space-y-0.5 text-left">
               <h2 className="text-lg md:text-4xl font-black text-slate-950 tracking-tighter uppercase leading-none">
-                {language === "pt" ? "Chefs em" : language === "en" ? "Chefs in" : "Chefs à"} <span className="text-orange-500">{selectedCity}</span>
+                {language === "pt" ? tr("Chefs em") : language === "en" ? tr("Chefs in") : tr("Chefs à")} <span className="text-orange-500">{selectedCity}</span>
                 {activeCollectionId && (
                   <span className="text-slate-300 ml-2">
                     / {activeCollection?.title}
@@ -1318,7 +1319,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               </h2>
               {(selectedDate || activeCollectionId) && (
                 <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest italic">
-                  {language === "pt" ? "Seleção Inteligente Ativa" : language === "en" ? "Active Smart Selection" : "Sélection Intelligente Active"}
+                  {language === "pt" ? tr("Seleção Inteligente Ativa") : language === "en" ? tr("Active Smart Selection") : tr("Sélection Intelligente Active")}
                 </p>
               )}
             </div>
@@ -1329,7 +1330,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 onClick={() => setShowAllChefs(true)}
                 className="md:hidden flex items-center gap-1.5 text-orange-500 font-black text-[10px] uppercase tracking-widest self-start mt-1"
               >
-                {language === "pt" ? "Ver Todos" : language === "en" ? "See All" : "Voir Tout"} <ICONS.ArrowRight size={10} />
+                {language === "pt" ? tr("Ver Todos") : language === "en" ? tr("See All") : tr("Voir Tout")} <ICONS.ArrowRight size={10} />
               </button>
             )}
             {showAllChefs && (
@@ -1337,7 +1338,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 onClick={() => setShowAllChefs(false)}
                 className="md:hidden flex items-center gap-1.5 text-slate-400 font-black text-[10px] uppercase tracking-widest self-start mt-1"
               >
-                {language === "pt" ? "Recolher" : language === "en" ? "Collapse" : "Réduire"} <ICONS.ChevronLeft size={10} />
+                {language === "pt" ? tr("Recolher") : language === "en" ? tr("Collapse") : tr("Réduire")} <ICONS.ChevronLeft size={10} />
               </button>
             )}
           </div>
@@ -1403,20 +1404,20 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                         {((cook.rating === undefined ? 5.0 : cook.rating) >= 4.7) && (
                           <div className="px-2 py-0.5 md:px-2.5 md:py-1 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-950 text-[7.5px] md:text-[9px] font-black uppercase tracking-wider rounded-full shadow-md border border-amber-200/90 backdrop-blur-md flex items-center gap-1 animate-in fade-in zoom-in duration-300">
                             <ICONS.Star size={10} className="fill-slate-950 text-slate-950 shrink-0" />
-                            <span>{(cook.rating !== undefined ? cook.rating : 5.0).toFixed(1)} Top Rated</span>
+                            <span>{(cook.rating !== undefined ? cook.rating : 5.0).toFixed(1)} {tr("Top Rated")}</span>
                           </div>
                         )}
 
                         {cook.sustainability_badges && cook.sustainability_badges.length > 0 && (
                           <span className="px-1.5 py-0.5 bg-emerald-600/90 backdrop-blur-md text-white text-[7px] md:text-[8px] font-black uppercase rounded-full shadow-sm flex items-center gap-0.5">
                             <span>🌱</span>
-                            <span className="hidden md:inline">Eco Chef</span>
+                            <span className="hidden md:inline">{tr("Eco Chef")}</span>
                           </span>
                         )}
                         {cook.allergen_certifications && cook.allergen_certifications.length > 0 && (
                           <span className="px-1.5 py-0.5 bg-amber-600/90 backdrop-blur-md text-white text-[7px] md:text-[8px] font-black uppercase rounded-full shadow-sm flex items-center gap-0.5">
                             <span>🛡️</span>
-                            <span className="hidden md:inline">Sem Alergénios</span>
+                            <span className="hidden md:inline">{tr("Sem Alergénios")}</span>
                           </span>
                         )}
                       </div>
@@ -1429,7 +1430,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                             <div className="absolute top-2 right-2 md:top-6 md:right-6 flex items-center gap-1 md:gap-1.5 px-2 py-0.5 md:px-2.5 md:py-1 bg-emerald-500 text-white rounded-full shadow-lg animate-in zoom-in duration-500">
                               <div className="w-1 md:w-1.5 h-1 md:h-1.5 bg-white rounded-full animate-pulse" />
                               <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest">
-                                {t("common.online") || "Online"}
+                                {t("common.online") || tr("Online")}
                               </span>
                             </div>
                           );
@@ -1438,7 +1439,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                           <div className="absolute top-2 right-2 md:top-6 md:right-6 flex items-center gap-1 md:gap-1.5 px-2 py-0.5 md:px-2.5 md:py-1 bg-slate-900/80 backdrop-blur-md text-slate-200 rounded-full shadow-md border border-slate-700/50">
                             <ICONS.Calendar size={10} className="text-orange-400" />
                             <span className="text-[7.5px] md:text-[8.5px] font-black uppercase tracking-widest">
-                              {t("agenda.scheduled_badge") || "Agenda"}
+                              {t("agenda.scheduled_badge") || tr("Agenda")}
                             </span>
                           </div>
                         );
@@ -1503,7 +1504,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                                 <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-emerald-500 text-white rounded-full shadow-lg">
                                   <div className="w-1 h-1 bg-white rounded-full animate-pulse" />
                                   <span className="text-[8px] font-black uppercase tracking-widest">
-                                    {t("common.online") || "Online"}
+                                    {t("common.online") || tr("Online")}
                                   </span>
                                 </div>
                               );
@@ -1512,7 +1513,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                               <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 bg-slate-900/80 backdrop-blur-md text-slate-200 rounded-full shadow-md border border-slate-700/50">
                                 <ICONS.Calendar size={8} className="text-orange-400" />
                                 <span className="text-[7px] font-black uppercase tracking-widest">
-                                  {t("agenda.scheduled_badge") || "Agenda"}
+                                  {t("agenda.scheduled_badge") || tr("Agenda")}
                                 </span>
                               </div>
                             );
@@ -1549,7 +1550,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                           />
                         </div>
                         <span className="text-[8px] font-black uppercase tracking-widest">
-                          {language === "pt" ? "Ver Todos" : language === "en" ? "See All" : "Voir Tout"}
+                          {language === "pt" ? tr("Ver Todos") : language === "en" ? tr("See All") : tr("Voir Tout")}
                         </span>
                       </div>
                     )}
@@ -1571,7 +1572,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 onClick={handleResetFilters}
                 className="text-[8px] font-black uppercase text-orange-500 border-b border-orange-500"
               >
-                {language === "pt" ? "Limpar Mood" : language === "en" ? "Clear Mood" : "Effacer l'Ambiance"}
+                {language === "pt" ? tr("Limpar Mood") : language === "en" ? tr("Clear Mood") : tr("Effacer l'Ambiance")}
               </button>
             </div>
           )}
@@ -1583,15 +1584,15 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
         <div className="text-left space-y-0.5 md:space-y-1">
           <h2 className="text-lg md:text-3xl lg:text-4xl font-black text-slate-950 tracking-tighter uppercase leading-none">
             {language === "pt" ? (
-              <>Coleções <span className="text-orange-500">Exclusivas.</span></>
+              <>{tr("Coleções")} <span className="text-orange-500">{tr("Exclusivas.")}</span></>
             ) : language === "en" ? (
-              <>Exclusive <span className="text-orange-500">Collections.</span></>
+              <>{tr("Exclusive")} <span className="text-orange-500">{tr("Collections.")}</span></>
             ) : (
-              <>Collections <span className="text-orange-500">Exclusives.</span></>
+              <>{tr("Collections")} <span className="text-orange-500">{tr("Exclusives.")}</span></>
             )}
           </h2>
           <p className="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest italic">
-            {language === "pt" ? "Momentos desenhados com rigor." : language === "en" ? "Meticulously designed moments." : "Moments méticuleusement conçus."}
+            {language === "pt" ? tr("Momentos desenhados com rigor.") : language === "en" ? tr("Meticulously designed moments.") : tr("Moments méticuleusement conçus.")}
           </p>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
@@ -1638,16 +1639,16 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
           <div className="flex items-center gap-2 text-orange-500">
             <div className="w-6 h-0.5 bg-orange-500 rounded-full" />
             <span className="text-[8px] font-black uppercase tracking-widest italic">
-              {language === "pt" ? "A Despensa do Chef" : language === "en" ? "The Chef's Pantry" : "Le Garde-Manger du Chef"}
+              {language === "pt" ? tr("A Despensa do Chef") : language === "en" ? tr("The Chef's Pantry") : tr("Le Garde-Manger du Chef")}
             </span>
           </div>
           <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-slate-950 tracking-tighter uppercase leading-none">
             {language === "pt" ? (
-              <>O Seu Chef no <span className="text-orange-500">Dia-a-Dia.</span></>
+              <>{tr("O Seu Chef no")} <span className="text-orange-500">{tr("Dia-a-Dia.")}</span></>
             ) : language === "en" ? (
-              <>Your Everyday <span className="text-orange-500">Chef.</span></>
+              <>{tr("Your Everyday")} <span className="text-orange-500">{tr("Chef.")}</span></>
             ) : (
-              <>Votre Chef au <span className="text-orange-500">Quotidien.</span></>
+              <>{tr("Votre Chef au")} <span className="text-orange-500">{tr("Quotidien.")}</span></>
             )}
           </h2>
           <p className="text-[9px] md:text-xl font-medium text-slate-400 italic">
@@ -1695,12 +1696,12 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     )}
                     <div className="absolute top-4 left-4 bg-orange-500 text-white px-2.5 py-1 rounded-full text-[7px] font-black uppercase shadow-lg flex items-center gap-1 leading-none">
                       <ICONS.Calendar size={7} className="text-white shrink-0" />
-                      Pack {plan.pack_size} {language === "pt" ? "Refeições" : language === "en" ? "Meals" : "Repas"}
+                      {tr("Pack")} {plan.pack_size} {language === "pt" ? tr("Refeições") : language === "en" ? tr("Meals") : tr("Repas")}
                     </div>
                     {plan.delivery_type === "delivery" && (
                       <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black uppercase text-slate-950 shadow-sm flex items-center gap-1">
                         <ICONS.Zap size={8} className="text-orange-500" />{" "}
-                        {language === "pt" ? "Entrega ao Domicílio" : language === "en" ? "Home Delivery" : "Livraison à Domicile"}
+                        {language === "pt" ? tr("Entrega ao Domicílio") : language === "en" ? tr("Home Delivery") : tr("Livraison à Domicile")}
                       </div>
                     )}
                   </div>
@@ -1732,7 +1733,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                         onClick={() => onSelectChef(plan.cookId!)}
                         className="px-4 py-2 bg-slate-950 text-white rounded-xl text-[8px] font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-md"
                       >
-                        {language === "pt" ? "Ver Pack" : language === "en" ? "View Pack" : "Voir Formule"}
+                        {language === "pt" ? tr("Ver Pack") : language === "en" ? tr("View Pack") : tr("Voir Formule")}
                       </button>
                     </div>
                   </div>
@@ -1744,10 +1745,10 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               <ICONS.Inbox size={40} className="text-slate-100" />
               <p className="text-slate-300 font-black uppercase text-[10px] tracking-widest italic max-w-xs leading-relaxed">
                 {language === "pt" 
-                  ? "Novos packs \"Cookr Daily\" a caminho da sua região." 
+                  ? tr("Novos packs \"Cookr Daily\" a caminho da sua região.") 
                   : language === "en" 
-                  ? "New \"Cookr Daily\" packs coming soon to your region." 
-                  : "Nouveaux packs \"Cookr Daily\" bientôt disponibles dans votre région."}
+                  ? tr("New \"Cookr Daily\" packs coming soon to your region.") 
+                  : tr("Nouveaux packs \"Cookr Daily\" bientôt disponibles dans votre région.")}
               </p>
             </div>
           )}
@@ -1766,11 +1767,11 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
             </div>
             <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-slate-950 tracking-tighter uppercase leading-none">
               {language === "pt" ? (
-                <>Curadoria <span className="text-orange-500">Líder.</span></>
+                <>{tr("Curadoria")} <span className="text-orange-500">{tr("Líder.")}</span></>
               ) : language === "en" ? (
-                <>Top <span className="text-orange-500">Curations.</span></>
+                <>{tr("Top")} <span className="text-orange-500">{tr("Curations.")}</span></>
               ) : (
-                <>Sélection de <span className="text-orange-500">Référence.</span></>
+                <>{tr("Sélection de")} <span className="text-orange-500">{tr("Référence.")}</span></>
               )}
             </h2>
           </div>
@@ -1816,7 +1817,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     </div>
                   )}
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[7px] font-black uppercase text-slate-950 shadow-sm">
-                    #{rit.tag || "Ritual"}
+                    #{rit.tag || tr("Ritual")}
                   </div>
                   <div className="absolute top-4 right-4 bg-orange-500 text-white px-3 py-1 rounded-full text-[7px] font-black uppercase shadow-lg animate-in slide-in-from-right-2">
                     Nº {idx + 1} {language === "pt" ? "em" : language === "en" ? "in" : "à"} {selectedCity}
@@ -1829,7 +1830,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                         {rit.nome}
                       </h4>
                       <p className="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        Chef {rit.chef_name}
+                        {tr("Chef")} {rit.chef_name}
                       </p>
                       <DietaryBadges tags={rit.dietary_tags} compact={true} />
                     </div>
@@ -1841,7 +1842,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     onClick={() => handleRitualClick(rit.id, rit.cook_id)}
                     className="w-full py-3.5 md:py-5 bg-slate-950 text-white rounded-xl md:rounded-2xl text-[8px] md:text-[10px] font-black uppercase tracking-widest group-hover:bg-orange-500 transition-all active:scale-95 shadow-md"
                   >
-                    {language === "pt" ? "Explorar Ritual" : language === "en" ? "Explore Ritual" : "Explorer le Rituel"}
+                    {language === "pt" ? tr("Explorar Ritual") : language === "en" ? tr("Explore Ritual") : tr("Explorer le Rituel")}
                   </button>
                 </div>
               </div>
@@ -1866,15 +1867,15 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
           <div className="text-center space-y-2">
             <h2 className="text-xl md:text-3xl lg:text-4xl font-black text-slate-950 tracking-tighter uppercase leading-none">
               {language === "pt" ? (
-                <>A Voz da <span className="text-orange-500">Comunidade.</span></>
+                <>{tr("A Voz da")} <span className="text-orange-500">{tr("Comunidade.")}</span></>
               ) : language === "en" ? (
-                <>Voice of the <span className="text-orange-500">Community.</span></>
+                <>{tr("Voice of the")} <span className="text-orange-500">{tr("Community.")}</span></>
               ) : (
-                <>La Voix de la <span className="text-orange-500">Communauté.</span></>
+                <>{tr("La Voix de la")} <span className="text-orange-500">{tr("Communauté.")}</span></>
               )}
             </h2>
             <p className="text-[8px] font-black uppercase tracking-widest text-slate-400">
-              {language === "pt" ? "Excelência validada por membros Platinum." : language === "en" ? "Excellence validated by Platinum members." : "Excellence validée par nos membres Platinum."}
+              {language === "pt" ? tr("Excelência validada por membros Platinum.") : language === "en" ? tr("Excellence validated by Platinum members.") : tr("Excellence validée par nos membres Platinum.")}
             </p>
           </div>
 
@@ -1968,14 +1969,14 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-orange-500/10 border border-orange-500/20 rounded-full">
                 <ICONS.Sparkles size={10} className="text-orange-400 animate-pulse" />
                 <span className="text-[8px] md:text-[9px] font-black tracking-widest text-orange-300 uppercase">
-                  CONCIERGE DE IA SMART
+                  {tr("CONCIERGE DE IA SMART")}
                 </span>
               </div>
               <h2 className="text-xl md:text-3xl font-black tracking-tight uppercase leading-none">
-                Menu Curado <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">Para Si.</span>
+                {tr("Menu Curado")} <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">{tr("Para Si.")}</span>
               </h2>
               <p className="text-slate-400 text-[11px] md:text-xs font-medium">
-                Sincronização gastronómica instantânea. Altere as preferências abaixo para atualizar o seu menu.
+                {tr("Sincronização gastronómica instantânea. Altere as preferências abaixo para atualizar o seu menu.")}
               </p>
             </div>
 
@@ -1985,7 +1986,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shrink-0 transition-all active:scale-95 disabled:opacity-50 cursor-pointer text-white self-start md:self-auto"
             >
               <ICONS.RefreshCw size={12} className={`${isLoadingRecs ? "animate-spin text-orange-400" : ""}`} />
-              RECALCULAR
+              {tr("RECALCULAR")}
             </button>
           </div>
 
@@ -1995,7 +1996,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               {/* Cuisines Sub-section */}
               <div className="space-y-1.5">
                 <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block text-left">
-                  Cozinhas Favoritas
+                  {tr("Cozinhas Favoritas")}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {[
@@ -2028,7 +2029,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               {/* Restrictions Sub-section */}
               <div className="space-y-1.5">
                 <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 block text-left">
-                  Restrições
+                  {tr("Restrições")}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {[
@@ -2059,7 +2060,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
             {!currentUser && (
               <div className="text-right shrink-0">
                 <span className="text-[8px] text-slate-500 italic block">
-                  💡 Autentique-se para gravar de forma permanente.
+                  {tr("💡 Autentique-se para gravar de forma permanente.")}
                 </span>
               </div>
             )}
@@ -2093,17 +2094,17 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 onClick={() => fetchAIRecommendations(userCuisines, userRestrictions)}
                 className="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 rounded-full text-[10px] font-black uppercase tracking-wider cursor-pointer text-white"
               >
-                Tentar Novamente
+                {tr("Tentar Novamente")}
               </button>
             </div>
           ) : recommendations.length === 0 ? (
             <div className="text-center py-8 bg-white/5 border border-white/5 rounded-2xl space-y-3">
               <ICONS.ChefHat size={30} className="text-slate-400 mx-auto animate-pulse" />
               <p className="text-xs font-medium text-slate-300">
-                Não existem menus correspondentes ativos de momento.
+                {tr("Não existem menus correspondentes ativos de momento.")}
               </p>
               <p className="text-[10px] text-slate-400 max-w-xs mx-auto">
-                Selecione outras cozinhas para receber sugestões imediatas.
+                {tr("Selecione outras cozinhas para receber sugestões imediatas.")}
               </p>
             </div>
           ) : (
@@ -2128,12 +2129,12 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     
                     {/* Badge */}
                     <div className="absolute top-2 left-2 px-2 py-0.5 bg-orange-500 text-white text-[8px] font-black uppercase tracking-wider rounded-md shadow-md">
-                      {rec.highlight || "Opção Premium"}
+                      {rec.highlight || tr("Opção Premium")}
                     </div>
 
                     {/* Match Score */}
                     <div className="absolute top-2 right-2 px-2 py-0.5 bg-black/70 border border-white/10 backdrop-blur-sm text-amber-400 text-[8px] font-black rounded-md">
-                      🔥 {rec.matchScore}% MATCH
+                      🔥 {rec.matchScore}{tr("% MATCH")}
                     </div>
 
                     {/* Chef Overlay */}
@@ -2181,7 +2182,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                       <div className="flex items-center gap-1.5 text-left shrink-0">
                         <ICONS.Coffee size={10} className="text-amber-500 shrink-0" />
                         <p className="text-[8px] text-slate-400 leading-none truncate">
-                          <span className="font-black text-amber-500 uppercase text-[7px] mr-1">VINHO:</span>
+                          <span className="font-black text-amber-500 uppercase text-[7px] mr-1">{tr("VINHO:")}</span>
                           {rec.winePairingSuggestion}
                         </p>
                       </div>
@@ -2192,7 +2193,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                       onClick={() => onSelectChef(rec.menu.cookId || rec.menu.cook_id)}
                       className="w-full py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-1 shadow-md hover:shadow-orange-500/20 transition-all active:scale-95 cursor-pointer"
                     >
-                      <span>Reservar Menu</span>
+                      <span>{tr("Reservar Menu")}</span>
                       <ICONS.ArrowRight size={10} className="group-hover:translate-x-0.5 transition-transform" />
                     </button>
                   </div>
@@ -2212,11 +2213,11 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               <ICONS.ShieldCheck size={24} />
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter uppercase leading-none">
-              O Padrão de <br />
-              <span className="text-orange-500">Excelência.</span>
+              {tr("O Padrão de")} <br />
+              <span className="text-orange-500">{tr("Excelência.")}</span>
             </h2>
             <p className="text-slate-400 text-sm md:text-lg font-medium italic max-w-md mx-auto md:mx-0">
-              Garantimos o rigor em cada detalhe operacional.
+              {tr("Garantimos o rigor em cada detalhe operacional.")}
             </p>
           </div>
 
@@ -2290,7 +2291,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     {t("advanced_filters")}
                   </h3>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wide mt-1">
-                    {language === "pt" ? "Personalize os seus resultados" : "Customize your results"}
+                    {language === "pt" ? tr("Personalize os seus resultados") : tr("Customize your results")}
                   </p>
                 </div>
                 <button
@@ -2335,7 +2336,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                     })}
                   </div>
                   <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider">
-                    {language === "pt" ? "Com base no preço médio por pessoa do menu do chef." : "Based on average menu price per person."}
+                    {language === "pt" ? tr("Com base no preço médio por pessoa do menu do chef.") : tr("Based on average menu price per person.")}
                   </p>
                 </div>
 
@@ -2371,7 +2372,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 <div className="space-y-3.5">
                   <label className="text-[10px] font-extrabold uppercase text-slate-500 tracking-widest flex items-center gap-1.5 leading-none">
                     <ICONS.Star size={13} className="text-orange-500" />
-                    {language === "pt" ? "Classificação Média" : "Average Rating"}
+                    {language === "pt" ? tr("Classificação Média") : tr("Average Rating")}
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {[
@@ -2452,7 +2453,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                   }}
                   className="flex-1 py-3 px-4 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-650 rounded-xl font-extrabold text-[10px] uppercase tracking-wider transition-all active:scale-95 cursor-pointer text-center"
                 >
-                  {language === "pt" ? "Limpar Filtros" : "Clear Filters"}
+                  {language === "pt" ? tr("Limpar Filtros") : tr("Clear Filters")}
                 </button>
                 <button
                   type="button"
@@ -2470,10 +2471,10 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
       <footer className="pt-2 pb-2 text-center space-y-2">
         <div className="flex items-center justify-center gap-1.5 opacity-20">
           <ICONS.ChefHat size={14} className="text-slate-900" />
-          <span className="text-xs font-black tracking-tighter">Cookr</span>
+          <span className="text-xs font-black tracking-tighter">{tr("Cookr")}</span>
         </div>
         <p className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-300">
-          © 2026 LUXURY GASTRONOMY HUB PORTUGAL
+          {tr("© 2026 LUXURY GASTRONOMY HUB PORTUGAL")}
         </p>
       </footer>
     </div>

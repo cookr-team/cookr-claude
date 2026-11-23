@@ -9,6 +9,7 @@ import { NotificationCenter } from "./NotificationCenter";
 import { Bell } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 
+import { tr } from "../lib/tr";
 interface LayoutProps {
   children: React.ReactNode;
   user: User | null;
@@ -228,8 +229,8 @@ const Layout: React.FC<LayoutProps> = ({
               <button
                 onClick={() => setIsNotifCenterOpen(true)}
                 className="relative w-9 h-9 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white rounded-xl flex items-center justify-center transition-all cursor-pointer active:scale-95 group border border-white/5 shrink-0"
-                title="Alertas do Sistema"
-                aria-label="Alertas do Sistema"
+                title={tr("Alertas do Sistema")}
+                aria-label={tr("Alertas do Sistema")}
               >
                 <Bell size={16} className="group-hover:animate-bounce shrink-0" />
                 {unreadCount > 0 && (
@@ -242,7 +243,7 @@ const Layout: React.FC<LayoutProps> = ({
               <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/5 shrink-0">
                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse shrink-0" />
                 <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest whitespace-nowrap">
-                  Live
+                  {tr("Live")}
                 </span>
               </div>
             </div>
@@ -318,7 +319,7 @@ const Layout: React.FC<LayoutProps> = ({
                   className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/10 hover:border-orange-500/50 hover:bg-white/[0.08] text-slate-300 hover:text-white flex flex-col items-center justify-center transition-all cursor-pointer active:scale-95 group shrink-0"
                 >
                   <span className="text-[7px] font-mono font-bold text-slate-400 group-hover:text-orange-400 uppercase leading-none">
-                    LANG
+                    {tr("LANG")}
                   </span>
                   <span className="text-[10px] font-black text-orange-500 leading-tight">
                     {language.toUpperCase()}
@@ -386,7 +387,7 @@ const Layout: React.FC<LayoutProps> = ({
                 <button
                   onClick={() => setIsNotifCenterOpen(true)}
                   className="relative w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-150 hover:bg-slate-100 text-slate-700 rounded-xl flex items-center justify-center transition-all cursor-pointer active:scale-95 shrink-0"
-                  aria-label="Notificações"
+                  aria-label={tr("Notificações")}
                 >
                   <Bell size={17} className="shrink-0" />
                   {unreadCount > 0 && (
@@ -417,7 +418,7 @@ const Layout: React.FC<LayoutProps> = ({
                 <button
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center justify-center text-slate-950 active:scale-95 transition-all shrink-0 cursor-pointer"
-                  aria-label="Menu"
+                  aria-label={tr("Menu")}
                 >
                   {isMobileMenuOpen ? (
                     <ICONS.XCircle size={18} className="shrink-0" />

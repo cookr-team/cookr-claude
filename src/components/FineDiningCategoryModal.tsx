@@ -2,6 +2,8 @@ import React from "react";
 import { X, Lock, Sparkles, Wine, Crown, ChevronRight, ShieldCheck, CheckCircle, Award, Utensils, Star } from "lucide-react";
 import { User, MenuItem } from "../types";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface FineDiningCategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -23,6 +25,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
   onSelectChef,
   onExploreFilteredSearch,
 }) => {
+  useLanguage();
   if (!isOpen) return null;
 
   // Filter real fine dining menus if user is authenticated
@@ -52,7 +55,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
           id="fine-dining-modal-close-btn"
           onClick={onClose}
           className="absolute top-5 right-5 z-30 w-10 h-10 rounded-full bg-white/90 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-white hover:border-amber-400 transition-all flex items-center justify-center backdrop-blur-md cursor-pointer shadow-md hover:scale-105 active:scale-95"
-          title="Fechar"
+          title={tr("Fechar")}
         >
           <X size={20} />
         </button>
@@ -65,7 +68,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
             {/* Fine Dining Haute-Cuisine Hero Image */}
             <img
               src="https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?q=80&w=1600"
-              alt="Fine Dining Haute Cuisine"
+              alt={tr("Fine Dining Haute Cuisine")}
               className="absolute inset-0 w-full h-full object-cover object-center scale-105 filter brightness-[0.7] contrast-110"
               referrerPolicy="no-referrer"
               onError={(e) => {
@@ -84,18 +87,18 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
               </div>
 
               <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white uppercase italic tracking-tight leading-none drop-shadow-xl">
-                Fine Dining <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 bg-clip-text text-transparent">Privado</span>
+                {tr("Fine Dining")} <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500 bg-clip-text text-transparent">{tr("Privado")}</span>
               </h1>
 
               <p className="text-xs sm:text-sm md:text-base text-slate-200 font-medium leading-relaxed max-w-xl mx-auto drop-shadow-md">
-                Transforme a sua sala numa sala de degustação exclusiva. Chefs privados de alta gastronomia, menus autorais de múltiplos momentos e serviço de sala impecável na privacidade da sua casa.
+                {tr("Transforme a sua sala numa sala de degustação exclusiva. Chefs privados de alta gastronomia, menus autorais de múltiplos momentos e serviço de sala impecável na privacidade da sua casa.")}
               </p>
 
               {/* Centered Availability Pill */}
               <div className="pt-2 flex justify-center items-center">
                 <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-200 text-[11px] sm:text-xs font-bold tracking-wide backdrop-blur-md shadow-lg">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400" />
-                  <span>45 Chefs de Fine Dining disponíveis na sua zona</span>
+                  <span>{tr("45 Chefs de Fine Dining disponíveis na sua zona")}</span>
                 </div>
               </div>
             </div>
@@ -105,10 +108,10 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
           <div className="p-8 sm:p-12 bg-slate-50/80 border-b border-slate-200/80 space-y-8 text-center">
             <div className="space-y-2 max-w-lg mx-auto">
               <span className="text-[11px] font-black uppercase tracking-[0.25em] text-orange-600 block">
-                A Experiência Cookr
+                {tr("A Experiência Cookr")}
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight uppercase italic">
-                Porquê Escolher Fine Dining na Sua Casa?
+                {tr("Porquê Escolher Fine Dining na Sua Casa?")}
               </h2>
               <div className="w-12 h-1 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full mx-auto" />
             </div>
@@ -120,10 +123,10 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                   <Crown size={24} />
                 </div>
                 <h3 className="font-extrabold text-sm text-slate-900 uppercase tracking-wider">
-                  Chef Privado Dedicado
+                  {tr("Chef Privado Dedicado")}
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  Técnicas de alta gastronomia, empratamento de precisão e serviço executado por chefs com formação de topo internacional.
+                  {tr("Técnicas de alta gastronomia, empratamento de precisão e serviço executado por chefs com formação de topo internacional.")}
                 </p>
               </div>
 
@@ -136,7 +139,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                   Harmonização & Sommelier
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  Pairings sugeridos com vinhos de garrafeiras seletas e cocktails de autor concebidos à medida para cada prato.
+                  {tr("Pairings sugeridos com vinhos de garrafeiras seletas e cocktails de autor concebidos à medida para cada prato.")}
                 </p>
               </div>
 
@@ -149,7 +152,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                   Conforto & Privacidade
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  A experiência de um restaurante estelar sem reservas públicas, trânsito ou ruído. A sua cozinha fica impecável no final.
+                  {tr("A experiência de um restaurante estelar sem reservas públicas, trânsito ou ruído. A sua cozinha fica impecável no final.")}
                 </p>
               </div>
             </div>
@@ -160,7 +163,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
             <div className="space-y-2 max-w-xl mx-auto flex flex-col items-center">
               <span className="text-[11px] font-black uppercase tracking-[0.25em] text-amber-600 flex items-center gap-1.5 justify-center">
                 <Sparkles size={14} className="text-amber-500" />
-                <span>Curadoria Culinária de Elite</span>
+                <span>{tr("Curadoria Culinária de Elite")}</span>
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight uppercase italic">
                 Menus Degustação & Chefs
@@ -170,14 +173,14 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                 <div className="pt-1">
                   <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold uppercase tracking-wider shadow-sm">
                     <Lock size={12} className="text-amber-600" />
-                    <span>Modo Antevisão (Conteúdo Reservado)</span>
+                    <span>{tr("Modo Antevisão (Conteúdo Reservado)")}</span>
                   </span>
                 </div>
               ) : (
                 <div className="pt-1">
                   <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-bold uppercase tracking-wider shadow-sm">
                     <CheckCircle size={12} className="text-emerald-600" />
-                    <span>Acesso Membro Desbloqueado</span>
+                    <span>{tr("Acesso Membro Desbloqueado")}</span>
                   </span>
                 </div>
               )}
@@ -229,7 +232,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                       {/* Locked Badge */}
                       <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-amber-300 text-[10px] font-black uppercase text-amber-800 flex items-center gap-1 shadow-md">
                         <Lock size={10} className="text-amber-600" />
-                        <span>Reservado</span>
+                        <span>{tr("Reservado")}</span>
                       </div>
                     </div>
 
@@ -248,10 +251,10 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                       <div className="my-2 p-3 rounded-xl bg-amber-50/80 border border-amber-200 text-center space-y-1">
                         <div className="flex items-center justify-center gap-1.5 text-amber-800 text-[10px] font-extrabold uppercase tracking-wide">
                           <Lock size={12} className="text-amber-600" />
-                          <span>[Entrar para desbloquear menu e chef]</span>
+                          <span>{tr("[Entrar para desbloquear menu e chef]")}</span>
                         </div>
                         <p className="text-[9px] text-slate-500 font-medium">
-                          Ver ementa completa, fotogaleria e preços por pessoa
+                          {tr("Ver ementa completa, fotogaleria e preços por pessoa")}
                         </p>
                       </div>
 
@@ -284,7 +287,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                           referrerPolicy="no-referrer"
                         />
                         <div className="absolute top-2 right-2 px-3 py-1 bg-white/95 backdrop-blur-md rounded-full border border-amber-300 text-[10px] font-black text-amber-800 shadow-md">
-                          {menu.preco ? `${menu.preco}€ / pessoa` : "€€€ / pessoa"}
+                          {menu.preco ? `${menu.preco}€ / pessoa` : tr("€€€ / pessoa")}
                         </div>
                       </div>
 
@@ -294,7 +297,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                             {menu.nome}
                           </h3>
                           <p className="text-[11px] text-slate-500 line-clamp-2">
-                            {menu.descricao || "Experiência de alta gastronomia autoral com ingredientes de topo."}
+                            {menu.descricao || tr("Experiência de alta gastronomia autoral com ingredientes de topo.")}
                           </p>
                         </div>
 
@@ -303,13 +306,13 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                             <div className="w-7 h-7 rounded-full bg-slate-100 overflow-hidden border border-slate-200">
                               <img
                                 src={chef?.avatar_url || "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=200"}
-                                alt={chef?.nome || "Chef"}
+                                alt={chef?.nome || tr("Chef")}
                                 className="w-full h-full object-cover"
                                 referrerPolicy="no-referrer"
                               />
                             </div>
                             <span className="text-[11px] font-bold text-slate-800 truncate max-w-[100px]">
-                              {chef?.nome || "Chef de Fine Dining"}
+                              {chef?.nome || tr("Chef de Fine Dining")}
                             </span>
                           </div>
 
@@ -322,7 +325,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                             }}
                             className="px-4 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-md"
                           >
-                            Reservar
+                            {tr("Reservar")}
                           </button>
                         </div>
                       </div>
@@ -343,10 +346,10 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
 
                 <div className="space-y-2">
                   <h2 className="text-2xl sm:text-3xl font-black text-slate-900 uppercase italic tracking-tight">
-                    Pronto para Vivenciar a Verdadeira Gastronomia de Autor?
+                    {tr("Pronto para Vivenciar a Verdadeira Gastronomia de Autor?")}
                   </h2>
                   <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-lg mx-auto">
-                    Crie a sua conta gratuita para consultar o portfólio completo dos nossos 45 chefs conceituados de Fine Dining, visualizar menus ementa a ementa e agendar o seu evento privado.
+                    {tr("Crie a sua conta gratuita para consultar o portfólio completo dos nossos 45 chefs conceituados de Fine Dining, visualizar menus ementa a ementa e agendar o seu evento privado.")}
                   </p>
                 </div>
 
@@ -359,19 +362,19 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                     }}
                     className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-xl shadow-orange-500/25 hover:shadow-orange-500/40 transition-all duration-300 active:scale-95 cursor-pointer inline-flex items-center justify-center gap-3"
                   >
-                    <span>Criar Conta / Entrar para Explorar Chefs de Fine Dining</span>
+                    <span>{tr("Criar Conta / Entrar para Explorar Chefs de Fine Dining")}</span>
                     <ChevronRight size={18} />
                   </button>
                 </div>
 
                 <p className="text-[10px] text-slate-500 font-extrabold uppercase tracking-widest">
-                  Registo em menos de 1 minuto • Sem custos de adesão
+                  {tr("Registo em menos de 1 minuto • Sem custos de adesão")}
                 </p>
               </div>
             ) : (
               <div className="max-w-md mx-auto space-y-4 text-center">
                 <h2 className="text-xl font-extrabold text-slate-900 uppercase tracking-tight italic">
-                  Explorar Todos os Chefs de Fine Dining
+                  {tr("Explorar Todos os Chefs de Fine Dining")}
                 </h2>
                 <button
                   onClick={() => {
@@ -382,7 +385,7 @@ export const FineDiningCategoryModal: React.FC<FineDiningCategoryModalProps> = (
                   }}
                   className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-orange-500/20 cursor-pointer inline-flex items-center justify-center gap-2"
                 >
-                  <span>Ver Todos os 45 Chefs Disponíveis</span>
+                  <span>{tr("Ver Todos os 45 Chefs Disponíveis")}</span>
                   <ChevronRight size={18} />
                 </button>
               </div>

@@ -6,6 +6,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { formatPostalCode } from "../utils/formatters";
 import { Trash2, Plus, Edit3, Award, GraduationCap, ShieldCheck, CheckCircle2, Medal, X, Sparkles, HelpCircle, ChevronDown, ChevronUp, Lightbulb, Leaf } from "lucide-react";
 
+import { tr } from "../lib/tr";
 const PRESET_FAQS = [
   {
     category: 'alergias' as const,
@@ -799,11 +800,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
               </div>
               <div className="space-y-1.5">
                 <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight">
-                  Onde estás hoje?
+                  {tr("Onde estás hoje?")}
                 </h3>
                 <p className="text-slate-400 font-medium text-xs leading-relaxed">
-                  Selecione a cozinha onde irá operar para que os clientes na
-                  zona o possam encontrar.
+                  {tr("Selecione a cozinha onde irá operar para que os clientes na zona o possam encontrar.")}
                 </p>
               </div>
             </div>
@@ -836,7 +836,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 onClick={() => setShowAvailabilityModal(false)}
                 className="w-full h-10 bg-slate-100 text-slate-400 rounded-lg font-bold text-[10px] uppercase tracking-wider hover:text-slate-950 transition-all"
               >
-                Cancelar
+                {tr("Cancelar")}
               </button>
             </div>
           </div>
@@ -851,7 +851,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
             <img
               src={editedUser.cover_url}
               className="w-full h-full object-cover"
-              alt="Cover"
+              alt={tr("Cover")}
               referrerPolicy="no-referrer"
             />
           ) : (
@@ -870,14 +870,14 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-900/70 hover:bg-slate-900 backdrop-blur-md text-white rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border border-white/10 shadow-lg active:scale-95"
               >
                 <ICONS.Camera size={13} />
-                <span>{uploading === "cover" ? "A carregar..." : "Alterar Capa"}</span>
+                <span>{uploading === "cover" ? tr("A carregar...") : tr("Alterar Capa")}</span>
               </button>
               {editedUser.cover_url && (
                 <button
                   type="button"
                   onClick={() => handleRemoveFile("cover")}
                   className="flex items-center justify-center w-9 h-9 bg-red-500/85 backdrop-blur-md text-white rounded-xl hover:bg-red-600 transition-all border border-white/10 shadow-lg active:scale-95"
-                  title="Remover Foto de Capa"
+                  title={tr("Remover Foto de Capa")}
                 >
                   <Trash2 size={13} />
                 </button>
@@ -906,7 +906,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                   <img
                     src={editedUser.avatar_url}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    alt="Avatar"
+                    alt={tr("Avatar")}
                     referrerPolicy="no-referrer"
                   />
                 ) : (
@@ -948,7 +948,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                     handleRemoveFile("avatar");
                   }}
                   className="absolute -top-2 -right-2 w-7 h-7 bg-white hover:bg-red-50 text-red-500 hover:text-red-600 rounded-full flex items-center justify-center shadow-md transition-all border border-slate-100/80 active:scale-90 z-30"
-                  title="Remover Foto de Perfil"
+                  title={tr("Remover Foto de Perfil")}
                 >
                   <Trash2 size={12} />
                 </button>
@@ -967,7 +967,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                     onChange={(e) =>
                       setEditedUser({ ...editedUser, nome: e.target.value })
                     }
-                    placeholder="Teu Nome Profissional"
+                    placeholder={tr("Teu Nome Profissional")}
                   />
                 ) : (
                   <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-950 uppercase tracking-tight leading-none">
@@ -978,7 +978,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                   <span className="text-[10px] font-bold uppercase tracking-wider">
-                    Chef Certificado
+                    {tr("Chef Certificado")}
                   </span>
                 </div>
               </div>
@@ -1004,7 +1004,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         })
                       }
                     >
-                      <option value="">Cidade</option>
+                      <option value="">{tr("Cidade")}</option>
                       {PORTUGAL_CITIES.map((city) => (
                         <option key={city} value={city}>
                           {city}
@@ -1016,7 +1016,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                   editedUser.cidade && (
                     <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700">
                       <ICONS.MapPin size={13} className="text-orange-500 shrink-0" />
-                      <span className="text-xs">{editedUser.cidade}, PT</span>
+                      <span className="text-xs">{editedUser.cidade}{tr(", PT")}</span>
                     </span>
                   )
                 )}
@@ -1034,7 +1034,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           telefone: e.target.value,
                         })
                       }
-                      placeholder="Telemóvel"
+                      placeholder={tr("Telemóvel")}
                     />
                   </div>
                 ) : (
@@ -1064,7 +1064,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 </div>
                 <div className="h-3.5 w-px bg-slate-200" />
                 <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                  {reviewsList.length} {reviewsList.length === 1 ? "Avaliação de Cliente" : "Avaliações de Clientes"}
+                  {reviewsList.length} {reviewsList.length === 1 ? tr("Avaliação de Cliente") : tr("Avaliações de Clientes")}
                 </span>
               </div>
             </div>
@@ -1081,7 +1081,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 ) : (
                   <ICONS.Edit3 size={15} />
                 )}
-                <span>{isEditing ? "Guardar" : "Editar Identidade"}</span>
+                <span>{isEditing ? tr("Guardar") : tr("Editar Identidade")}</span>
               </button>
             </div>
           </div>
@@ -1109,12 +1109,12 @@ const CookProfile: React.FC<CookProfileProps> = ({
                   <h4
                     className={`font-bold text-[9px] uppercase tracking-wider ${editedUser.isAvailable ? "text-white" : "text-slate-950"}`}
                   >
-                    Modo {editedUser.isAvailable ? "Online" : "Offline"}
+                    {tr("Modo")} {editedUser.isAvailable ? tr("Online") : tr("Offline")}
                   </h4>
                   <p
                     className={`text-[7.5px] font-bold uppercase tracking-wider ${editedUser.isAvailable ? "text-emerald-500" : "text-slate-400"}`}
                   >
-                    {editedUser.isAvailable ? "Visível na Busca" : "Invisível"}
+                    {editedUser.isAvailable ? tr("Visível na Busca") : tr("Invisível")}
                   </p>
                 </div>
               </div>
@@ -1123,7 +1123,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 onClick={toggleAvailability}
                 className={`w-full h-9 rounded-lg font-bold text-[8.5px] uppercase tracking-wider transition-all active:scale-95 shadow-sm ${editedUser.isAvailable ? "bg-emerald-500 text-white hover:bg-emerald-400" : "bg-slate-950 text-white hover:bg-slate-850"}`}
               >
-                {editedUser.isAvailable ? "Ficar Offline" : "Ficar Online"}
+                {editedUser.isAvailable ? tr("Ficar Offline") : tr("Ficar Online")}
               </button>
             </div>
 
@@ -1171,7 +1171,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
             <div className="bg-slate-50/55 p-4 rounded-xl border border-slate-100 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">
-                  Saldo Total
+                  {tr("Saldo Total")}
                 </span>
                 <ICONS.CreditCard size={12} className="text-orange-500" />
               </div>
@@ -1182,7 +1182,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 onClick={() => onNavigate("earnings")}
                 className="text-[7.5px] font-bold text-orange-500 uppercase tracking-wider hover:underline block"
               >
-                Ver Relatórios
+                {tr("Ver Relatórios")}
               </button>
             </div>
 
@@ -1191,7 +1191,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
               className="w-full h-9 flex items-center justify-center gap-2 text-red-500/80 font-bold text-[8.5px] uppercase tracking-wider hover:text-red-600 transition-all"
             >
               <ICONS.XCircle size={13} />
-              Sair da Plataforma
+              {tr("Sair da Plataforma")}
             </button>
           </div>
 
@@ -1202,16 +1202,16 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-355">
                   <div className="space-y-1">
                     <span className="text-[8.5px] font-bold text-orange-500 uppercase tracking-widest block">
-                      Identidade Gastronómica
+                      {tr("Identidade Gastronómica")}
                     </span>
                     <h2 className="text-xl md:text-2xl font-extrabold text-slate-950 tracking-tight uppercase leading-none">
-                      A Minha <span className="text-orange-500">História.</span>
+                      {tr("A Minha")} <span className="text-orange-500">{tr("História.")}</span>
                     </h2>
                   </div>
 
                   <div className="space-y-4">
                     <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                      Bio Profissional
+                      {tr("Bio Profissional")}
                     </label>
                     <textarea
                       disabled={!isEditing}
@@ -1223,13 +1223,13 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           biografia: e.target.value,
                         })
                       }
-                      placeholder="Descreve o teu percurso..."
+                      placeholder={tr("Descreve o teu percurso...")}
                     />
                   </div>
 
                   <div className="space-y-3">
                     <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">
-                      Especialidades (Máx. 4)
+                      {tr("Especialidades (Máx. 4)")}
                     </label>
                     <div className="flex flex-wrap gap-1.5 text-left items-center">
                       {CUISINES.map((c) => {
@@ -1267,7 +1267,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                       <ICONS.Clock className="text-orange-500" size={15} />
                       <div className="space-y-0.5">
                         <label className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider block">
-                          Experiência
+                          {tr("Experiência")}
                         </label>
                         <div className="flex items-baseline gap-1.5">
                           <input
@@ -1283,7 +1283,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                             }
                           />
                           <span className="font-bold text-slate-300 uppercase text-[8px]">
-                            Anos
+                            {tr("Anos")}
                           </span>
                         </div>
                       </div>
@@ -1292,7 +1292,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                       <ICONS.Globe className="text-orange-500" size={15} />
                       <div className="space-y-0.5">
                         <label className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider block">
-                          Idiomas de Serviço
+                          {tr("Idiomas de Serviço")}
                         </label>
                         <div className="flex flex-wrap gap-1.5 pt-1">
                           {[
@@ -1331,7 +1331,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           </h3>
                         </div>
                         <p className="text-[9px] text-slate-400 font-medium">
-                          Formações culinárias, diplomas de alta gastronomia e prémios recebidos para aumentar a confiança dos clientes.
+                          {tr("Formações culinárias, diplomas de alta gastronomia e prémios recebidos para aumentar a confiança dos clientes.")}
                         </p>
                       </div>
 
@@ -1344,7 +1344,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         className="px-3 py-2 bg-orange-500 text-white rounded-xl text-[8.5px] font-extrabold uppercase tracking-wider hover:bg-slate-950 transition-all flex items-center justify-center gap-1.5 shadow-sm shrink-0 active:scale-95"
                       >
                         <Plus size={12} />
-                        <span>Adicionar Certificação / Prémio</span>
+                        <span>{tr("Adicionar Certificação / Prémio")}</span>
                       </button>
                     </div>
 
@@ -1354,9 +1354,9 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           <GraduationCap className="w-5 h-5 text-slate-400" />
                         </div>
                         <div className="space-y-0.5">
-                          <p className="text-xs font-bold text-slate-700">Nenhuma certificação ou prémio adicionado.</p>
+                          <p className="text-xs font-bold text-slate-700">{tr("Nenhuma certificação ou prémio adicionado.")}</p>
                           <p className="text-[10px] text-slate-400 max-w-sm mx-auto">
-                            Adiciona diplomas de escolas gastronómicas, cursos de alta cozinha ou distinções para destacar o teu perfil.
+                            {tr("Adiciona diplomas de escolas gastronómicas, cursos de alta cozinha ou distinções para destacar o teu perfil.")}
                           </p>
                         </div>
                         <button
@@ -1367,7 +1367,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           }}
                           className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 rounded-lg text-[8.5px] font-extrabold uppercase tracking-wider hover:bg-slate-100 transition-all shadow-sm"
                         >
-                          + Adicionar Primeira Certificação
+                          {tr("+ Adicionar Primeira Certificação")}
                         </button>
                       </div>
                     ) : (
@@ -1417,10 +1417,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                       }`}
                                     >
                                       {isAward
-                                        ? "Prémio / Distinção"
+                                        ? tr("Prémio / Distinção")
                                         : isTraining
-                                          ? "Formação Culinária"
-                                          : "Certificação Oficial"}
+                                          ? tr("Formação Culinária")
+                                          : tr("Certificação Oficial")}
                                     </span>
                                     {cert.year && (
                                       <span className="ml-1.5 text-[8px] font-bold text-slate-400">
@@ -1438,7 +1438,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                       handleOpenCertModal(cert);
                                     }}
                                     className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-white rounded-lg transition-all"
-                                    title="Editar"
+                                    title={tr("Editar")}
                                   >
                                     <Edit3 size={13} />
                                   </button>
@@ -1449,7 +1449,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                       handleRemoveCertItem(cert.id);
                                     }}
                                     className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-white rounded-lg transition-all"
-                                    title="Remover"
+                                    title={tr("Remover")}
                                   >
                                     <Trash2 size={13} />
                                   </button>
@@ -1473,7 +1473,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
                               <div className="pt-0.5 flex items-center gap-1 text-[7px] font-bold uppercase text-emerald-600 tracking-wider">
                                 <CheckCircle2 size={10} className="text-emerald-500" />
-                                <span>Verificado Cookr</span>
+                                <span>{tr("Verificado Cookr")}</span>
                               </div>
                             </div>
                           );
@@ -1489,11 +1489,11 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         <div className="flex items-center gap-2">
                           <ICONS.Camera className="w-4 h-4 text-orange-500" />
                           <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
-                            Galeria de Portefólio
+                            {tr("Galeria de Portefólio")}
                           </h3>
                         </div>
                         <p className="text-[10px] text-slate-500 font-medium">
-                          Adicione fotografias dos seus melhores pratos e serviços.
+                          {tr("Adicione fotografias dos seus melhores pratos e serviços.")}
                         </p>
                       </div>
                       {isEditing && (
@@ -1504,7 +1504,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 transition-colors disabled:opacity-60"
                         >
                           <Plus size={12} strokeWidth={3} />
-                          <span className="text-[9px] font-black uppercase tracking-wider">{uploading === "portfolio" ? "A carregar..." : "Adicionar Imagem"}</span>
+                          <span className="text-[9px] font-black uppercase tracking-wider">{uploading === "portfolio" ? tr("A carregar...") : tr("Adicionar Imagem")}</span>
                           <input
                             type="file"
                             ref={portfolioInputRef}
@@ -1519,7 +1519,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
                     {!editedUser.portfolio_images || editedUser.portfolio_images.length === 0 ? (
                       <div className="text-center py-6 bg-slate-50/50 rounded-xl border border-slate-100 border-dashed">
-                        <p className="text-[10px] text-slate-400 font-medium">Ainda não adicionou fotografias ao seu portefólio.</p>
+                        <p className="text-[10px] text-slate-400 font-medium">{tr("Ainda não adicionou fotografias ao seu portefólio.")}</p>
                       </div>
                     ) : (
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -1550,11 +1550,11 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         <div className="flex items-center gap-2">
                           <HelpCircle className="w-4 h-4 text-orange-500" />
                           <h3 className="text-xs font-black uppercase tracking-wider text-slate-900">
-                            Perguntas Frequentes do Chef (FAQ)
+                            {tr("Perguntas Frequentes do Chef (FAQ)")}
                           </h3>
                         </div>
                         <p className="text-[9px] text-slate-400 font-medium">
-                          Responda às dúvidas mais comuns sobre o seu modo de trabalho, cuidados com alergias, limpeza e logística para inspirar confiança nos clientes.
+                          {tr("Responda às dúvidas mais comuns sobre o seu modo de trabalho, cuidados com alergias, limpeza e logística para inspirar confiança nos clientes.")}
                         </p>
                       </div>
 
@@ -1567,7 +1567,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         className="px-3 py-2 bg-slate-900 text-white rounded-xl text-[8.5px] font-extrabold uppercase tracking-wider hover:bg-orange-500 transition-all flex items-center justify-center gap-1.5 shadow-sm shrink-0 active:scale-95"
                       >
                         <Plus size={12} />
-                        <span>Adicionar Pergunta (FAQ)</span>
+                        <span>{tr("Adicionar Pergunta (FAQ)")}</span>
                       </button>
                     </div>
 
@@ -1577,16 +1577,16 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           <HelpCircle className="w-5 h-5 text-slate-400" />
                         </div>
                         <div className="space-y-1">
-                          <p className="text-xs font-bold text-slate-700">Ainda não configurou as suas Perguntas Frequentes.</p>
+                          <p className="text-xs font-bold text-slate-700">{tr("Ainda não configurou as suas Perguntas Frequentes.")}</p>
                           <p className="text-[10px] text-slate-400 max-w-md mx-auto">
-                            Adicionar respostas sobre manuseamento de alergias, limpeza da cozinha e compras de ingredientes aumenta significativamente a confiança e reservas dos clientes.
+                            {tr("Adicionar respostas sobre manuseamento de alergias, limpeza da cozinha e compras de ingredientes aumenta significativamente a confiança e reservas dos clientes.")}
                           </p>
                         </div>
 
                         {/* Sugestões Rápidas */}
                         <div className="pt-2 flex flex-wrap items-center justify-center gap-1.5 max-w-xl mx-auto">
                           <span className="text-[8px] font-extrabold uppercase text-slate-400 w-full mb-1">
-                            Sugestões Rápidas de Perguntas Populares:
+                            {tr("Sugestões Rápidas de Perguntas Populares:")}
                           </span>
                           {PRESET_FAQS.map((preset, idx) => (
                             <button
@@ -1639,7 +1639,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                       handleOpenFaqModal(faq);
                                     }}
                                     className="p-1.5 text-slate-400 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all"
-                                    title="Editar"
+                                    title={tr("Editar")}
                                   >
                                     <Edit3 size={13} />
                                   </button>
@@ -1650,7 +1650,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                       handleRemoveFaqItem(faq.id);
                                     }}
                                     className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition-all"
-                                    title="Remover"
+                                    title={tr("Remover")}
                                   >
                                     <Trash2 size={13} />
                                   </button>
@@ -1673,13 +1673,13 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         onClick={handleCancel}
                         className="flex-1 h-10 bg-slate-50 text-slate-400 rounded-lg font-bold uppercase text-[9px] tracking-wider hover:text-slate-950 transition-all"
                       >
-                        Cancelar
+                        {tr("Cancelar")}
                       </button>
                       <button
                         onClick={() => handleSave()}
                         className="flex-[2] h-10 bg-orange-500 text-white rounded-lg font-bold uppercase text-[9px] tracking-wider shadow-md shadow-orange-500/10 hover:bg-slate-950 transition-all"
                       >
-                        Guardar Identidade
+                        {tr("Guardar Identidade")}
                       </button>
                     </div>
                   )}
@@ -1694,7 +1694,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         Logística & Localização
                       </span>
                       <h2 className="text-xl md:text-2xl font-black text-slate-950 tracking-tight uppercase italic leading-none">
-                        Minhas <span className="text-orange-500">Moradas.</span>
+                        {tr("Minhas")} <span className="text-orange-500">{tr("Moradas.")}</span>
                       </h2>
                     </div>
                     <button
@@ -1705,7 +1705,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                       className="relative group overflow-hidden px-4 py-2.5 bg-slate-950 text-white rounded-xl flex items-center gap-1.5 shadow-md hover:shadow-[0_10px_20px_-6px_rgba(249,115,22,0.3)] hover:bg-orange-500 transition-all duration-300 active:scale-95"
                     >
                       <ICONS.Plus size={13} className="group-hover:rotate-90 transition-transform duration-300" />
-                      <span className="text-[9px] font-black uppercase tracking-widest">Nova Morada</span>
+                      <span className="text-[9px] font-black uppercase tracking-widest">{tr("Nova Morada")}</span>
                     </button>
                   </div>
 
@@ -1723,10 +1723,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         </div>
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-slate-700 uppercase tracking-wider group-hover:text-slate-950 transition-colors">
-                            Nenhuma morada registada.
+                            {tr("Nenhuma morada registada.")}
                           </p>
                           <p className="text-[9px] font-extrabold text-slate-400 uppercase tracking-widest">
-                            Clique aqui para adicionar a sua cozinha base.
+                            {tr("Clique aqui para adicionar a sua cozinha base.")}
                           </p>
                         </div>
                       </div>
@@ -1745,7 +1745,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           {addr.isDefault && (
                             <div className="absolute top-5 right-5 flex items-center gap-1.5 px-3 py-1 bg-orange-500/10 text-orange-600 border border-orange-200/40 text-[9px] font-extrabold uppercase rounded-full tracking-wider shadow-inner">
                               <ICONS.Sparkles size={10} className="text-orange-500 shrink-0 animate-pulse" />
-                              <span>Morada Ativa</span>
+                              <span>{tr("Morada Ativa")}</span>
                             </div>
                           )}
 
@@ -1773,10 +1773,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                         e.target.value,
                                       )
                                     }
-                                    placeholder="Ex: Cozinha Principal"
+                                    placeholder={tr("Ex: Cozinha Principal")}
                                   />
                                   <p className="text-[8px] font-extrabold text-slate-400 uppercase tracking-widest block">
-                                    Etiqueta da Morada
+                                    {tr("Etiqueta da Morada")}
                                   </p>
                                 </div>
                               </div>
@@ -1788,14 +1788,14 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                     className="flex-1 md:flex-none px-4 py-2 bg-slate-950 hover:bg-orange-500 text-white text-[9px] font-black uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-1 inline-flex"
                                   >
                                     <ICONS.Sparkles size={10} className="text-orange-400" />
-                                    <span>Definir Ativa</span>
+                                    <span>{tr("Definir Ativa")}</span>
                                   </button>
                                 )}
                                 {isEditing && (
                                   <button
                                     onClick={() => removeAddress(addr.id!)}
                                     className="w-10 h-10 bg-white border border-slate-200 text-slate-400 rounded-xl flex items-center justify-center hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all duration-300 shadow-xs active:scale-90"
-                                    title="Remover Morada"
+                                    title={tr("Remover Morada")}
                                   >
                                     <ICONS.Trash2 size={15} />
                                   </button>
@@ -1806,7 +1806,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
                               <div className="md:col-span-8 space-y-1.5 overflow-visible">
                                 <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 block">
-                                  Rua / Avenida
+                                  {tr("Rua / Avenida")}
                                 </label>
                                 <div className="relative group/input flex items-center">
                                   <ICONS.MapPin
@@ -1824,7 +1824,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                         e.target.value,
                                       )
                                     }
-                                    placeholder="Nome da rua, hangar ou avenida..."
+                                    placeholder={tr("Nome da rua, hangar ou avenida...")}
                                   />
                                 </div>
                               </div>
@@ -1852,7 +1852,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
                               <div className="md:col-span-2 space-y-1.5">
                                 <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 block">
-                                  Andar
+                                  {tr("Andar")}
                                 </label>
                                 <div className="relative group/input">
                                   <input
@@ -1866,14 +1866,14 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                         e.target.value,
                                       )
                                     }
-                                    placeholder="2º Esq"
+                                    placeholder={tr("2º Esq")}
                                   />
                                 </div>
                               </div>
 
                               <div className="md:col-span-4 space-y-1.5">
                                 <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 block">
-                                  Código Postal
+                                  {tr("Código Postal")}
                                 </label>
                                 <div className="relative group/input">
                                   <input
@@ -1895,7 +1895,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
                               <div className="md:col-span-8 space-y-1.5">
                                 <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest ml-1 block">
-                                  Cidade / Distrito
+                                  {tr("Cidade / Distrito")}
                                 </label>
                                 <div className="relative group/select">
                                   <select
@@ -1935,7 +1935,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         onClick={handleCancel}
                         className="flex-1 h-12 bg-slate-50 text-slate-400 rounded-xl font-bold uppercase text-[9px] tracking-wider hover:text-slate-950 hover:bg-slate-100/65 transition-all"
                       >
-                        Cancelar
+                        {tr("Cancelar")}
                       </button>
                       <button
                         onClick={() => handleSave()}
@@ -1945,12 +1945,12 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         {isSaving ? (
                           <>
                             <ICONS.RefreshCw className="animate-spin text-orange-400" size={14} />
-                            <span>A Guardar...</span>
+                            <span>{tr("A Guardar...")}</span>
                           </>
                         ) : (
                           <>
                             <ICONS.MapPin size={14} className="text-orange-400 group-hover:text-white transition-colors" />
-                            <span>Gravar Moradas</span>
+                            <span>{tr("Gravar Moradas")}</span>
                           </>
                         )}
                       </button>
@@ -1966,14 +1966,14 @@ const CookProfile: React.FC<CookProfileProps> = ({
                       Rigor & Equipamento
                     </span>
                     <h2 className="text-xl md:text-2xl font-extrabold text-slate-950 tracking-tight uppercase leading-none">
-                      Dados <span className="text-orange-500">Técnicos.</span>
+                      {tr("Dados")} <span className="text-orange-500">{tr("Técnicos.")}</span>
                     </h2>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-3">
                       <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">
-                        Equipamento Profissional
+                        {tr("Equipamento Profissional")}
                       </label>
                       <div className="grid grid-cols-1 gap-1.55">
                         {[
@@ -2032,7 +2032,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
                     <div className="space-y-3">
                       <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">
-                        Diferenciais de Serviço
+                        {tr("Diferenciais de Serviço")}
                       </label>
                       <div className="grid grid-cols-1 gap-1.55">
                         {[
@@ -2094,7 +2094,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                             {t("wine_pairing_title")}
                           </h4>
                           <span className="px-1.5 py-0.5 bg-orange-500/10 text-orange-600 text-[6.5px] font-extrabold uppercase tracking-wider rounded">
-                            Premium
+                            {tr("Premium")}
                           </span>
                         </div>
                         <p className="text-[9px] text-slate-500 font-medium max-w-xl leading-relaxed">
@@ -2147,7 +2147,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-35">
                       <div className="space-y-1 text-left">
                         <label className="text-[7.5px] font-bold text-slate-500 uppercase tracking-wider ml-1">
-                          NIF
+                          {tr("NIF")}
                         </label>
                         <input
                           disabled={!isEditing}
@@ -2159,12 +2159,12 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               nif: e.target.value,
                             })
                           }
-                          placeholder="Teu Número de Contribuinte"
+                          placeholder={tr("Teu Número de Contribuinte")}
                         />
                       </div>
                       <div className="space-y-1 text-left">
                         <label className="text-[7.5px] font-bold text-slate-500 uppercase tracking-wider ml-1">
-                          Nome Fiscal
+                          {tr("Nome Fiscal")}
                         </label>
                         <input
                           disabled={!isEditing}
@@ -2176,14 +2176,14 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               fiscal_name: e.target.value,
                             })
                           }
-                          placeholder="Nome Completo para Faturas"
+                          placeholder={tr("Nome Completo para Faturas")}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-3 pt-3 border-t border-white/5">
                       <label className="text-[7.5px] font-bold text-slate-500 uppercase tracking-wider ml-1 block text-left">
-                        Morada de Faturação Detalhada
+                        {tr("Morada de Faturação Detalhada")}
                       </label>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div className="md:col-span-2">
@@ -2197,7 +2197,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                 billing_street: e.target.value,
                               })
                             }
-                            placeholder="Rua / Avenida"
+                            placeholder={tr("Rua / Avenida")}
                           />
                         </div>
                         <div>
@@ -2227,7 +2227,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                 billing_floor: e.target.value,
                               })
                             }
-                            placeholder="Andar"
+                            placeholder={tr("Andar")}
                           />
                         </div>
                         <div>
@@ -2241,7 +2241,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                 billing_zip: formatZipCode(e.target.value),
                               })
                             }
-                            placeholder="Cód. Postal"
+                            placeholder={tr("Cód. Postal")}
                             maxLength={8}
                           />
                         </div>
@@ -2257,7 +2257,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               })
                             }
                           >
-                            <option value="">Cidade</option>
+                            <option value="">{tr("Cidade")}</option>
                             {PORTUGAL_CITIES.map((c) => (
                               <option
                                 key={c}
@@ -2280,10 +2280,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                       <div className="flex items-center justify-between">
                         <div>
                           <h5 className="text-[8.5px] font-bold text-white uppercase tracking-wider">
-                            Certificação HACCP
+                            {tr("Certificação HACCP")}
                           </h5>
                           <p className="text-[7.5px] text-slate-500 italic">
-                            Obrigatório para curadoria premium.
+                            {tr("Obrigatório para curadoria premium.")}
                           </p>
                         </div>
                         <div className="flex bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 items-center gap-1">
@@ -2292,7 +2292,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                             className="text-emerald-500"
                           />
                           <span className="text-[7px] font-bold uppercase text-emerald-500 tracking-wider italic">
-                            Válido
+                            {tr("Válido")}
                           </span>
                         </div>
                       </div>
@@ -2301,7 +2301,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         className="w-full h-10 border-2 border-dashed border-white/5 rounded-lg flex items-center justify-center gap-2 text-[8px] font-bold uppercase tracking-wider text-slate-500 hover:border-orange-500 hover:text-white transition-all disabled:opacity-30"
                       >
                         <ICONS.Camera size={12} />
-                        Atualizar Certificado
+                        {tr("Atualizar Certificado")}
                       </button>
                     </div>
                   </div>
@@ -2312,13 +2312,13 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         onClick={handleCancel}
                         className="flex-1 h-12 bg-white/5 text-slate-400 rounded-lg font-bold uppercase text-[9px] tracking-wider hover:text-white transition-all"
                       >
-                        Cancelar
+                        {tr("Cancelar")}
                       </button>
                       <button
                         onClick={() => handleSave()}
                         className="flex-[2] h-12 bg-orange-500 text-white rounded-lg font-bold uppercase text-[9px] tracking-wider shadow-lg shadow-orange-500/10 hover:bg-slate-950 transition-all"
                       >
-                        Guardar Dados Técnicos
+                        {tr("Guardar Dados Técnicos")}
                       </button>
                     </div>
                   )}
@@ -2332,10 +2332,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                       Compromisso Ambiental & Segurança Alimentar
                     </span>
                     <h2 className="text-xl md:text-2xl font-extrabold text-slate-950 tracking-tight uppercase leading-none">
-                      Sustentabilidade & <span className="text-emerald-600">Alergénios.</span>
+                      Sustentabilidade & <span className="text-emerald-600">{tr("Alergénios.")}</span>
                     </h2>
                     <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
-                      Destaque o seu apoio a produtores locais, peixe sustentável, desperdício zero e a garantia de cozinhas preparadas sem contaminação cruzada.
+                      {tr("Destaque o seu apoio a produtores locais, peixe sustentável, desperdício zero e a garantia de cozinhas preparadas sem contaminação cruzada.")}
                     </p>
                   </div>
 
@@ -2350,7 +2350,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           Distintivos de Sustentabilidade & Origem
                         </h3>
                         <p className="text-[9.5px] text-slate-500 font-medium">
-                          Selo Farm-to-Table, Peixe Sustentável, Ingredientes Biológicos e Zero Waste
+                          {tr("Selo Farm-to-Table, Peixe Sustentável, Ingredientes Biológicos e Zero Waste")}
                         </p>
                       </div>
                     </div>
@@ -2414,7 +2414,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         onChange={(e) =>
                           setEditedUser({ ...editedUser, sustainability_notes: e.target.value })
                         }
-                        placeholder="Ex: Compro o peixe fresco diretamente na Lota e legumes biológicos em produtores locais. Práticas de aproveitamento integral (Zero Waste) e embalagens 100% compostáveis."
+                        placeholder={tr("Ex: Compro o peixe fresco diretamente na Lota e legumes biológicos em produtores locais. Práticas de aproveitamento integral (Zero Waste) e embalagens 100% compostáveis.")}
                         className="w-full p-3 bg-white border border-emerald-200/80 rounded-xl text-xs font-medium text-slate-800 placeholder:text-slate-400 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 min-h-[80px] disabled:opacity-60 transition-all"
                       />
                     </div>
@@ -2431,7 +2431,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                           Gestão de Alergénios & Cozinha Segura (Sem Contaminação Cruzada)
                         </h3>
                         <p className="text-[9.5px] text-slate-500 font-medium">
-                          Preparação com isolamento de tábuas, desinfeção e protocolos para Celíacos, Vegan, Kosher, Halal e Alergias.
+                          {tr("Preparação com isolamento de tábuas, desinfeção e protocolos para Celíacos, Vegan, Kosher, Halal e Alergias.")}
                         </p>
                       </div>
                     </div>
@@ -2495,7 +2495,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         onChange={(e) =>
                           setEditedUser({ ...editedUser, allergen_notes: e.target.value })
                         }
-                        placeholder="Ex: Conjuntos de tábuas e utensílios esterilizados e separados por cor. Protocolo rigoroso de higienização prévia para doentes celíacos e alérgicos graves."
+                        placeholder={tr("Ex: Conjuntos de tábuas e utensílios esterilizados e separados por cor. Protocolo rigoroso de higienização prévia para doentes celíacos e alérgicos graves.")}
                         className="w-full p-3 bg-white border border-amber-200/80 rounded-xl text-xs font-medium text-slate-800 placeholder:text-slate-400 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 min-h-[80px] disabled:opacity-60 transition-all"
                       />
                     </div>
@@ -2508,7 +2508,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         onClick={handleCancel}
                         className="flex-1 h-12 bg-slate-100 text-slate-600 rounded-xl font-bold uppercase text-[9px] tracking-wider hover:bg-slate-200 transition-all"
                       >
-                        Cancelar
+                        {tr("Cancelar")}
                       </button>
                       <button
                         onClick={() => handleSave()}
@@ -2533,16 +2533,16 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-355 text-left">
                   <div className="space-y-1">
                     <span className="text-[8.5px] font-bold text-orange-500 uppercase tracking-widest block">
-                      Feedback de Clientes
+                      {tr("Feedback de Clientes")}
                     </span>
                     <h2 className="text-xl md:text-2xl font-extrabold text-slate-950 tracking-tight uppercase leading-none">
-                      Avaliações & <span className="text-orange-500">Opiniões.</span>
+                      Avaliações & <span className="text-orange-500">{tr("Opiniões.")}</span>
                     </h2>
                   </div>
 
                   {loadingReviews ? (
                     <div className="py-12 text-center text-slate-400 font-medium text-xs">
-                      A carregar avaliações...
+                      {tr("A carregar avaliações...")}
                     </div>
                   ) : reviewsList.length > 0 ? (
                     <div className="grid grid-cols-1 gap-4">
@@ -2557,9 +2557,9 @@ const CookProfile: React.FC<CookProfileProps> = ({
                                 {rev.clientName ? rev.clientName.charAt(0).toUpperCase() : "C"}
                               </div>
                               <div>
-                                <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-wider">{rev.clientName || "Cliente Cookr"}</h4>
+                                <h4 className="text-[10px] font-black text-slate-800 uppercase tracking-wider">{rev.clientName || tr("Cliente Cookr")}</h4>
                                 <p className="text-[7.5px] text-zinc-400 font-bold uppercase tracking-wider">
-                                  {rev.created_at ? new Date(rev.created_at).toLocaleDateString("pt-PT") : "Recentemente"}
+                                  {rev.created_at ? new Date(rev.created_at).toLocaleDateString("pt-PT") : tr("Recentemente")}
                                 </p>
                               </div>
                             </div>
@@ -2574,7 +2574,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                               "{rev.comment}"
                             </p>
                           ) : (
-                            <p className="text-[10px] text-slate-400 italic font-semibold">Sem comentário adicional.</p>
+                            <p className="text-[10px] text-slate-400 italic font-semibold">{tr("Sem comentário adicional.")}</p>
                           )}
                         </div>
                       ))}
@@ -2585,9 +2585,9 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         <ICONS.Star size={20} className="text-slate-400" />
                       </div>
                       <div className="space-y-1">
-                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest">Ainda Sem Opiniões</h4>
+                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest">{tr("Ainda Sem Opiniões")}</h4>
                         <p className="text-[11px] text-slate-400 font-medium">
-                          Ainda não recebeu nenhuma avaliação dos seus clientes até ao momento.
+                          {tr("Ainda não recebeu nenhuma avaliação dos seus clientes até ao momento.")}
                         </p>
                       </div>
                     </div>
@@ -2601,13 +2601,13 @@ const CookProfile: React.FC<CookProfileProps> = ({
                     onClick={handleCancel}
                     className="flex-1 h-10 bg-slate-50 text-slate-400 rounded-lg font-bold uppercase text-[9px] tracking-wider hover:text-slate-950 transition-all"
                   >
-                    Cancelar
+                    {tr("Cancelar")}
                   </button>
                   <button
                     onClick={handleSave}
                     className="flex-[2] h-10 bg-orange-500 text-white rounded-lg font-bold uppercase text-[9px] tracking-wider shadow-md shadow-orange-500/10 hover:bg-slate-950 transition-all"
                   >
-                    Guardar Alterações
+                    {tr("Guardar Alterações")}
                   </button>
                 </div>
               )}
@@ -2622,7 +2622,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                     <ICONS.Shield size={12} />
                   </div>
                   <span className="text-[8px] font-bold uppercase tracking-wider">
-                    Privacidade
+                    {tr("Privacidade")}
                   </span>
                 </button>
                 <button
@@ -2633,7 +2633,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                     <ICONS.FileText size={12} />
                   </div>
                   <span className="text-[8px] font-bold uppercase tracking-wider">
-                    Termos
+                    {tr("Termos")}
                   </span>
                 </button>
                 <button
@@ -2644,7 +2644,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                     <ICONS.HelpCircle size={12} />
                   </div>
                   <span className="text-[8px] font-bold uppercase tracking-wider">
-                    Ajuda
+                    {tr("Ajuda")}
                   </span>
                 </button>
               </div>
@@ -2666,10 +2666,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
             <div className="space-y-1 pr-6">
               <span className="text-[8.5px] font-bold text-orange-500 uppercase tracking-widest block">
-                {editingCertId ? "Editar Distinção" : "Nova Distinção Culinária"}
+                {editingCertId ? tr("Editar Distinção") : tr("Nova Distinção Culinária")}
               </span>
               <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">
-                {editingCertId ? "Atualizar Certificação / Prémio" : "Adicionar Certificação / Prémio"}
+                {editingCertId ? tr("Atualizar Certificação / Prémio") : tr("Adicionar Certificação / Prémio")}
               </h3>
             </div>
 
@@ -2677,7 +2677,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
               {/* Tipo */}
               <div className="space-y-1.5">
                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Tipo de Reconhecimento *
+                  {tr("Tipo de Reconhecimento *")}
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
@@ -2709,10 +2709,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
               <div className="space-y-1">
                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
                   {certForm.type === "certification"
-                    ? "Título da Certificação *"
+                    ? tr("Título da Certificação *")
                     : certForm.type === "award"
-                    ? "Título do Prémio / Troféu *"
-                    : "Título da Formação / Curso *"}
+                    ? tr("Título do Prémio / Troféu *")
+                    : tr("Título da Formação / Curso *")}
                 </label>
                 <input
                   type="text"
@@ -2727,10 +2727,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                   }}
                   placeholder={
                     certForm.type === "certification"
-                      ? "ex: HACCP, Higiene e Segurança Alimentar"
+                      ? tr("ex: HACCP, Higiene e Segurança Alimentar")
                       : certForm.type === "award"
-                      ? "ex: Prémio Chef Revelação 2024, Garfo de Ouro"
-                      : "ex: Diplôme de Cuisine, Curso de Pastelaria Francesa"
+                      ? tr("ex: Prémio Chef Revelação 2024, Garfo de Ouro")
+                      : tr("ex: Diplôme de Cuisine, Curso de Pastelaria Francesa")
                   }
                   className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-800 outline-none focus:border-orange-500 focus:bg-white transition-all"
                 />
@@ -2741,10 +2741,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 <div className="col-span-2 space-y-1">
                   <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
                     {certForm.type === "certification"
-                      ? "Entidade Certificadora *"
+                      ? tr("Entidade Certificadora *")
                       : certForm.type === "award"
-                      ? "Entidade Atribuidora / Concurso *"
-                      : "Escola / Instituição de Ensino *"}
+                      ? tr("Entidade Atribuidora / Concurso *")
+                      : tr("Escola / Instituição de Ensino *")}
                   </label>
                   <input
                     type="text"
@@ -2759,17 +2759,17 @@ const CookProfile: React.FC<CookProfileProps> = ({
                     }}
                     placeholder={
                       certForm.type === "certification"
-                        ? "ex: ASAE, DGS, SGS, Bureau Veritas"
+                        ? tr("ex: ASAE, DGS, SGS, Bureau Veritas")
                         : certForm.type === "award"
-                        ? "ex: Guia Michelin, Prémio Nacional de Gastronomia"
-                        : "ex: Le Cordon Bleu Lisboa, Escola de Hotelaria"
+                        ? tr("ex: Guia Michelin, Prémio Nacional de Gastronomia")
+                        : tr("ex: Le Cordon Bleu Lisboa, Escola de Hotelaria")
                     }
                     className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-800 outline-none focus:border-orange-500 focus:bg-white transition-all"
                   />
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
-                    Ano
+                    {tr("Ano")}
                   </label>
                   <input
                     type="text"
@@ -2782,7 +2782,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                         [certForm.type]: { ...(prev[certForm.type] || {}), year: val },
                       }));
                     }}
-                    placeholder="ex: 2024"
+                    placeholder={tr("ex: 2024")}
                     className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-800 text-center outline-none focus:border-orange-500 focus:bg-white transition-all"
                   />
                 </div>
@@ -2791,7 +2791,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
               {/* Descrição */}
               <div className="space-y-1">
                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Descrição ou Detalhes Relevantes (Opcional)
+                  {tr("Descrição ou Detalhes Relevantes (Opcional)")}
                 </label>
                 <textarea
                   rows={3}
@@ -2806,10 +2806,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
                   }}
                   placeholder={
                     certForm.type === "certification"
-                      ? "ex: Certificação em boas práticas de higiene e segurança no manuseamento alimentar."
+                      ? tr("ex: Certificação em boas práticas de higiene e segurança no manuseamento alimentar.")
                       : certForm.type === "award"
-                      ? "ex: 1º Lugar na categoria de Cozinha Criativa e Sustentável."
-                      : "ex: Especialização em artes culinárias e técnicas de haute gastronomie."
+                      ? tr("ex: 1º Lugar na categoria de Cozinha Criativa e Sustentável.")
+                      : tr("ex: Especialização em artes culinárias e técnicas de haute gastronomie.")
                   }
                   className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-800 outline-none focus:border-orange-500 focus:bg-white transition-all resize-none"
                 />
@@ -2822,14 +2822,14 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 onClick={() => setShowAddCertModal(false)}
                 className="flex-1 h-11 bg-slate-100 text-slate-600 rounded-xl font-bold uppercase text-[9.5px] tracking-wider hover:bg-slate-200 transition-all"
               >
-                Cancelar
+                {tr("Cancelar")}
               </button>
               <button
                 type="button"
                 onClick={handleSaveCertItem}
                 className="flex-[2] h-11 bg-orange-500 text-white rounded-xl font-bold uppercase text-[9.5px] tracking-wider shadow-lg shadow-orange-500/20 hover:bg-slate-950 transition-all"
               >
-                {editingCertId ? "Guardar Alterações" : "Adicionar ao Perfil"}
+                {editingCertId ? tr("Guardar Alterações") : tr("Adicionar ao Perfil")}
               </button>
             </div>
           </div>
@@ -2849,10 +2849,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
             <div className="space-y-1 pr-6">
               <span className="text-[8.5px] font-bold text-orange-500 uppercase tracking-widest block">
-                {editingFaqId ? "Editar Resposta FAQ" : "Nova Pergunta Frequente"}
+                {editingFaqId ? tr("Editar Resposta FAQ") : tr("Nova Pergunta Frequente")}
               </span>
               <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">
-                {editingFaqId ? "Atualizar Pergunta do Chef" : "Adicionar FAQ ao Perfil"}
+                {editingFaqId ? tr("Atualizar Pergunta do Chef") : tr("Adicionar FAQ ao Perfil")}
               </h3>
             </div>
 
@@ -2860,7 +2860,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
               {/* Categoria */}
               <div className="space-y-1.5">
                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Categoria da Pergunta *
+                  {tr("Categoria da Pergunta *")}
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {[
@@ -2894,7 +2894,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
                   <div className="flex items-center gap-1.5 text-amber-900">
                     <Lightbulb size={13} className="text-amber-600 shrink-0" />
                     <span className="text-[9px] font-extrabold uppercase tracking-wider">
-                      Modelos de Perguntas Recomendadas:
+                      {tr("Modelos de Perguntas Recomendadas:")}
                     </span>
                   </div>
                   <div className="flex flex-wrap gap-1">
@@ -2915,13 +2915,13 @@ const CookProfile: React.FC<CookProfileProps> = ({
               {/* Pergunta */}
               <div className="space-y-1">
                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Pergunta Frequente *
+                  {tr("Pergunta Frequente *")}
                 </label>
                 <input
                   type="text"
                   value={faqForm.question}
                   onChange={(e) => setFaqForm({ ...faqForm, question: e.target.value })}
-                  placeholder="ex: Como lida com alergias alimentares graves ou intolêrancias?"
+                  placeholder={tr("ex: Como lida com alergias alimentares graves ou intolêrancias?")}
                   className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-800 outline-none focus:border-orange-500 focus:bg-white transition-all"
                 />
               </div>
@@ -2929,13 +2929,13 @@ const CookProfile: React.FC<CookProfileProps> = ({
               {/* Resposta */}
               <div className="space-y-1">
                 <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
-                  Sua Resposta do Chef *
+                  {tr("Sua Resposta do Chef *")}
                 </label>
                 <textarea
                   rows={4}
                   value={faqForm.answer}
                   onChange={(e) => setFaqForm({ ...faqForm, answer: e.target.value })}
-                  placeholder="Explique detalhadamente como procede na preparação, quais os cuidados prestados e o que os clientes podem esperar..."
+                  placeholder={tr("Explique detalhadamente como procede na preparação, quais os cuidados prestados e o que os clientes podem esperar...")}
                   className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-800 outline-none focus:border-orange-500 focus:bg-white transition-all resize-none leading-relaxed"
                 />
               </div>
@@ -2947,14 +2947,14 @@ const CookProfile: React.FC<CookProfileProps> = ({
                 onClick={() => setShowAddFaqModal(false)}
                 className="flex-1 h-11 bg-slate-100 text-slate-600 rounded-xl font-bold uppercase text-[9.5px] tracking-wider hover:bg-slate-200 transition-all"
               >
-                Cancelar
+                {tr("Cancelar")}
               </button>
               <button
                 type="button"
                 onClick={handleSaveFaqItem}
                 className="flex-[2] h-11 bg-orange-500 text-white rounded-xl font-bold uppercase text-[9.5px] tracking-wider shadow-lg shadow-orange-500/20 hover:bg-slate-950 transition-all"
               >
-                {editingFaqId ? "Guardar Resposta" : "Adicionar Pergunta"}
+                {editingFaqId ? tr("Guardar Resposta") : tr("Adicionar Pergunta")}
               </button>
             </div>
           </div>

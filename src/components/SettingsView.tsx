@@ -35,6 +35,7 @@ interface SettingsViewProps {
   onNotify?: (message: string, type: "success" | "error" | "info") => void;
 }
 import { formatPostalCode } from "../utils/formatters";
+import { tr } from "../lib/tr";
 export { formatPostalCode };
 
 // Custom Accessible Premium Toggle
@@ -275,7 +276,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </span>
             <span className="w-1 h-1 bg-slate-300 rounded-full" />
             <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
-              {user.role === UserRole.COOK ? (t("settings.chef_profile") || "Perfil de Chef") : (t("settings.client_account") || "Conta Cliente")}
+              {user.role === UserRole.COOK ? (t("settings.chef_profile") || tr("Perfil de Chef")) : (t("settings.client_account") || tr("Conta Cliente"))}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black uppercase italic tracking-tight text-slate-900 leading-tight">
@@ -314,10 +315,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </div>
               <div>
                 <h2 className="text-sm font-black uppercase tracking-wider text-slate-900">
-                  {t("settings.language_section") || "Idioma de Preferência"}
+                  {t("settings.language_section") || tr("Idioma de Preferência")}
                 </h2>
                 <p className="text-[11px] text-slate-500 font-normal">
-                  {t("settings.language_desc") || "Escolha o idioma no qual pretende visualizar a plataforma. Toda a interface e notificações serão adaptadas."}
+                  {t("settings.language_desc") || tr("Escolha o idioma no qual pretende visualizar a plataforma. Toda a interface e notificações serão adaptadas.")}
                 </p>
               </div>
             </div>
@@ -378,7 +379,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               </div>
             </div>
             <span className="px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0">
-              {user.role === UserRole.COOK ? "Chef Verificado" : "Cliente Cookr"}
+              {user.role === UserRole.COOK ? tr("Chef Verificado") : tr("Cliente Cookr")}
             </span>
           </div>
 
@@ -393,7 +394,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   type="text"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
-                  placeholder="Seu nome"
+                  placeholder={tr("Seu nome")}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium"
                   required
                 />
@@ -449,7 +450,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     {t("common.active")}
                   </span>
                   <span className="text-[10px] text-slate-400 font-mono">
-                    ID: {user.id ? user.id.slice(0, 8) : "—"}
+                    {tr("ID:")} {user.id ? user.id.slice(0, 8) : "—"}
                   </span>
                 </div>
               </div>
@@ -495,7 +496,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               {/* Nome Fiscal */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  Nome Fiscal / Razão Social
+                  {tr("Nome Fiscal / Razão Social")}
                 </label>
                 <div className="relative">
                   <span className="absolute left-3.5 top-3 text-slate-400">
@@ -505,7 +506,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     type="text"
                     value={fiscalName}
                     onChange={(e) => setFiscalName(e.target.value)}
-                    placeholder="Nome completo na fatura"
+                    placeholder={tr("Nome completo na fatura")}
                     className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium"
                   />
                 </div>
@@ -514,7 +515,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               {/* NIF */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  NIF (Número de Identificação Fiscal)
+                  {tr("NIF (Número de Identificação Fiscal)")}
                 </label>
                 <div className="relative">
                   <span className="absolute left-3.5 top-3 text-slate-400">
@@ -524,7 +525,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     type="text"
                     value={nif}
                     onChange={(e) => setNif(e.target.value)}
-                    placeholder="Ex: 123456789"
+                    placeholder={tr("Ex: 123456789")}
                     maxLength={12}
                     className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-mono font-medium"
                   />
@@ -534,13 +535,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               {/* Morada de Faturação */}
               <div className="space-y-1.5 sm:col-span-2">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  Morada de Faturação
+                  {tr("Morada de Faturação")}
                 </label>
                 <input
                   type="text"
                   value={billingAddress}
                   onChange={(e) => setBillingAddress(e.target.value)}
-                  placeholder="Rua, número e andar"
+                  placeholder={tr("Rua, número e andar")}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium"
                 />
               </div>
@@ -548,13 +549,13 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               {/* Cidade */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  Cidade
+                  {tr("Cidade")}
                 </label>
                 <input
                   type="text"
                   value={billingCity}
                   onChange={(e) => setBillingCity(e.target.value)}
-                  placeholder="Ex: Lisboa"
+                  placeholder={tr("Ex: Lisboa")}
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium"
                 />
               </div>
@@ -562,7 +563,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               {/* Código Postal */}
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  Código Postal
+                  {tr("Código Postal")}
                 </label>
                 <input
                   type="text"
@@ -578,7 +579,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               {/* IBAN */}
               <div className="space-y-1.5 sm:col-span-2">
                 <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                  IBAN (Para Reembolsos ou Repartição de Conta)
+                  {tr("IBAN (Para Reembolsos ou Repartição de Conta)")}
                 </label>
                 <div className="relative">
                   <span className="absolute left-3.5 top-3 text-slate-400">
@@ -588,7 +589,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     type="text"
                     value={iban}
                     onChange={(e) => setIban(e.target.value)}
-                    placeholder="PT50 0000 0000 0000 0000 0000 0"
+                    placeholder={tr("PT50 0000 0000 0000 0000 0000 0")}
                     className="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all font-mono font-medium uppercase"
                   />
                 </div>
@@ -634,7 +635,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
           <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-600 text-xs flex items-start gap-2.5 leading-relaxed">
             <ShieldCheck size={16} className="text-emerald-600 shrink-0 mt-0.5" />
             <p className="text-[11px]">
-              <strong className="text-slate-900 font-bold">Notificações Essenciais Ativas:</strong> As comunicações operacionais críticas — tais como confirmações de reserva, alterações de agendamento, cancelamentos e segurança da conta — são sempre enviadas para salvaguardar a sua experiência.
+              <strong className="text-slate-900 font-bold">{tr("Notificações Essenciais Ativas:")}</strong> {tr("As comunicações operacionais críticas — tais como confirmações de reserva, alterações de agendamento, cancelamentos e segurança da conta — são sempre enviadas para salvaguardar a sua experiência.")}
             </p>
           </div>
 
@@ -643,7 +644,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="space-y-3">
               <h3 className="text-[10px] font-black uppercase tracking-wider text-orange-600 border-b border-slate-100 pb-1.5 flex items-center gap-1.5">
                 <Calendar size={13} />
-                Reservas
+                {tr("Reservas")}
               </h3>
 
               <div className="space-y-2.5">
@@ -652,9 +653,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   className="flex items-center justify-between gap-4 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white transition-colors cursor-pointer"
                 >
                   <div className="space-y-0.5 min-w-0">
-                    <h4 className="text-xs font-bold text-slate-900">Atualizações das reservas</h4>
+                    <h4 className="text-xs font-bold text-slate-900">{tr("Atualizações das reservas")}</h4>
                     <p className="text-[11px] text-slate-500">
-                      Receba avisos imediatos quando um Chef aceita o seu pedido ou atualiza os detalhes do ritual.
+                      {tr("Receba avisos imediatos quando um Chef aceita o seu pedido ou atualiza os detalhes do ritual.")}
                     </p>
                   </div>
                   <SettingToggle
@@ -668,9 +669,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   className="flex items-center justify-between gap-4 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white transition-colors cursor-pointer"
                 >
                   <div className="space-y-0.5 min-w-0">
-                    <h4 className="text-xs font-bold text-slate-900">Lembretes das reservas</h4>
+                    <h4 className="text-xs font-bold text-slate-900">{tr("Lembretes das reservas")}</h4>
                     <p className="text-[11px] text-slate-500">
-                      Lembretes automáticos com 24h e 2h de antecedência para preparar a receção do Chef.
+                      {tr("Lembretes automáticos com 24h e 2h de antecedência para preparar a receção do Chef.")}
                     </p>
                   </div>
                   <SettingToggle
@@ -685,7 +686,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="space-y-3">
               <h3 className="text-[10px] font-black uppercase tracking-wider text-orange-600 border-b border-slate-100 pb-1.5 flex items-center gap-1.5">
                 <MessageSquare size={13} />
-                Mensagens
+                {tr("Mensagens")}
               </h3>
 
               <div
@@ -693,9 +694,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 className="flex items-center justify-between gap-4 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white transition-colors cursor-pointer"
               >
                 <div className="space-y-0.5 min-w-0">
-                  <h4 className="text-xs font-bold text-slate-900">Mensagens dos Chefs</h4>
+                  <h4 className="text-xs font-bold text-slate-900">{tr("Mensagens dos Chefs")}</h4>
                   <p className="text-[11px] text-slate-500">
-                    Notificação quando um Chef responder a dúvidas de ementa ou coordenação de menu.
+                    {tr("Notificação quando um Chef responder a dúvidas de ementa ou coordenação de menu.")}
                   </p>
                 </div>
                 <SettingToggle
@@ -709,7 +710,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="space-y-3">
               <h3 className="text-[10px] font-black uppercase tracking-wider text-orange-600 border-b border-slate-100 pb-1.5 flex items-center gap-1.5">
                 <Shield size={13} />
-                Conta
+                {tr("Conta")}
               </h3>
 
               <div
@@ -717,9 +718,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 className="flex items-center justify-between gap-4 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white transition-colors cursor-pointer"
               >
                 <div className="space-y-0.5 min-w-0">
-                  <h4 className="text-xs font-bold text-slate-900">Alertas importantes da conta</h4>
+                  <h4 className="text-xs font-bold text-slate-900">{tr("Alertas importantes da conta")}</h4>
                   <p className="text-[11px] text-slate-500">
-                    Comunicações de segurança, comprovativos de faturação e avisos cadastrais essenciais.
+                    {tr("Comunicações de segurança, comprovativos de faturação e avisos cadastrais essenciais.")}
                   </p>
                 </div>
                 <SettingToggle
@@ -733,7 +734,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             <div className="space-y-3">
               <h3 className="text-[10px] font-black uppercase tracking-wider text-orange-600 border-b border-slate-100 pb-1.5 flex items-center gap-1.5">
                 <Megaphone size={13} />
-                Comunicações
+                {tr("Comunicações")}
               </h3>
 
               <div
@@ -741,9 +742,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 className="flex items-center justify-between gap-4 p-3.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white transition-colors cursor-pointer"
               >
                 <div className="space-y-0.5 min-w-0">
-                  <h4 className="text-xs font-bold text-slate-900">Novidades e ofertas</h4>
+                  <h4 className="text-xs font-bold text-slate-900">{tr("Novidades e ofertas")}</h4>
                   <p className="text-[11px] text-slate-500">
-                    Descoberta de novos chefs na sua região, menus sazonais exclusivos e benefícios especiais.
+                    {tr("Descoberta de novos chefs na sua região, menus sazonais exclusivos e benefícios especiais.")}
                   </p>
                 </div>
                 <SettingToggle
@@ -768,12 +769,12 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 <div className="space-y-0.5 min-w-0">
                   <h4 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                     <Smartphone size={14} className="text-slate-600 shrink-0" />
-                    Alertas no Ecrã do Dispositivo
+                    {tr("Alertas no Ecrã do Dispositivo")}
                   </h4>
                   <p className="text-[11px] text-slate-500">
                     {hasPushPermission
-                      ? "Notificações push ativas no navegador e telemóvel para respostas de Chefs e confirmações."
-                      : "Receba alertas no ecrã do telemóvel quando os Chefs aceitarem ou confirmarem serviços."}
+                      ? tr("Notificações push ativas no navegador e telemóvel para respostas de Chefs e confirmações.")
+                      : tr("Receba alertas no ecrã do telemóvel quando os Chefs aceitarem ou confirmarem serviços.")}
                   </p>
                 </div>
 
@@ -782,7 +783,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                     <div className="flex items-center gap-2">
                       <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/80 rounded-full text-[10px] font-bold uppercase tracking-wider">
                         <Check size={11} className="text-emerald-600 stroke-[3]" />
-                        Ativo neste dispositivo
+                        {tr("Ativo neste dispositivo")}
                       </span>
                       <SettingToggle
                         checked={notifSettings.push_enabled}
@@ -802,10 +803,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                       {isRequestingPush ? (
                         <>
                           <RefreshCw size={12} className="animate-spin" />
-                          <span>A autorizar...</span>
+                          <span>{tr("A autorizar...")}</span>
                         </>
                       ) : (
-                        <span>Permitir no Dispositivo</span>
+                        <span>{tr("Permitir no Dispositivo")}</span>
                       )}
                     </button>
                   )}
@@ -828,7 +829,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 Privacidade &amp; Segurança
               </h2>
               <p className="text-[11px] text-slate-500 font-normal">
-                Proteção de credenciais, sessão de utilizador e conformidade com o RGPD
+                {tr("Proteção de credenciais, sessão de utilizador e conformidade com o RGPD")}
               </p>
             </div>
           </div>
@@ -837,9 +838,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {/* Palavra-passe */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
               <div className="space-y-0.5">
-                <h4 className="text-xs font-bold text-slate-900">Palavra-passe de Acesso</h4>
+                <h4 className="text-xs font-bold text-slate-900">{tr("Palavra-passe de Acesso")}</h4>
                 <p className="text-[11px] text-slate-500">
-                  Pode solicitar a qualquer momento um link seguro para alterar a sua palavra-passe de acesso.
+                  {tr("Pode solicitar a qualquer momento um link seguro para alterar a sua palavra-passe de acesso.")}
                 </p>
               </div>
               <button
@@ -848,16 +849,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 disabled={isResettingPassword}
                 className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shrink-0 self-start sm:self-auto cursor-pointer"
               >
-                {isResettingPassword ? "A enviar..." : "Redefinir Palavra-passe"}
+                {isResettingPassword ? tr("A enviar...") : tr("Redefinir Palavra-passe")}
               </button>
             </div>
 
             {/* Sessão / Dispositivos */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4">
               <div className="space-y-0.5">
-                <h4 className="text-xs font-bold text-slate-900">Sessão Ativa</h4>
+                <h4 className="text-xs font-bold text-slate-900">{tr("Sessão Ativa")}</h4>
                 <p className="text-[11px] text-slate-500">
-                  Sessão iniciada na plataforma com a conta <strong className="text-slate-800">{user.email}</strong>.
+                  {tr("Sessão iniciada na plataforma com a conta")} <strong className="text-slate-800">{user.email}</strong>.
                 </p>
               </div>
               <button
@@ -866,7 +867,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 className="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shrink-0 self-start sm:self-auto flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
                 <LogOut size={13} className="text-slate-500" />
-                Terminar Sessão
+                {tr("Terminar Sessão")}
               </button>
             </div>
 
@@ -875,7 +876,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <div className="space-y-0.5">
                 <h4 className="text-xs font-bold text-slate-900">Políticas &amp; Proteção de Dados</h4>
                 <p className="text-[11px] text-slate-500">
-                  Consulte os termos legais de serviço e o tratamento dos seus dados nos termos da legislação portuguesa e europeia.
+                  {tr("Consulte os termos legais de serviço e o tratamento dos seus dados nos termos da legislação portuguesa e europeia.")}
                 </p>
               </div>
               <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
@@ -884,14 +885,14 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   onClick={() => onNavigate("privacy")}
                   className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer"
                 >
-                  Privacidade <ExternalLink size={11} />
+                  {tr("Privacidade")} <ExternalLink size={11} />
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigate("terms")}
                   className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer"
                 >
-                  Termos <ExternalLink size={11} />
+                  {tr("Termos")} <ExternalLink size={11} />
                 </button>
               </div>
             </div>
@@ -899,9 +900,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             {/* Eliminar Conta */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4">
               <div className="space-y-0.5">
-                <h4 className="text-xs font-bold text-slate-900">Eliminação da Conta</h4>
+                <h4 className="text-xs font-bold text-slate-900">{tr("Eliminação da Conta")}</h4>
                 <p className="text-[11px] text-slate-500">
-                  Direito ao esquecimento (RGPD). Pode solicitar a eliminação definitiva de todos os seus dados cadastrais.
+                  {tr("Direito ao esquecimento (RGPD). Pode solicitar a eliminação definitiva de todos os seus dados cadastrais.")}
                 </p>
               </div>
               <a
@@ -909,7 +910,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 border border-red-200 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shrink-0 self-start sm:self-auto inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
                 <AlertCircle size={13} className="text-red-500" />
-                Solicitar Eliminação
+                {tr("Solicitar Eliminação")}
               </a>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import React, { ErrorInfo, ReactNode } from "react";
 
+import { tr } from "../lib/tr";
 interface Props {
   children?: ReactNode;
 }
@@ -41,10 +42,10 @@ export class ErrorBoundary extends React.Component<Props, State> {
             
             <div className="space-y-2">
               <h1 className="text-xl font-semibold tracking-tight text-white">
-                Ocorreu um erro de carregamento
+                {tr("Ocorreu um erro de carregamento")}
               </h1>
               <p className="text-sm text-slate-400 leading-relaxed">
-                A aplicação encontrou um problema ao conectar-se à base de dados ou ao inicializar o estado.
+                {tr("A aplicação encontrou um problema ao conectar-se à base de dados ou ao inicializar o estado.")}
               </p>
             </div>
 
@@ -61,7 +62,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
               }}
               className="w-full py-3 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-950 font-medium rounded-xl transition-colors shadow-lg shadow-amber-500/10 cursor-pointer"
             >
-              Reiniciar Aplicação
+              {tr("Reiniciar Aplicação")}
             </button>
           </div>
         </div>

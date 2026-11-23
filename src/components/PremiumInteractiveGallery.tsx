@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Camera, ChevronLeft, ChevronRight, X, Maximize2, Sparkles, ChefHat } from "lucide-react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface GalleryItem {
   id: number;
   label: string;
@@ -121,6 +123,7 @@ const GALLERY_DATA: GalleryItem[] = [
 ];
 
 export const PremiumInteractiveGallery: React.FC = () => {
+  useLanguage();
   // Indices tracking current image shown in each slot (0, 1 or 2)
   const [slotIndices, setSlotIndices] = useState<number[]>([0, 0, 0, 0, 0]);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -178,13 +181,13 @@ export const PremiumInteractiveGallery: React.FC = () => {
       <div className="text-left space-y-1.5 px-2">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-600 border border-orange-500/10 text-[9px] font-black uppercase tracking-widest leading-none">
           <Sparkles size={10} className="animate-pulse" />
-          Galeria Viva
+          {tr("Galeria Viva")}
         </div>
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-950 tracking-tighter uppercase leading-none">
-          Inspiração <span className="text-orange-500">Visual.</span>
+          {tr("Inspiração")} <span className="text-orange-500">{tr("Visual.")}</span>
         </h2>
         <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">
-          Momentos capturados nos nossos rituais gastronómicos reais.
+          {tr("Momentos capturados nos nossos rituais gastronómicos reais.")}
         </p>
       </div>
 
@@ -205,7 +208,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                 animate={{ opacity: 1, scale: 1, transition: { duration: 1.2, ease: "easeOut" } }}
                 exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.8 } }}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2.5s] ease-out pointer-events-none"
-                alt="Momentos"
+                alt={tr("Momentos")}
                 loading="lazy"
                 referrerPolicy="no-referrer"
               />
@@ -244,7 +247,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                   animate={{ opacity: 1, scale: 1, transition: { duration: 1.2, ease: "easeOut" } }}
                   exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.8 } }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2.5s] ease-out pointer-events-none"
-                  alt="Preparação"
+                  alt={tr("Preparação")}
                   loading="lazy"
                   referrerPolicy="no-referrer"
                 />
@@ -280,7 +283,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                   animate={{ opacity: 1, scale: 1, transition: { duration: 1.2, ease: "easeOut" } }}
                   exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.8 } }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2.5s] ease-out pointer-events-none"
-                  alt="Pairing"
+                  alt={tr("Pairing")}
                   loading="lazy"
                   referrerPolicy="no-referrer"
                 />
@@ -317,7 +320,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                 animate={{ opacity: 1, scale: 1, transition: { duration: 1.2, ease: "easeOut" } }}
                 exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.8 } }}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2.5s] ease-out pointer-events-none"
-                alt="Prato"
+                alt={tr("Prato")}
                 loading="lazy"
                 referrerPolicy="no-referrer"
               />
@@ -355,7 +358,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                   animate={{ opacity: 1, scale: 1, transition: { duration: 1.2, ease: "easeOut" } }}
                   exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.8 } }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2.5s] ease-out pointer-events-none"
-                  alt="Sobremesa"
+                  alt={tr("Sobremesa")}
                   loading="lazy"
                   referrerPolicy="no-referrer"
                 />
@@ -384,12 +387,12 @@ export const PremiumInteractiveGallery: React.FC = () => {
             </div>
             <div className="space-y-0.5 text-center">
               <p className="text-[9px] md:text-[10.5px] font-black uppercase tracking-widest leading-tight">
-                Partilhe o Seu
+                {tr("Partilhe o Seu")}
                 <br />
-                Ritual
+                {tr("Ritual")}
               </p>
               <p className="text-[7.5px] font-black opacity-80 uppercase tracking-widest">
-                @cookr_pt
+                {tr("@cookr_pt")}
               </p>
             </div>
           </div>
@@ -411,7 +414,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
             <button
               onClick={closeLightbox}
               className="absolute top-6 right-6 w-11 h-11 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white transition-all cursor-pointer hover:scale-105 active:scale-95"
-              aria-label="Fechar"
+              aria-label={tr("Fechar")}
             >
               <X size={18} />
             </button>
@@ -423,7 +426,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                 prevImage();
               }}
               className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white transition-all cursor-pointer hover:scale-105 active:scale-95"
-              aria-label="Anterior"
+              aria-label={tr("Anterior")}
             >
               <ChevronLeft size={22} />
             </button>
@@ -434,7 +437,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                 nextImage();
               }}
               className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white transition-all cursor-pointer hover:scale-105 active:scale-95"
-              aria-label="Seguinte"
+              aria-label={tr("Seguinte")}
             >
               <ChevronRight size={22} />
             </button>
@@ -454,7 +457,7 @@ export const PremiumInteractiveGallery: React.FC = () => {
                 <img
                   src={GALLERY_DATA[lightboxIndex].images[slotIndices[lightboxIndex]].url}
                   className="w-full h-full object-cover select-none"
-                  alt="Fine dining moment"
+                  alt={tr("Fine dining moment")}
                   referrerPolicy="no-referrer"
                 />
                 

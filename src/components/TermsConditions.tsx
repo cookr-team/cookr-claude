@@ -1,7 +1,10 @@
 import React from "react";
 import { ICONS } from "../constants";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 const TermsConditions: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+  useLanguage();
   const sections = [
     {
       title: "1. Aceitação dos Termos",
@@ -38,7 +41,7 @@ const TermsConditions: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               <ICONS.ArrowLeft size={18} />
             </div>
             <span className="text-[10px] font-black uppercase tracking-[0.2em] font-sans">
-              Voltar
+              {tr("Voltar")}
             </span>
           </button>
           <div className="flex flex-col items-center text-center">
@@ -56,11 +59,11 @@ const TermsConditions: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           {/* Hero Section */}
           <div className="text-center mb-24 space-y-6">
             <h2 className="text-5xl md:text-7xl font-light tracking-tight leading-none text-slate-950">
-              Contrato de <br />
-              <span className="italic font-normal">Exclusividade.</span>
+              {tr("Contrato de")} <br />
+              <span className="italic font-normal">{tr("Exclusividade.")}</span>
             </h2>
             <p className="text-xs text-slate-400 font-sans uppercase tracking-widest">
-              Última Atualização: 20 de Março de 2026
+              {tr("Última Atualização: 20 de Março de 2026")}
             </p>
           </div>
 
@@ -92,11 +95,10 @@ const TermsConditions: React.FC<{ onBack: () => void }> = ({ onBack }) => {
             <ICONS.FileText className="mx-auto text-orange-500" size={40} />
             <div className="space-y-4">
               <h3 className="text-2xl font-light text-slate-950 tracking-tight">
-                Dúvidas <span className="italic">Jurídicas?</span>
+                {tr("Dúvidas")} <span className="italic">{tr("Jurídicas?")}</span>
               </h3>
               <p className="text-slate-400 font-sans uppercase text-[10px] tracking-[0.3em] max-w-md mx-auto">
-                Para qualquer esclarecimento adicional sobre os nossos termos,
-                contacte o nosso departamento legal.
+                {tr("Para qualquer esclarecimento adicional sobre os nossos termos, contacte o nosso departamento legal.")}
               </p>
             </div>
             <a
@@ -104,7 +106,7 @@ const TermsConditions: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               className="inline-flex items-center gap-4 px-10 py-5 bg-slate-950 text-white rounded-2xl hover:bg-orange-500 transition-all duration-500 group"
             >
               <span className="font-sans font-black uppercase text-[10px] tracking-widest">
-                legal@cookr.app
+                {tr("legal@cookr.app")}
               </span>
               <ICONS.ArrowRight
                 size={16}
@@ -120,14 +122,14 @@ const TermsConditions: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <ICONS.ChefHat size={24} />
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-950">
-                Luxury Cookr
+                {tr("Luxury Cookr")}
               </p>
               <p className="text-xs text-slate-400 uppercase tracking-widest">
-                Experiências Gastronómicas de Elite
+                {tr("Experiências Gastronómicas de Elite")}
               </p>
             </div>
             <p className="text-[10px] text-slate-300 uppercase tracking-widest">
-              © 2026 LUXURY COOKR · Todos os direitos reservados
+              {tr("© 2026 LUXURY COOKR · Todos os direitos reservados")}
             </p>
           </footer>
         </div>

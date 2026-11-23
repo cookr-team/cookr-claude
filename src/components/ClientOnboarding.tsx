@@ -4,6 +4,8 @@ import { ICONS, PORTUGAL_CITIES } from "../constants";
 import PasswordStrength from "./PasswordStrength";
 import { formatPostalCode } from "../utils/formatters";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface ClientOnboardingProps {
   onComplete: (data: any) => void;
   onBack: () => void;
@@ -13,6 +15,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
   onComplete,
   onBack,
 }) => {
+  useLanguage();
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -150,11 +153,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
               className="space-y-4"
             >
               <h2 className="text-4xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                Estamos a criar a <br />
-                sua conta <span className="text-orange-500">Premium.</span>
+                {tr("Estamos a criar a")} <br />
+                {tr("sua conta")} <span className="text-orange-500">{tr("Premium.")}</span>
               </h2>
               <p className="text-xs font-medium text-slate-400 italic tracking-widest uppercase">
-                A preparar a sua experiência gastronómica exclusiva...
+                {tr("A preparar a sua experiência gastronómica exclusiva...")}
               </p>
             </motion.div>
 
@@ -217,7 +220,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
         <div className="hidden sm:flex items-center gap-2">
           <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Cliente</span>
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{tr("Cliente")}</span>
         </div>
       </div>
 
@@ -249,10 +252,10 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                 <div className="space-y-2">
                   <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                    Criar Conta <span className="text-orange-500">Segura.</span>
+                    {tr("Criar Conta")} <span className="text-orange-500">{tr("Segura.")}</span>
                   </h2>
                   <p className="text-[11px] font-medium text-slate-400 italic">
-                    Inicie a sua jornada gastronómica privada.
+                    {tr("Inicie a sua jornada gastronómica privada.")}
                   </p>
                 </div>
 
@@ -260,11 +263,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5 text-left">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Nome Completo
+                        {tr("Nome Completo")}
                       </label>
                       <input
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                        placeholder="Nome"
+                        placeholder={tr("Nome")}
                         value={formData.nome}
                         onChange={(e) =>
                           setFormData({ ...formData, nome: e.target.value })
@@ -273,11 +276,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     </div>
                     <div className="space-y-1.5 text-left">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Telemóvel
+                        {tr("Telemóvel")}
                       </label>
                       <input
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                        placeholder="9xx xxx xxx"
+                        placeholder={tr("9xx xxx xxx")}
                         value={formData.telefone}
                         onChange={(e) =>
                           setFormData({ ...formData, telefone: e.target.value })
@@ -287,11 +290,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   </div>
                   <div className="space-y-1.5 text-left">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                      Email
+                      {tr("Email")}
                     </label>
                     <input
                       className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                      placeholder="seu@email.com"
+                      placeholder={tr("seu@email.com")}
                       value={formData.email}
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
@@ -300,12 +303,12 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   </div>
                   <div className="space-y-1.5 text-left relative">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                      Palavra-passe
+                      {tr("Palavra-passe")}
                     </label>
                     <input
                       type={showPassword ? "text" : "password"}
                       className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                      placeholder="Mínimo 8 caracteres"
+                      placeholder={tr("Mínimo 8 caracteres")}
                       value={formData.password}
                       onChange={(e) =>
                         setFormData({ ...formData, password: e.target.value })
@@ -336,7 +339,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   }
                   className="w-full h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none transition-all active:scale-[0.98]"
                 >
-                  Continuar para Dados Fiscais
+                  {tr("Continuar para Dados Fiscais")}
                 </button>
               </motion.div>
             )}
@@ -356,10 +359,10 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                 <div className="space-y-2">
                   <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                    Dados de <span className="text-orange-500">Faturação.</span>
+                    {tr("Dados de")} <span className="text-orange-500">{tr("Faturação.")}</span>
                   </h2>
                   <p className="text-[11px] font-medium text-slate-400 italic">
-                    Necessário para a emissão de faturas legais.
+                    {tr("Necessário para a emissão de faturas legais.")}
                   </p>
                 </div>
 
@@ -367,11 +370,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        NIF
+                        {tr("NIF")}
                       </label>
                       <input
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                        placeholder="Ex: 123456789"
+                        placeholder={tr("Ex: 123456789")}
                         value={formData.nif}
                         onChange={(e) =>
                           setFormData({ ...formData, nif: e.target.value })
@@ -380,11 +383,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Nome Fiscal (Opcional)
+                        {tr("Nome Fiscal (Opcional)")}
                       </label>
                       <input
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                        placeholder="Nome para faturação"
+                        placeholder={tr("Nome para faturação")}
                         value={formData.fiscal_name}
                         onChange={(e) =>
                           setFormData({
@@ -398,16 +401,16 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                   <div className="space-y-3 pt-3 border-t border-slate-100">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                      Morada de Faturação Premium
+                      {tr("Morada de Faturação Premium")}
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="md:col-span-2 space-y-1.5">
                         <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                          Rua / Avenida
+                          {tr("Rua / Avenida")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder="Nome da rua"
+                          placeholder={tr("Nome da rua")}
                           value={formData.billing_street}
                           onChange={(e) =>
                             setFormData({
@@ -419,11 +422,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                          Nº / Porta
+                          {tr("Nº / Porta")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder="Ex: 12A"
+                          placeholder={tr("Ex: 12A")}
                           value={formData.billing_number}
                           onChange={(e) =>
                             setFormData({
@@ -438,11 +441,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="space-y-1.5">
                         <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                          Andar / Apart.
+                          {tr("Andar / Apart.")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder="Opcional"
+                          placeholder={tr("Opcional")}
                           value={formData.billing_floor}
                           onChange={(e) =>
                             setFormData({
@@ -454,7 +457,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                          Cód. Postal
+                          {tr("Cód. Postal")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
@@ -471,7 +474,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                          Cidade
+                          {tr("Cidade")}
                         </label>
                         <div className="relative">
                           <select
@@ -484,7 +487,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                               })
                             }
                           >
-                            <option value="">Selecionar</option>
+                            <option value="">{tr("Selecionar")}</option>
                             {PORTUGAL_CITIES.map((city) => (
                               <option key={city} value={city}>
                                 {city}
@@ -500,11 +503,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                     <div className="space-y-1.5">
                       <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                        País
+                        {tr("País")}
                       </label>
                       <input
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                        placeholder="Portugal"
+                        placeholder={tr("Portugal")}
                         value={formData.billing_country}
                         onChange={(e) =>
                           setFormData({
@@ -536,7 +539,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                         )}
                       </div>
                       <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">
-                        Usar como morada principal de serviço
+                        {tr("Usar como morada principal de serviço")}
                       </span>
                     </button>
                   </div>
@@ -547,7 +550,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     onClick={() => setStep(1)}
                     className="h-13 px-8 bg-white border border-slate-100 text-slate-400 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                   >
-                    Voltar
+                    {tr("Voltar")}
                   </button>
                   <button
                     onClick={() => {
@@ -563,7 +566,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     }}
                     className="flex-1 h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 transition-all cursor-pointer"
                   >
-                    Próximo Passo
+                    {tr("Próximo Passo")}
                   </button>
                 </div>
               </motion.div>
@@ -584,10 +587,10 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                 <div className="space-y-2">
                   <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                    Onde o <span className="text-orange-500">Chef vai?</span>
+                    {tr("Onde o")} <span className="text-orange-500">{tr("Chef vai?")}</span>
                   </h2>
                   <p className="text-[11px] font-medium text-slate-400 italic">
-                    Indique a morada onde as experiências acontecem.
+                    {tr("Indique a morada onde as experiências acontecem.")}
                   </p>
                 </div>
 
@@ -595,7 +598,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Cidade
+                        {tr("Cidade")}
                       </label>
                       <div className="relative">
                         <select
@@ -605,7 +608,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                             setFormData({ ...formData, cidade: e.target.value })
                           }
                         >
-                          <option value="">Selecionar</option>
+                          <option value="">{tr("Selecionar")}</option>
                           {PORTUGAL_CITIES.map((city) => (
                             <option key={city} value={city}>
                               {city}
@@ -619,7 +622,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Código Postal
+                        {tr("Código Postal")}
                       </label>
                       <input
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
@@ -637,11 +640,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                      Morada Principal
+                      {tr("Morada Principal")}
                     </label>
                     <input
                       className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                      placeholder="Onde o Chef deve cozinhar"
+                      placeholder={tr("Onde o Chef deve cozinhar")}
                       value={formData.morada}
                       onChange={(e) =>
                         setFormData({ ...formData, morada: e.target.value })
@@ -655,14 +658,14 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     onClick={() => setStep(2)}
                     className="h-13 px-8 bg-white border border-slate-100 text-slate-400 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                   >
-                    Voltar
+                    {tr("Voltar")}
                   </button>
                   <button
                     onClick={() => setStep(4)}
                     disabled={!formData.cidade || !formData.morada}
                     className="flex-1 h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none transition-all cursor-pointer"
                   >
-                    Personalizar Gostos
+                    {tr("Personalizar Gostos")}
                   </button>
                 </div>
               </motion.div>
@@ -683,17 +686,17 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                 <div className="space-y-2">
                   <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                    As Tuas <span className="text-orange-500">Preferências.</span>
+                    {tr("As Tuas")} <span className="text-orange-500">{tr("Preferências.")}</span>
                   </h2>
                   <p className="text-[11px] font-medium text-slate-400 italic">
-                    Ajude-nos a personalizar os seus menus.
+                    {tr("Ajude-nos a personalizar os seus menus.")}
                   </p>
                 </div>
 
                 <div className="space-y-5 text-left">
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                      Restrições Alimentares
+                      {tr("Restrições Alimentares")}
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       {dietaryOptions.map((opt) => (
@@ -723,7 +726,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                      Cozinhas Favoritas
+                      {tr("Cozinhas Favoritas")}
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       {cuisineOptions.map((opt) => (
@@ -753,11 +756,11 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                      Notas sobre a sua Cozinha
+                      {tr("Notas sobre a sua Cozinha")}
                     </label>
                     <textarea
                       className="w-full h-24 p-4 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all resize-none placeholder:text-slate-300"
-                      placeholder="Ex: Tenho forno a gás, placa de indução, etc."
+                      placeholder={tr("Ex: Tenho forno a gás, placa de indução, etc.")}
                       value={formData.kitchenNotes}
                       onChange={(e) =>
                         setFormData({
@@ -774,7 +777,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     onClick={() => setStep(3)}
                     className="h-13 px-8 bg-white border border-slate-100 text-slate-400 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                   >
-                    Voltar
+                    {tr("Voltar")}
                   </button>
                   <button
                     onClick={() => setShowConfirmModal(true)}
@@ -788,10 +791,10 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     {isSubmitting ? (
                       <>
                         <ICONS.RefreshCw size={14} className="animate-spin" />
-                        A Processar...
+                        {tr("A Processar...")}
                       </>
                     ) : (
-                      "Finalizar Registo"
+                      tr("Finalizar Registo")
                     )}
                   </button>
                 </div>
@@ -816,37 +819,37 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user-check"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
                 </div>
                 <h3 className="text-2xl font-black uppercase italic tracking-tighter text-slate-950">
-                  Confirmar Registo
+                  {tr("Confirmar Registo")}
                 </h3>
               </div>
 
               <div className="space-y-4 mb-8">
                 <p className="text-sm text-slate-600 leading-relaxed font-semibold">
-                  Tem a certeza de que deseja finalizar o seu registo de cliente na Cookr? Por favor, confirme se os seus dados estão corretos.
+                  {tr("Tem a certeza de que deseja finalizar o seu registo de cliente na Cookr? Por favor, confirme se os seus dados estão corretos.")}
                 </p>
 
                 <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 text-xs font-bold text-slate-600 space-y-2.5">
                   <div className="flex justify-between">
-                    <span className="uppercase text-[9px] tracking-wider text-slate-400">Nome</span>
+                    <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Nome")}</span>
                     <span className="text-slate-950">{formData.nome}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="uppercase text-[9px] tracking-wider text-slate-400">E-mail</span>
+                    <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("E-mail")}</span>
                     <span className="text-slate-950 text-right break-all">{formData.email}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="uppercase text-[9px] tracking-wider text-slate-400">Telefone</span>
+                    <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Telefone")}</span>
                     <span className="text-slate-950">{formData.telefone}</span>
                   </div>
                   {formData.nif && (
                     <div className="flex justify-between">
-                      <span className="uppercase text-[9px] tracking-wider text-slate-400">NIF</span>
+                      <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("NIF")}</span>
                       <span className="text-slate-950">{formData.nif}</span>
                     </div>
                   )}
                   {formData.billing_city && (
                     <div className="flex justify-between">
-                      <span className="uppercase text-[9px] tracking-wider text-slate-400">Cidade</span>
+                      <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Cidade")}</span>
                       <span className="text-slate-950">{formData.billing_city}</span>
                     </div>
                   )}
@@ -858,7 +861,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   onClick={() => setShowConfirmModal(false)}
                   className="flex-1 h-14 rounded-2xl border border-slate-100 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                 >
-                  Rever Dados
+                  {tr("Rever Dados")}
                 </button>
                 <button
                   onClick={async () => {
@@ -867,7 +870,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   }}
                   className="flex-1 h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black uppercase text-[10px] tracking-widest transition-all shadow-xl shadow-orange-100 active:scale-95 cursor-pointer"
                 >
-                  Sim, Registar
+                  {tr("Sim, Registar")}
                 </button>
               </div>
             </motion.div>

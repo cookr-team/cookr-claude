@@ -4,11 +4,14 @@ import { User } from "../types";
 import { motion, AnimatePresence } from "motion/react";
 import { apiFetch } from "../lib/apiClient";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface ChatSupportProps {
   user: User;
 }
 
 const ChatSupport: React.FC<ChatSupportProps> = ({ user }) => {
+  useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<
     { role: "user" | "ai"; text: string }[]
@@ -89,12 +92,12 @@ const ChatSupport: React.FC<ChatSupportProps> = ({ user }) => {
                 </div>
                 <div className="text-left">
                   <h4 className="text-xs font-black uppercase tracking-widest">
-                    Concierge Cookr
+                    {tr("Concierge Cookr")}
                   </h4>
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                     <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">
-                      Online Agora
+                      {tr("Online Agora")}
                     </span>
                   </div>
                 </div>
@@ -148,7 +151,7 @@ const ChatSupport: React.FC<ChatSupportProps> = ({ user }) => {
               <div className="relative flex items-center">
                 <input
                   type="text"
-                  placeholder="Como posso ajudar?"
+                  placeholder={tr("Como posso ajudar?")}
                   className="w-full h-12 pl-6 pr-14 bg-white rounded-xl border border-slate-200 outline-none focus:border-orange-500 font-bold text-xs transition-all"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}

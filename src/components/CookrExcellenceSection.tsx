@@ -1,11 +1,14 @@
 import React from "react";
 import { ShieldCheck, Award, Leaf, UtensilsCrossed, Sparkles, CheckCircle2, Crown } from "lucide-react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface CookrExcellenceSectionProps {
   className?: string;
 }
 
 export const CookrExcellenceSection: React.FC<CookrExcellenceSectionProps> = ({ className = "" }) => {
+  useLanguage();
   const cards = [
     {
       id: "certificacao",
@@ -64,12 +67,12 @@ export const CookrExcellenceSection: React.FC<CookrExcellenceSectionProps> = ({ 
 
           {/* Título Principal (H2) */}
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 tracking-tight uppercase leading-[1.1]">
-            O PADRÃO DE EXCELÊNCIA <span className="text-orange-500">COOKR</span>
+            {tr("O PADRÃO DE EXCELÊNCIA")} <span className="text-orange-500">{tr("COOKR")}</span>
           </h2>
 
           {/* Subtítulo */}
           <p className="text-base sm:text-lg font-medium text-slate-500 max-w-xl mx-auto">
-            A Cookr seleciona apenas a elite para a sua casa.
+            {tr("A Cookr seleciona apenas a elite para a sua casa.")}
           </p>
         </div>
 

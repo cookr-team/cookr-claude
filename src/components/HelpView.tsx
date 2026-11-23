@@ -3,6 +3,7 @@ import { ICONS } from "../constants";
 import { User } from "../types";
 import { useLanguage, getLangText } from "../contexts/LanguageContext";
 
+import { tr } from "../lib/tr";
 interface HelpViewProps {
   currentUser?: User | null;
   onOpenChat?: (partnerId: string) => void;
@@ -247,7 +248,7 @@ const HelpView: React.FC<HelpViewProps> = ({ currentUser, onOpenChat, onBack }) 
                   className="text-orange-500 group-hover:text-orange-600"
                 />
                 <span className="font-sans font-black uppercase text-[10px] tracking-widest">
-                  suporte@cookr.app
+                  {tr("suporte@cookr.app")}
                 </span>
               </a>
               <button
@@ -287,7 +288,7 @@ const HelpView: React.FC<HelpViewProps> = ({ currentUser, onOpenChat, onBack }) 
                 <ICONS.ChefHat size={24} />
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-950">
-                Luxury Cookr
+                {tr("Luxury Cookr")}
               </p>
               <p className="text-xs text-slate-400 uppercase tracking-widest">
                 {getLangText(language, {
@@ -299,7 +300,7 @@ const HelpView: React.FC<HelpViewProps> = ({ currentUser, onOpenChat, onBack }) 
               </p>
             </div>
             <p className="text-[10px] text-slate-300 uppercase tracking-widest">
-              © 2026 LUXURY COOKR · {getLangText(language, {
+              {tr("© 2026 LUXURY COOKR ·")} {getLangText(language, {
                 pt: "Todos os direitos reservados",
                 es: "Todos los derechos reservados",
                 en: "All rights reserved",

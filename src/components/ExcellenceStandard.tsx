@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 
+import { tr } from "../lib/tr";
 interface ExcellenceStandardProps {
   onExploreChefs?: () => void;
 }
@@ -275,7 +276,7 @@ export const ExcellenceStandard: React.FC<ExcellenceStandardProps> = ({ onExplor
           <button
             onClick={handlePrev}
             disabled={!canScrollLeft}
-            aria-label="Cartão anterior"
+            aria-label={tr("Cartão anterior")}
             className={`hidden md:flex absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full items-center justify-center bg-white border border-slate-200 text-slate-800 shadow-md hover:bg-slate-50 hover:border-orange-500/40 hover:text-orange-600 transition-all duration-200 cursor-pointer ${
               !canScrollLeft ? "opacity-30 cursor-not-allowed pointer-events-none" : "opacity-90 hover:opacity-100 hover:scale-105"
             }`}
@@ -287,7 +288,7 @@ export const ExcellenceStandard: React.FC<ExcellenceStandardProps> = ({ onExplor
           <button
             onClick={handleNext}
             disabled={!canScrollRight}
-            aria-label="Próximo cartão"
+            aria-label={tr("Próximo cartão")}
             className={`hidden md:flex absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full items-center justify-center bg-white border border-slate-200 text-slate-800 shadow-md hover:bg-slate-50 hover:border-orange-500/40 hover:text-orange-600 transition-all duration-200 cursor-pointer ${
               !canScrollRight ? "opacity-30 cursor-not-allowed pointer-events-none" : "opacity-90 hover:opacity-100 hover:scale-105"
             }`}
@@ -348,7 +349,7 @@ export const ExcellenceStandard: React.FC<ExcellenceStandardProps> = ({ onExplor
                           <IconComponent size={14} />
                         </div>
                         <span className="text-xs font-bold text-white/90 uppercase tracking-wider">
-                          {(card as any).sealText ? (card as any).sealText[currentLang] : "CURATORIA COOKR"}
+                          {(card as any).sealText ? (card as any).sealText[currentLang] : tr("CURATORIA COOKR")}
                         </span>
                       </div>
                       <CheckCircle2 size={16} className="text-orange-400" />

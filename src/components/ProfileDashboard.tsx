@@ -17,6 +17,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface ProfileDashboardProps {
   user: User;
   bookings: Booking[];
@@ -49,6 +51,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
   onNotify,
   initialTab,
 }) => {
+  useLanguage();
   const [activeTab, setActiveTab] = useState<
     "bookings" | "favorites" | "settings" | "giftcards" | "loyalty" | "moradas"
   >(initialTab || "bookings");
@@ -709,7 +712,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 onError={() => setAvatarError(true)}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 referrerPolicy="no-referrer"
-                alt="Avatar"
+                alt={tr("Avatar")}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center font-extrabold text-slate-400 bg-slate-100 text-2xl md:text-3xl">
@@ -735,7 +738,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 handleRemoveAvatar();
               }}
               className="absolute -top-1 -right-1 w-8 h-8 bg-white text-red-500 rounded-full flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:bg-red-50 border border-slate-100 transition-all active:scale-90"
-              title="Remover foto"
+              title={tr("Remover foto")}
             >
               <Trash2 size={13} />
             </button>
@@ -753,11 +756,11 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
           <div className="space-y-2">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
               <span className="px-3 py-1 bg-orange-500/10 text-orange-600 border border-orange-200/50 text-[9px] font-extrabold uppercase rounded-full tracking-wider">
-                Cliente Premium
+                {tr("Cliente Premium")}
               </span>
               <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-100 text-slate-800 border border-slate-200/50 text-[9px] font-extrabold uppercase rounded-full tracking-wider">
                 <ICONS.Zap size={9} className="text-orange-500 shrink-0" />
-                <span>{user.loyalty_points || 0} Pontos</span>
+                <span>{user.loyalty_points || 0} {tr("Pontos")}</span>
               </div>
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight uppercase">
@@ -772,37 +775,37 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               onClick={() => setActiveTab("bookings")}
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "bookings" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
             >
-              Reservas
+              {tr("Reservas")}
             </button>
             <button
               onClick={() => setActiveTab("favorites")}
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "favorites" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
             >
-              Favoritos
+              {tr("Favoritos")}
             </button>
             <button
               onClick={() => setActiveTab("moradas")}
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "moradas" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
             >
-              Moradas
+              {tr("Moradas")}
             </button>
             <button
               onClick={() => setActiveTab("loyalty")}
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "loyalty" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
             >
-              Pontos
+              {tr("Pontos")}
             </button>
             <button
               onClick={() => setActiveTab("giftcards")}
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "giftcards" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
             >
-              Vouchers
+              {tr("Vouchers")}
             </button>
             <button
               onClick={() => setActiveTab("settings")}
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "settings" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
             >
-              Informações
+              {tr("Informações")}
             </button>
           </div>
         </div>
@@ -818,11 +821,11 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
             <div id="loyalty-widget-content" className="space-y-1.5 flex-1">
               <div id="loyalty-widget-meta" className="flex items-center gap-2 flex-wrap">
                 <span id="loyalty-badge-label" className="text-[10px] font-black uppercase tracking-wider text-orange-600 bg-orange-100/50 px-2.5 py-0.5 rounded-full border border-orange-200/30">
-                  Fidelidade Cookr
+                  {tr("Fidelidade Cookr")}
                 </span>
                 <span id="loyalty-meta-divider" className="text-slate-300 text-xs font-semibold">•</span>
                 <span id="loyalty-meta-balance" className="text-xs font-bold text-slate-700">
-                  Saldo atual: <span id="loyalty-points-span" className="text-orange-600 font-extrabold">{user.loyalty_points || 0} Pts</span>
+                  {tr("Saldo atual:")} <span id="loyalty-points-span" className="text-orange-600 font-extrabold">{user.loyalty_points || 0} {tr("Pts")}</span>
                 </span>
               </div>
               
@@ -847,7 +850,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <div id="loyalty-bar-container" className="space-y-2">
                     <div id="loyalty-bar-labels" className="flex items-baseline justify-between text-xs font-bold text-slate-800">
                       <span id="loyalty-points-needed-text" className="text-slate-900 font-black tracking-tight text-xs uppercase italic">
-                        {isMaxPoints ? "Nível de Elite Alcançado!" : `Faltam ${pointsNeeded} pontos para o próximo nível (${targetTier.name})`}
+                        {isMaxPoints ? tr("Nível de Elite Alcançado!") : `Faltam ${pointsNeeded} pontos para o próximo nível (${targetTier.name})`}
                       </span>
                       <span id="loyalty-percentage-text" className="text-orange-600 text-xs font-extrabold">{Math.round(percent)}%</span>
                     </div>
@@ -863,7 +866,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     
                     <p id="loyalty-incentive-text" className="text-[10px] text-slate-400 font-medium">
                       {isMaxPoints 
-                        ? "Parabéns! Desbloqueou todas as vantagens do clube de fidelidade Cookr." 
+                        ? tr("Parabéns! Desbloqueou todas as vantagens do clube de fidelidade Cookr.") 
                         : `Atingir os ${targetTier.targetPoints} pontos garante descontos automáticos e experiências gastronómicas premium.`}
                     </p>
                   </div>
@@ -881,7 +884,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-950 hover:bg-slate-900 active:scale-95 text-white text-[10px] font-black uppercase tracking-wider rounded-xl transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] cursor-pointer"
             >
               <ICONS.Gift size={13} />
-              Ver Recompensas
+              {tr("Ver Recompensas")}
             </button>
           </div>
         </div>
@@ -893,10 +896,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
         <div className="space-y-6 animate-in fade-in">
           <div className="flex items-center justify-between px-2">
             <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight">
-              Histórico de Pedidos
+              {tr("Histórico de Pedidos")}
             </h3>
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/50">
-              {filteredBookingsList.length} {filteredBookingsList.length === 1 ? 'Operação' : 'Operações'}
+              {filteredBookingsList.length} {filteredBookingsList.length === 1 ? tr("Operação") : tr("Operações")}
             </span>
           </div>
 
@@ -906,7 +909,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               {/* Type Filter */}
               <div className="space-y-1.5 flex-1">
                 <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
-                  Filtrar por Categoria
+                  {tr("Filtrar por Categoria")}
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {[
@@ -934,7 +937,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               {/* Period Filter */}
               <div className="space-y-1.5 flex-1">
                 <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">
-                  Filtrar por Período
+                  {tr("Filtrar por Período")}
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {[
@@ -964,7 +967,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
             {filterPeriod === "custom" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 animate-in fade-in duration-300">
                 <div className="space-y-1">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">De:</span>
+                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">{tr("De:")}</span>
                   <input
                     type="date"
                     className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -973,7 +976,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   />
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">Até:</span>
+                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">{tr("Até:")}</span>
                   <input
                     type="date"
                     className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-orange-500"
@@ -1009,7 +1012,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       <div className="flex items-center gap-1 text-slate-400">
                         <ICONS.Calendar size={11} className="text-slate-400 shrink-0" />
                         <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                          {b.data} às {b.hora}
+                          {b.data} {tr("às")} {b.hora}
                         </span>
                       </div>
                     </div>
@@ -1018,7 +1021,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                         {b.menu_selected}
                       </h4>
                       <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                        Chef {b.cookName}
+                        {tr("Chef")} {b.cookName}
                       </p>
                     </div>
                   </div>
@@ -1026,7 +1029,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4 shrink-0 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
                     <div className="text-left md:text-right">
                       <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
-                        Total Pago
+                        {tr("Total Pago")}
                       </p>
                       <p className="text-base md:text-lg font-black text-slate-950 tracking-tight">
                         {formatPrice(b.valorTotal)}
@@ -1037,7 +1040,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                         onClick={() => setViewingDetail(b)}
                         className="h-11 px-5 bg-slate-50 border border-slate-250 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 text-slate-800 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all duration-300 shadow-sm"
                       >
-                        Detalhes
+                        {tr("Detalhes")}
                       </button>
                       {(b.status === BookingStatus.PENDING ||
                         b.status === BookingStatus.ACCEPTED) && (
@@ -1048,7 +1051,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           }}
                           className="h-11 px-5 bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all duration-300 shadow-sm"
                         >
-                          Cancelar
+                          {tr("Cancelar")}
                         </button>
                       )}
                       <button
@@ -1063,7 +1066,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           )
                         }
                         className="w-11 h-11 bg-slate-900 hover:bg-orange-500 text-white rounded-xl flex items-center justify-center shadow-md hover:shadow-orange-500/15 transition-all active:scale-95"
-                        title="Mensagem"
+                        title={tr("Mensagem")}
                       >
                         <ICONS.MessageSquare
                           size={15}
@@ -1079,9 +1082,9 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <ICONS.Calendar size={20} className="text-slate-400" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest">Sem Registos</h4>
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest">{tr("Sem Registos")}</h4>
                   <p className="text-[11px] text-slate-400 font-medium pb-2">
-                    Nenhum pedido encontrado no histórico para os filtros selecionados.
+                    {tr("Nenhum pedido encontrado no histórico para os filtros selecionados.")}
                   </p>
                   <button
                     onClick={handleImportDemoBookings}
@@ -1089,7 +1092,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     className="mt-3 inline-flex items-center gap-2 h-10 px-5 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white rounded-xl font-extrabold text-[10px] uppercase tracking-wider transition-all shadow-md shadow-orange-500/10 active:scale-95 cursor-pointer"
                   >
                     <RefreshCw size={12} className={isImporting ? "animate-spin" : ""} />
-                    {isImporting ? "Sincronizando..." : "Sincronizar reservas demo"}
+                    {isImporting ? tr("Sincronizando...") : tr("Sincronizar reservas demo")}
                   </button>
                 </div>
               </div>
@@ -1107,11 +1110,11 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <ICONS.Heart size={16} className="fill-orange-600 text-orange-600" />
                 </div>
                 <h3 className="text-xl font-extrabold tracking-tight text-slate-900 uppercase">
-                  Meus <span className="text-orange-500">Favoritos</span>
+                  {tr("Meus")} <span className="text-orange-500">{tr("Favoritos")}</span>
                 </h3>
               </div>
               <p className="text-xs text-slate-400 font-medium">
-                A tua curadoria pessoal dos melhores talentos gastronómicos.
+                {tr("A tua curadoria pessoal dos melhores talentos gastronómicos.")}
               </p>
             </div>
 
@@ -1152,7 +1155,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               <div className="h-6 w-px bg-slate-200 hidden sm:block" />
               <div className="px-3 py-1 bg-slate-50 border border-slate-100 rounded-lg flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase text-slate-500 tracking-wider">
-                  Total
+                  {tr("Total")}
                 </span>
                 <span className="text-xs font-black text-slate-800">
                   {favorites.length}
@@ -1206,7 +1209,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                         {((chef.rating === undefined ? 5.0 : chef.rating) >= 4.7) && (
                           <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-[7px] font-black uppercase tracking-wider rounded-full shadow-sm flex items-center gap-0.5 border border-amber-200">
                             <ICONS.Star size={8} className="fill-slate-950 text-slate-950 shrink-0" />
-                            <span>Top Chef</span>
+                            <span>{tr("Top Chef")}</span>
                           </span>
                         )}
                       </div>
@@ -1267,12 +1270,12 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           ) : (
                             <ICONS.FileText className="shrink-0 text-orange-400" size={14} />
                           )}
-                          <span className="truncate">Orçamento</span>
+                          <span className="truncate">{tr("Orçamento")}</span>
                         </button>
                         <button
                           onClick={() => onOpenChat(favId)}
                           className="w-11 h-11 shrink-0 bg-slate-50 border border-slate-200/80 hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600 text-slate-800 rounded-xl flex items-center justify-center transition-all duration-300 active:scale-[0.98] shadow-sm cursor-pointer hover:shadow-md"
-                          title="Falar com Chef"
+                          title={tr("Falar com Chef")}
                         >
                           <ICONS.MessageSquare className="shrink-0 text-slate-500 group-hover:text-orange-600" size={15} />
                         </button>
@@ -1287,16 +1290,16 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <ICONS.Heart size={20} className="text-slate-400" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest">Sem Favoritos</h4>
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest">{tr("Sem Favoritos")}</h4>
                   <p className="text-[11px] text-slate-400 font-medium">
-                    Explora a nossa seleção de chefs e guarda os teus preferidos para acesso rápido.
+                    {tr("Explora a nossa seleção de chefs e guarda os teus preferidos para acesso rápido.")}
                   </p>
                 </div>
                 <button
                   onClick={() => onNavigate("home")}
                   className="h-11 px-6 bg-slate-950 hover:bg-orange-500 text-white rounded-xl font-extrabold text-xs uppercase tracking-wider transition-all shadow-md active:scale-95 flex items-center justify-center"
                 >
-                  Explorar Talentos
+                  {tr("Explorar Talentos")}
                 </button>
               </div>
             )}
@@ -1312,7 +1315,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 Privacidade & Logística
               </span>
               <h3 className="text-2xl md:text-3xl font-black uppercase italic tracking-tighter text-slate-950 leading-none">
-                Gestão de Moradas.
+                {tr("Gestão de Moradas.")}
               </h3>
             </div>
             
@@ -1321,7 +1324,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               className="relative group overflow-hidden px-5 py-3 bg-slate-950 text-white rounded-2xl flex items-center gap-2 shadow-md hover:shadow-[0_12px_24px_-6px_rgba(249,115,22,0.35)] hover:bg-orange-500 transition-all duration-300 active:scale-95"
             >
               <ICONS.Plus size={14} className="group-hover:rotate-90 transition-transform duration-300" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Nova Morada</span>
+              <span className="text-[10px] font-black uppercase tracking-widest">{tr("Nova Morada")}</span>
             </button>
           </div>
 
@@ -1338,7 +1341,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 {addr.isDefault && (
                   <div className="absolute top-5 right-5 flex items-center gap-1.5 px-3 py-1 bg-orange-500/10 text-orange-600 border border-orange-200/40 text-[9px] font-extrabold uppercase rounded-full tracking-wider shadow-inner">
                     <ICONS.Sparkles size={10} className="text-orange-500 shrink-0" />
-                    <span>Principal</span>
+                    <span>{tr("Principal")}</span>
                   </div>
                 )}
 
@@ -1365,10 +1368,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                               e.target.value,
                             )
                           }
-                          placeholder="Ex: Casa / Escritório"
+                          placeholder={tr("Ex: Casa / Escritório")}
                         />
                         <p className="text-[8px] font-extrabold text-slate-400 uppercase tracking-widest block">
-                          Etiqueta da Morada
+                          {tr("Etiqueta da Morada")}
                         </p>
                       </div>
                     </div>
@@ -1380,13 +1383,13 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           className="hidden md:flex px-5 py-2.5 bg-slate-950 hover:bg-orange-500 text-white text-[9px] font-black uppercase tracking-widest rounded-xl transition-all shadow-sm hover:shadow-[0_8px_20px_-6px_rgba(249,115,22,0.2)] active:scale-95 items-center gap-1.5"
                         >
                           <ICONS.Sparkles size={10} className="text-orange-400 shrink-0" />
-                          <span>Definir Principal</span>
+                          <span>{tr("Definir Principal")}</span>
                         </button>
                       )}
                       <button
                         onClick={() => removeAddress(addr.id!)}
                         className="w-10 h-10 md:w-11 md:h-11 bg-white border border-slate-200 text-slate-400 rounded-xl flex items-center justify-center hover:text-red-500 hover:bg-red-50 hover:border-red-100 transition-all duration-300 shadow-xs active:scale-90"
-                        title="Remover Morada"
+                        title={tr("Remover Morada")}
                       >
                         <ICONS.Trash2 size={16} />
                       </button>
@@ -1398,14 +1401,14 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       onClick={() => setPrimaryAddress(addr.id!)}
                       className="md:hidden w-full py-3 bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest rounded-xl active:scale-95 transition-all shadow-sm hover:bg-orange-500"
                     >
-                      Definir como Morada Principal
+                      {tr("Definir como Morada Principal")}
                     </button>
                   )}
 
                   <div className="grid grid-cols-2 md:grid-cols-12 gap-4 md:gap-6">
                     <div className="col-span-2 md:col-span-8 space-y-2">
                       <label className="text-[8px] font-semibold text-slate-400 uppercase tracking-widest ml-1 block">
-                        Rua / Avenida
+                        {tr("Rua / Avenida")}
                       </label>
                       <div className="relative group/input flex items-center">
                         <ICONS.MapPin
@@ -1437,7 +1440,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                             );
                             setEditedUser({ ...editedUser, addresses: updated });
                           }}
-                          placeholder="Nome da rua, praça ou avenida..."
+                          placeholder={tr("Nome da rua, praça ou avenida...")}
                         />
                       </div>
                     </div>
@@ -1464,7 +1467,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
                     <div className="col-span-1 md:col-span-2 space-y-2">
                       <label className="text-[8px] font-semibold text-slate-400 uppercase tracking-widest ml-1 block">
-                        Andar
+                        {tr("Andar")}
                       </label>
                       <div className="relative group/input">
                         <input
@@ -1473,14 +1476,14 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           onChange={(e) =>
                             updateAddressField(addr.id!, "floor", e.target.value)
                           }
-                          placeholder="2º Esq"
+                          placeholder={tr("2º Esq")}
                         />
                       </div>
                     </div>
 
                     <div className="col-span-1 md:col-span-4 space-y-2">
                       <label className="text-[8px] font-semibold text-slate-400 uppercase tracking-widest ml-1 block">
-                        Código Postal
+                        {tr("Código Postal")}
                       </label>
                       <div className="relative group/input">
                         <input
@@ -1503,7 +1506,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
                     <div className="col-span-1 md:col-span-8 space-y-2">
                       <label className="text-[8px] font-semibold text-slate-400 uppercase tracking-widest ml-1 block">
-                        Cidade / Distrito
+                        {tr("Cidade / Distrito")}
                       </label>
                       <div className="relative group/select">
                         <select
@@ -1540,12 +1543,12 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               {isSaving ? (
                 <>
                   <ICONS.RefreshCw className="animate-spin text-orange-400" size={14} />
-                  <span>A Guardar Alterações...</span>
+                  <span>{tr("A Guardar Alterações...")}</span>
                 </>
               ) : (
                 <>
                   <ICONS.MapPin size={14} className="text-orange-400 group-hover:text-white transition-colors duration-300" />
-                  <span>Guardar Definições de Morada</span>
+                  <span>{tr("Guardar Definições de Morada")}</span>
                 </>
               )}
             </button>
@@ -1566,7 +1569,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full border border-white/10">
                     <ICONS.Zap size={14} className="text-orange-500" />
                     <span className="text-[10px] font-black uppercase tracking-widest">
-                      Programa de Fidelidade
+                      {tr("Programa de Fidelidade")}
                     </span>
                   </div>
                   <button
@@ -1575,18 +1578,17 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 hover:bg-white/20 active:scale-95 transition-all duration-300 backdrop-blur-md rounded-full border border-white/15 text-[10px] font-black uppercase tracking-widest text-orange-400 hover:text-orange-300 cursor-pointer"
                   >
                     <ICONS.Info size={14} />
-                    <span>Como Funciona?</span>
+                    <span>{tr("Como Funciona?")}</span>
                   </button>
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter leading-none">
                     {user.loyalty_points || 0}{" "}
-                    <span className="text-orange-500">Pts.</span>
+                    <span className="text-orange-500">{tr("Pts.")}</span>
                   </h3>
                   <p className="text-xs md:text-sm font-medium text-slate-400 italic">
-                    Equivalente a{" "}
-                    {formatPrice((user.loyalty_points || 0) * 0.01)} em
-                    descontos.
+                    {tr("Equivalente a")}{" "}
+                    {formatPrice((user.loyalty_points || 0) * 0.01)} {tr("em descontos.")}
                   </p>
                 </div>
               </div>
@@ -1595,20 +1597,20 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 <div className="p-6 bg-white/5 backdrop-blur-md rounded-3xl border border-white/5 space-y-2">
                   <p className="text-[8px] font-black uppercase tracking-widest text-slate-500">
                     {(user.loyalty_points || 0) >= 500
-                      ? "Nível Atual"
-                      : "Próximo Nível"}
+                      ? tr("Nível Atual")
+                      : tr("Próximo Nível")}
                   </p>
                   <div className="flex items-center justify-between gap-8">
                     <span className="text-sm font-black italic uppercase">
-                      VIP Gold
+                      {tr("VIP Gold")}
                     </span>
                     {(user.loyalty_points || 0) < 500 ? (
                       <span className="text-xs font-bold text-orange-500">
-                        {500 - (user.loyalty_points || 0)} pts para atingir
+                        {500 - (user.loyalty_points || 0)} {tr("pts para atingir")}
                       </span>
                     ) : (
                       <span className="text-xs font-bold text-emerald-500">
-                        Nível Atingido!
+                        {tr("Nível Atingido!")}
                       </span>
                     )}
                   </div>
@@ -1629,10 +1631,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
           <div className="space-y-6">
             <div className="flex items-center justify-between px-4">
               <h3 className="text-xl font-black uppercase italic tracking-tighter text-slate-950">
-                Histórico de Pontos.
+                {tr("Histórico de Pontos.")}
               </h3>
               <span className="text-[9px] font-black uppercase text-slate-300 tracking-widest">
-                {loyaltyHistory.length} Movimentos
+                {loyaltyHistory.length} {tr("Movimentos")}
               </span>
             </div>
 
@@ -1678,7 +1680,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 <div className="py-20 text-center bg-slate-50/50 rounded-[3rem] border-2 border-dashed border-slate-100 flex flex-col items-center gap-4 opacity-30">
                   <ICONS.Zap size={40} />
                   <p className="text-[11px] font-black uppercase tracking-[0.2em] italic">
-                    Ainda não tens movimentos de pontos.
+                    {tr("Ainda não tens movimentos de pontos.")}
                   </p>
                 </div>
               )}
@@ -1698,16 +1700,15 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 </div>
                 <div>
                   <h4 className="text-sm font-black uppercase italic tracking-tight">
-                    Taxa de Reserva Reduzida
+                    {tr("Taxa de Reserva Reduzida")}
                   </h4>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Benefício VIP GOLD
+                    {tr("Benefício VIP GOLD")}
                   </p>
                 </div>
               </div>
               <p className="text-[11px] text-slate-600 font-medium italic leading-relaxed">
-                Como membro VIP GOLD, usufruis de taxas de serviço reduzidas em
-                todas as tuas reservas.
+                {tr("Como membro VIP GOLD, usufruis de taxas de serviço reduzidas em todas as tuas reservas.")}
               </p>
             </div>
 
@@ -1722,16 +1723,15 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 </div>
                 <div>
                   <h4 className="text-sm font-black uppercase italic tracking-tight">
-                    Acesso Prioritário
+                    {tr("Acesso Prioritário")}
                   </h4>
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Benefício VIP GOLD
+                    {tr("Benefício VIP GOLD")}
                   </p>
                 </div>
               </div>
               <p className="text-[11px] text-slate-600 font-medium italic leading-relaxed">
-                Acesso exclusivo e antecipado a menus sazonais de Chefs Michelin
-                e eventos gastronómicos de elite.
+                {tr("Acesso exclusivo e antecipado a menus sazonais de Chefs Michelin e eventos gastronómicos de elite.")}
               </p>
             </div>
           </div>
@@ -1746,20 +1746,20 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
             <div className="relative z-10 space-y-10">
               <div className="text-center max-w-xl mx-auto space-y-3">
                 <span className="px-3 py-1 bg-orange-500/10 text-orange-600 rounded-full text-[9px] font-black uppercase tracking-widest inline-block">
-                  Oferecer Cookr
+                  {tr("Oferecer Cookr")}
                 </span>
                 <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">
                   Vales de Oferta & Experiências
                 </h2>
                 <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
-                  Surpreenda quem mais ama com uma jornada gastronómica inesquecível de Chef Privado no conforto do seu lar.
+                  {tr("Surpreenda quem mais ama com uma jornada gastronómica inesquecível de Chef Privado no conforto do seu lar.")}
                 </p>
               </div>
 
               {/* Catalog Section */}
               <div className="space-y-6">
                 <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 text-left">
-                  1. Escolha uma Experiência
+                  {tr("1. Escolha uma Experiência")}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
@@ -1797,7 +1797,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                         <img src={exp.image} alt={exp.nome} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent" />
                         <div className="absolute bottom-2.5 left-2.5 px-2 py-0.5 bg-white/90 backdrop-blur rounded text-[8px] font-bold text-slate-800 uppercase">
-                          {exp.pax} Pax
+                          {exp.pax} {tr("Pax")}
                         </div>
                       </div>
                       <div className="flex-1 flex flex-col justify-between text-left space-y-3">
@@ -1817,7 +1817,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                             onClick={() => setSelectedGiftExperience(exp)}
                             className="h-8 px-4 bg-slate-950 hover:bg-orange-500 text-white rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all active:scale-95 cursor-pointer"
                           >
-                            Oferecer
+                            {tr("Oferecer")}
                           </button>
                         </div>
                       </div>
@@ -1829,20 +1829,20 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               {/* My Vouchers Section */}
               <div className="space-y-6 pt-10 border-t border-slate-100">
                 <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 text-left">
-                  Os Meus Vouchers ({giftCards.length})
+                  {tr("Os Meus Vouchers (")}{giftCards.length})
                 </h3>
                 {isLoadingGiftCards ? (
                   <div className="text-center py-10">
                     <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-3">A carregar vouchers...</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-3">{tr("A carregar vouchers...")}</p>
                   </div>
                 ) : giftCards.length === 0 ? (
                   <div className="bg-slate-50 border border-dashed border-slate-200 rounded-3xl p-10 text-center space-y-3">
                     <div className="w-10 h-10 bg-slate-200/50 rounded-full flex items-center justify-center mx-auto text-slate-400">
                       <ICONS.Gift size={18} />
                     </div>
-                    <p className="text-xs font-semibold text-slate-500">Ainda não tem Vales de Oferta adquiridos ou recebidos.</p>
-                    <p className="text-[10px] text-slate-400 font-medium">Os vales que comprar ou que forem oferecidos para o seu email aparecerão listados aqui.</p>
+                    <p className="text-xs font-semibold text-slate-500">{tr("Ainda não tem Vales de Oferta adquiridos ou recebidos.")}</p>
+                    <p className="text-[10px] text-slate-400 font-medium">{tr("Os vales que comprar ou que forem oferecidos para o seu email aparecerão listados aqui.")}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1861,18 +1861,18 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                                   ? 'bg-emerald-100 text-emerald-700'
                                   : 'bg-slate-100 text-slate-400 line-through'
                               }`}>
-                                {card.status === 'active' ? 'Ativo / Disponível' : 'Resgatado'}
+                                {card.status === 'active' ? tr("Ativo / Disponível") : tr("Resgatado")}
                               </span>
                               <h4 className="text-base font-extrabold text-slate-800 leading-none pt-1">
                                 {card.experienceName}
                               </h4>
                               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                Valor: {formatPrice(card.value)}
+                                {tr("Valor:")} {formatPrice(card.value)}
                               </p>
                             </div>
                             <div className="text-right">
                               <p className="text-[8px] font-black text-orange-500 uppercase tracking-widest leading-none mb-1">
-                                Código do Vale
+                                {tr("Código do Vale")}
                               </p>
                               <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-100 px-2 py-1 rounded-lg">
                                 <span className="font-mono text-xs font-bold text-slate-800 select-all tracking-wider">
@@ -1884,7 +1884,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                                     if (onNotify) onNotify("Código copiado!", "success");
                                   }}
                                   className="text-slate-400 hover:text-slate-900 transition-colors cursor-pointer"
-                                  title="Copiar Código"
+                                  title={tr("Copiar Código")}
                                 >
                                   <ICONS.Check size={10} />
                                 </button>
@@ -1896,18 +1896,18 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
                           <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-slate-400 text-left">
                             <div>
-                              <p className="text-[7px] text-slate-300">Oferecido a</p>
+                              <p className="text-[7px] text-slate-300">{tr("Oferecido a")}</p>
                               <p className="text-slate-700">{card.recipientName} ({card.recipientEmail})</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-[7px] text-slate-300">Tipo de Envio</p>
-                              <p className="text-orange-500">{isBuyer ? 'Comprado por Si' : 'Recebido de Oferta'}</p>
+                              <p className="text-[7px] text-slate-300">{tr("Tipo de Envio")}</p>
+                              <p className="text-orange-500">{isBuyer ? tr("Comprado por Si") : tr("Recebido de Oferta")}</p>
                             </div>
                           </div>
 
                           {card.message && (
                             <div className="mt-3.5 bg-slate-50 rounded-xl p-3 text-left">
-                              <p className="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest mb-1">Dedicatória</p>
+                              <p className="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest mb-1">{tr("Dedicatória")}</p>
                               <p className="text-[10px] text-slate-600 font-medium italic">"{card.message}"</p>
                             </div>
                           )}
@@ -1926,9 +1926,9 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               <div className="bg-white rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-500 relative overflow-hidden my-auto text-left space-y-6">
                 <div className="flex justify-between items-start">
                   <div className="space-y-1">
-                    <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest block">Adquirir Voucher</span>
+                    <span className="text-[8px] font-black text-orange-500 uppercase tracking-widest block">{tr("Adquirir Voucher")}</span>
                     <h3 className="text-xl font-bold text-slate-950">{selectedGiftExperience.nome}</h3>
-                    <p className="text-xs font-semibold text-slate-500">{formatPrice(selectedGiftExperience.preco)} ({selectedGiftExperience.pax} Pax)</p>
+                    <p className="text-xs font-semibold text-slate-500">{formatPrice(selectedGiftExperience.preco)} ({selectedGiftExperience.pax} {tr("Pax)")}</p>
                   </div>
                   <button
                     onClick={() => setSelectedGiftExperience(null)}
@@ -1941,20 +1941,20 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">Nome do Destinatário</label>
+                      <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">{tr("Nome do Destinatário")}</label>
                       <input
                         type="text"
-                        placeholder="Nome de quem recebe"
+                        placeholder={tr("Nome de quem recebe")}
                         value={giftRecipientName}
                         onChange={(e) => setGiftRecipientName(e.target.value)}
                         className="w-full h-10 bg-slate-50 border border-slate-100 rounded-xl px-3.5 text-xs font-semibold text-slate-800 outline-none focus:border-orange-500 focus:bg-white transition-all"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">E-mail do Destinatário</label>
+                      <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">{tr("E-mail do Destinatário")}</label>
                       <input
                         type="email"
-                        placeholder="email@exemplo.pt"
+                        placeholder={tr("email@exemplo.pt")}
                         value={giftRecipientEmail}
                         onChange={(e) => setGiftRecipientEmail(e.target.value)}
                         className="w-full h-10 bg-slate-50 border border-slate-100 rounded-xl px-3.5 text-xs font-semibold text-slate-800 outline-none focus:border-orange-500 focus:bg-white transition-all"
@@ -1963,9 +1963,9 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">Dedicatória Especial</label>
+                    <label className="text-[8px] font-bold text-slate-400 uppercase tracking-wider ml-1">{tr("Dedicatória Especial")}</label>
                     <textarea
-                      placeholder="Escreva uma mensagem carinhosa..."
+                      placeholder={tr("Escreva uma mensagem carinhosa...")}
                       value={giftMessage}
                       onChange={(e) => setGiftMessage(e.target.value)}
                       className="w-full h-20 p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-orange-500 focus:bg-white transition-all resize-none"
@@ -1975,16 +1975,16 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
                 <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-2.5">
                   <div className="flex justify-between text-xs font-bold text-slate-800">
-                    <span>Subtotal</span>
+                    <span>{tr("Subtotal")}</span>
                     <span>{formatPrice(selectedGiftExperience.preco)}</span>
                   </div>
                   <div className="flex justify-between text-xs font-bold text-slate-400">
-                    <span>Taxa de Envio Digital</span>
-                    <span className="text-emerald-600 font-black uppercase">Grátis</span>
+                    <span>{tr("Taxa de Envio Digital")}</span>
+                    <span className="text-emerald-600 font-black uppercase">{tr("Grátis")}</span>
                   </div>
                   <div className="h-px bg-slate-200" />
                   <div className="flex justify-between text-base font-black text-slate-900">
-                    <span>Total</span>
+                    <span>{tr("Total")}</span>
                     <span>{formatPrice(selectedGiftExperience.preco)}</span>
                   </div>
                 </div>
@@ -1995,11 +1995,11 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   className="w-full h-12 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
                 >
                   {isPurchasingGift ? (
-                    'A processar compra...'
+                    tr("A processar compra...")
                   ) : (
                     <>
                       <ICONS.CreditCard size={12} />
-                      Comprar e Oferecer
+                      {tr("Comprar e Oferecer")}
                     </>
                   )}
                 </button>
@@ -2020,23 +2020,23 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               <div className="flex flex-col md:flex-row justify-between items-center md:items-center gap-6 text-center md:text-left border-b border-slate-100 pb-8">
                 <div className="space-y-2">
                   <span className="text-[9px] font-extrabold text-orange-500 uppercase tracking-[0.25em] block leading-none">
-                    Área de Cliente
+                    {tr("Área de Cliente")}
                   </span>
                   <h3 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter text-slate-950 leading-none">
-                    Informações de{" "}
-                    <span className="text-orange-500">Perfil.</span>
+                    {tr("Informações de")}{" "}
+                    <span className="text-orange-500">{tr("Perfil.")}</span>
                   </h3>
                   <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest italic">
-                    Gere as tuas informações e preferências gastronómicas.
+                    {tr("Gere as tuas informações e preferências gastronómicas.")}
                   </p>
                   <div className="flex items-center justify-center md:justify-start gap-2 mt-3">
                     <span className="px-3 py-1 bg-slate-950 text-[#d4af37] border border-[#d4af37]/20 text-[8px] font-black uppercase rounded-full tracking-[0.2em] shadow-sm flex items-center gap-1.5">
                       <ICONS.Sparkles size={9} className="text-[#d4af37]" />
-                      Cliente Premium
+                      {tr("Cliente Premium")}
                     </span>
                     <span className="px-3 py-1 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-600 border border-orange-100/30 text-[8px] font-black uppercase rounded-full tracking-[0.15em] flex items-center gap-1 shadow-sm">
                       <ICONS.Zap size={10} className="text-orange-500" />
-                      {user.loyalty_points || 0} Pontos acum.
+                      {user.loyalty_points || 0} {tr("Pontos acum.")}
                     </span>
                   </div>
                 </div>
@@ -2053,12 +2053,12 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   {isEditing ? (
                     <>
                       <ICONS.Check size={14} className="animate-bounce" />
-                      Guardar Alterações
+                      {tr("Guardar Alterações")}
                     </>
                   ) : (
                     <>
                       <ICONS.Edit3 size={14} />
-                      Editar Perfil
+                      {tr("Editar Perfil")}
                     </>
                   )}
                 </button>
@@ -2102,7 +2102,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                         <button
                           onClick={() => fileInputRef.current?.click()}
                           className="w-9 h-9 bg-orange-500 text-white rounded-xl flex items-center justify-center shadow-lg hover:bg-slate-950 transition-all active:scale-90"
-                          title="Carregar nova foto"
+                          title={tr("Carregar nova foto")}
                         >
                           <ICONS.Camera size={14} />
                         </button>
@@ -2110,7 +2110,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           <button
                             onClick={handleRemoveAvatar}
                             className="w-9 h-9 bg-white text-slate-400 rounded-xl flex items-center justify-center shadow-md hover:text-red-500 hover:bg-red-50 transition-all active:scale-90 border border-slate-100"
-                            title="Remover foto"
+                            title={tr("Remover foto")}
                           >
                             <ICONS.Trash2 size={14} />
                           </button>
@@ -2120,21 +2120,20 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   </div>
                   <div className="text-center md:text-left space-y-2">
                     <span className="text-[8px] font-extrabold text-orange-500 uppercase tracking-widest block">
-                      Imagem de Apresentação
+                      {tr("Imagem de Apresentação")}
                     </span>
                     <h4 className="text-lg font-black uppercase italic tracking-tighter text-slate-950">
-                      Foto de Perfil
+                      {tr("Foto de Perfil")}
                     </h4>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed max-w-sm">
-                      Esta foto será visível para os Chefs e outros utilizadores
-                      na plataforma. Formatos suportados: JPG, PNG. Máx 2MB.
+                      {tr("Esta foto será visível para os Chefs e outros utilizadores na plataforma. Formatos suportados: JPG, PNG. Máx 2MB.")}
                     </p>
                     {isEditing && (
                       <button
                         onClick={() => fileInputRef.current?.click()}
                         className="mt-2 text-[9px] font-black text-orange-500 hover:text-slate-950 uppercase tracking-[0.2em] transition-colors border-b border-dashed border-orange-500/40 pb-0.5"
                       >
-                        Alterar Imagem
+                        {tr("Alterar Imagem")}
                       </button>
                     )}
                   </div>
@@ -2147,14 +2146,14 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       <ICONS.User size={15} />
                     </div>
                     <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-950">
-                      Informação Base
+                      {tr("Informação Base")}
                     </h4>
                   </div>
 
                   <div className="space-y-6">
                     <div className="space-y-2 text-left group">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1 group-focus-within:text-orange-500 transition-colors block">
-                        Nome Completo
+                        {tr("Nome Completo")}
                       </label>
                       <div className="relative flex items-center">
                         <ICONS.User className="absolute left-5 text-slate-300 group-focus-within/input:text-orange-500 transition-colors" size={16} />
@@ -2168,12 +2167,12 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                               nome: e.target.value,
                             })
                           }
-                          placeholder="Teu nome completo"
+                          placeholder={tr("Teu nome completo")}
                         />
                         {!isEditing && (
                           <div className="absolute right-5 flex items-center gap-1.5 px-2 py-1 bg-slate-100 border border-slate-200/20 rounded-md text-[8px] font-bold text-slate-400 uppercase tracking-widest shrink-0">
                             <ICONS.Lock size={10} className="text-slate-350" />
-                            <span>Bloqueado</span>
+                            <span>{tr("Bloqueado")}</span>
                           </div>
                         )}
                       </div>
@@ -2181,7 +2180,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
                     <div className="space-y-2 text-left group">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1 block">
-                        Email de Contacto
+                        {tr("Email de Contacto")}
                       </label>
                       <div className="relative flex items-center">
                         <ICONS.Mail className="absolute left-5 text-slate-300" size={16} />
@@ -2192,7 +2191,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                         />
                         <div className="absolute right-5 flex items-center gap-1.5 px-2 py-1 bg-slate-100/70 border border-slate-100 rounded-md text-[8px] font-bold text-slate-400 uppercase tracking-widest shrink-0">
                           <ICONS.Lock size={10} className="text-slate-300" />
-                          <span>Primário</span>
+                          <span>{tr("Primário")}</span>
                         </div>
                       </div>
                     </div>
@@ -2206,17 +2205,17 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       <ICONS.Heart size={15} />
                     </div>
                     <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-950">
-                      Preferências
+                      {tr("Preferências")}
                     </h4>
                   </div>
 
                   <div className="space-y-8">
                     <div className="space-y-4 text-left">
                       <span className="text-[9px] font-extrabold text-orange-500 uppercase tracking-wider block">
-                        Estilo de Vida
+                        {tr("Estilo de Vida")}
                       </span>
                       <label className="text-[11px] font-black text-slate-950 uppercase tracking-widest ml-0.5 block leading-none">
-                        Restrições Alimentares
+                        {tr("Restrições Alimentares")}
                       </label>
                       <div className="flex flex-wrap gap-2 pt-1">
                         {[
@@ -2250,7 +2249,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                         Paladar & Cozinhas
                       </span>
                       <label className="text-[11px] font-black text-slate-950 uppercase tracking-widest ml-0.5 block leading-none">
-                        Cozinhas Favoritas
+                        {tr("Cozinhas Favoritas")}
                       </label>
                       <div className="flex flex-wrap gap-2 pt-1">
                         {[
@@ -2288,13 +2287,13 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       <ICONS.Home size={15} />
                     </div>
                     <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-950">
-                      Notas sobre a Cozinha
+                      {tr("Notas sobre a Cozinha")}
                     </h4>
                   </div>
 
                   <div className="space-y-2 text-left group">
                     <label className="text-[9px] font-extrabold text-orange-500 uppercase tracking-[0.25em] ml-1 block leading-none">
-                      Equipamento, Acessos e Detalhes Relevantes
+                      {tr("Equipamento, Acessos e Detalhes Relevantes")}
                     </label>
                     <textarea
                       disabled={!isEditing}
@@ -2306,7 +2305,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           kitchenNotes: e.target.value,
                         })
                       }
-                      placeholder="Ex: Tenho forno a gás de alta performance, placa de indução de 4 zonas, batedeira profissional de bancada, excelente iluminação natural..."
+                      placeholder={tr("Ex: Tenho forno a gás de alta performance, placa de indução de 4 zonas, batedeira profissional de bancada, excelente iluminação natural...")}
                     />
                   </div>
                 </div>
@@ -2326,10 +2325,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 </div>
                 <div className="text-left space-y-0.5">
                   <h5 className="text-xs font-black uppercase italic tracking-tight text-slate-900 group-hover:text-orange-600 transition-colors">
-                    Segurança da Conta
+                    {tr("Segurança da Conta")}
                   </h5>
                   <p className="text-[8px] font-extrabold text-slate-400 uppercase tracking-widest">
-                    Alterar palavra-passe e acessos
+                    {tr("Alterar palavra-passe e acessos")}
                   </p>
                 </div>
               </div>
@@ -2349,10 +2348,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 </div>
                 <div className="text-left space-y-0.5">
                   <h5 className="text-xs font-black uppercase italic tracking-tight text-slate-900 group-hover:text-red-650 transition-colors">
-                    Eliminar Conta
+                    {tr("Eliminar Conta")}
                   </h5>
                   <p className="text-[8px] md:text-[9px] font-bold text-red-300 uppercase tracking-widest">
-                    Apagar todos os dados permanentemente
+                    {tr("Apagar todos os dados permanentemente")}
                   </p>
                 </div>
               </div>
@@ -2373,7 +2372,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 <ICONS.Shield size={14} />
               </div>
               <span className="text-[9px] font-black uppercase tracking-[0.2em]">
-                Privacidade
+                {tr("Privacidade")}
               </span>
             </button>
             <button
@@ -2384,7 +2383,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 <ICONS.FileText size={14} />
               </div>
               <span className="text-[9px] font-black uppercase tracking-[0.2em]">
-                Termos
+                {tr("Termos")}
               </span>
             </button>
             <button
@@ -2395,7 +2394,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 <ICONS.HelpCircle size={14} />
               </div>
               <span className="text-[9px] font-black uppercase tracking-[0.2em]">
-                Ajuda
+                {tr("Ajuda")}
               </span>
             </button>
           </div>
@@ -2412,7 +2411,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <ICONS.Zap size={20} />
                 </div>
                 <h3 className="text-xl font-black uppercase italic tracking-tight">
-                  Como funcionam os pontos?
+                  {tr("Como funcionam os pontos?")}
                 </h3>
               </div>
               <button
@@ -2427,12 +2426,12 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
             <div className="space-y-6">
               <div className="p-5 bg-slate-950 text-white rounded-3xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500 rounded-full -mr-16 -mt-16 blur-[50px] opacity-20" />
-                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">O seu Saldo Atual</p>
+                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">{tr("O seu Saldo Atual")}</p>
                 <h4 className="text-3xl font-black italic uppercase tracking-tight mt-1 text-orange-500">
-                  {user.loyalty_points || 0} Pontos
+                  {user.loyalty_points || 0} {tr("Pontos")}
                 </h4>
                 <p className="text-xs text-slate-300 mt-2">
-                  Equivale a <strong className="text-white">{formatPrice((user.loyalty_points || 0) * 0.01)}</strong> de desconto acumulado para utilizar nas suas próximas experiências gastronómicas.
+                  {tr("Equivale a")} <strong className="text-white">{formatPrice((user.loyalty_points || 0) * 0.01)}</strong> {tr("de desconto acumulado para utilizar nas suas próximas experiências gastronómicas.")}
                 </p>
               </div>
 
@@ -2442,9 +2441,9 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     <ICONS.Smile size={18} />
                   </div>
                   <div>
-                    <h5 className="text-[11px] font-bold uppercase tracking-wider text-slate-900">1. Como Ganhar Pontos</h5>
+                    <h5 className="text-[11px] font-bold uppercase tracking-wider text-slate-900">{tr("1. Como Ganhar Pontos")}</h5>
                     <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
-                      Acumula automaticamente <strong className="text-slate-800">1 Ponto por cada 1€ gasto</strong> em reservas concluídas com os nossos Chefs Cookr.
+                      {tr("Acumula automaticamente")} <strong className="text-slate-800">{tr("1 Ponto por cada 1€ gasto")}</strong> {tr("em reservas concluídas com os nossos Chefs Cookr.")}
                     </p>
                   </div>
                 </div>
@@ -2454,9 +2453,9 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     <ICONS.Percent size={18} />
                   </div>
                   <div>
-                    <h5 className="text-[11px] font-bold uppercase tracking-wider text-slate-900">2. Conversão e Descontos</h5>
+                    <h5 className="text-[11px] font-bold uppercase tracking-wider text-slate-900">{tr("2. Conversão e Descontos")}</h5>
                     <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
-                      Cada ponto acumulado tem o valor de <strong className="text-slate-800">0,01€ de saldo real</strong>. Pode descontar o seu saldo acumulado diretamente ao realizar uma nova reserva de Menu ou Pack Daily.
+                      {tr("Cada ponto acumulado tem o valor de")} <strong className="text-slate-800">{tr("0,01€ de saldo real")}</strong>{tr(". Pode descontar o seu saldo acumulado diretamente ao realizar uma nova reserva de Menu ou Pack Daily.")}
                     </p>
                   </div>
                 </div>
@@ -2467,11 +2466,11 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h5 className="text-[11px] font-bold uppercase tracking-wider text-slate-900">3. Vantagens VIP Gold</h5>
-                      <span className="text-[8px] font-bold text-white bg-orange-500 px-1.5 py-0.5 rounded-md uppercase tracking-wider">Premium</span>
+                      <h5 className="text-[11px] font-bold uppercase tracking-wider text-slate-900">{tr("3. Vantagens VIP Gold")}</h5>
+                      <span className="text-[8px] font-bold text-white bg-orange-500 px-1.5 py-0.5 rounded-md uppercase tracking-wider">{tr("Premium")}</span>
                     </div>
                     <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
-                      Ao atingir os <strong className="text-slate-900 font-extrabold font-black">500 pontos</strong>, desbloqueia permanentemente o nível <strong className="text-orange-600 font-extrabold font-black">VIP Gold</strong>, garantindo uma <strong className="text-slate-900 font-extrabold font-black">Taxa de Serviço reduzida de apenas 5%</strong> (em vez de 10%) em todas as futuras reservas!
+                      {tr("Ao atingir os")} <strong className="text-slate-900 font-extrabold font-black">{tr("500 pontos")}</strong>{tr(", desbloqueia permanentemente o nível")} <strong className="text-orange-600 font-extrabold font-black">{tr("VIP Gold")}</strong>{tr(", garantindo uma")} <strong className="text-slate-900 font-extrabold font-black">{tr("Taxa de Serviço reduzida de apenas 5%")}</strong> {tr("(em vez de 10%) em todas as futuras reservas!")}
                     </p>
                   </div>
                 </div>
@@ -2484,7 +2483,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 onClick={() => setShowPointsInfoModal(false)}
                 className="w-full bg-slate-950 hover:bg-slate-900 text-white font-bold py-4 rounded-2xl text-[10px] uppercase tracking-widest transition-all duration-200 cursor-pointer"
               >
-                Entendido, obrigado!
+                {tr("Entendido, obrigado!")}
               </button>
             </div>
           </div>
@@ -2501,7 +2500,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <ICONS.Lock size={20} />
                 </div>
                 <h3 className="text-xl font-black uppercase italic tracking-tight">
-                  Segurança
+                  {tr("Segurança")}
                 </h3>
               </div>
               <button
@@ -2515,7 +2514,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
             <div className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase italic tracking-widest text-slate-400 ml-4">
-                  Palavra-passe Atual
+                  {tr("Palavra-passe Atual")}
                 </label>
                 <div className="relative">
                   <input
@@ -2550,7 +2549,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase italic tracking-widest text-slate-400 ml-4">
-                  Nova Palavra-passe
+                  {tr("Nova Palavra-passe")}
                 </label>
                 <div className="relative">
                   <input
@@ -2585,7 +2584,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase italic tracking-widest text-slate-400 ml-4">
-                  Confirmar Nova Palavra-passe
+                  {tr("Confirmar Nova Palavra-passe")}
                 </label>
                 <div className="relative">
                   <input
@@ -2628,7 +2627,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                 ) : (
                   <ICONS.ShieldCheck size={16} />
                 )}
-                Atualizar Segurança
+                {tr("Atualizar Segurança")}
               </button>
             </div>
           </div>
@@ -2645,7 +2644,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   <ICONS.AlertTriangle size={20} />
                 </div>
                 <h3 className="text-xl font-black uppercase italic tracking-tight text-red-900">
-                  Eliminar Conta
+                  {tr("Eliminar Conta")}
                 </h3>
               </div>
               <button
@@ -2659,9 +2658,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
             <div className="space-y-6">
               <div className="bg-red-50 p-6 rounded-2xl border border-red-100">
                 <p className="text-sm font-bold text-red-800 leading-relaxed">
-                  Esta ação é irreversível. Todos os seus dados, reservas e
-                  histórico serão apagados permanentemente dos nossos
-                  servidores.
+                  {tr("Esta ação é irreversível. Todos os seus dados, reservas e histórico serão apagados permanentemente dos nossos servidores.")}
                 </p>
               </div>
 
@@ -2676,13 +2673,13 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   ) : (
                     <ICONS.Trash2 size={16} />
                   )}
-                  Confirmar Eliminação
+                  {tr("Confirmar Eliminação")}
                 </button>
                 <button
                   onClick={() => setShowDeleteModal(false)}
                   className="w-full bg-slate-100 text-slate-600 rounded-2xl py-4 font-black uppercase italic tracking-widest text-xs hover:bg-slate-200 transition-all"
                 >
-                  Cancelar
+                  {tr("Cancelar")}
                 </button>
               </div>
             </div>
@@ -2742,12 +2739,12 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     </span>
                     {viewingDetail.is_meal_prep && (
                       <span className="px-3 py-1 bg-blue-500 text-white rounded-lg text-[8px] font-black uppercase tracking-widest italic">
-                        Meal Prep
+                        {tr("Meal Prep")}
                       </span>
                     )}
                   </div>
                   <h3 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter text-slate-950 leading-none">
-                    Detalhes do <span className="text-orange-500">Ritual.</span>
+                    {tr("Detalhes do")} <span className="text-orange-500">{tr("Ritual.")}</span>
                   </h3>
                 </div>
                 <button
@@ -2784,7 +2781,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     </div>
                     <div className="text-left">
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">
-                        Chef
+                        {tr("Chef")}
                       </p>
                       <p className="text-sm font-black text-slate-950 uppercase italic">
                         {viewingDetail.cookName}
@@ -2793,7 +2790,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                         onClick={() => onOpenChat(viewingDetail.cookId)}
                         className="text-[8px] font-black text-orange-500 uppercase tracking-widest hover:underline mt-1"
                       >
-                        Enviar Mensagem
+                        {tr("Enviar Mensagem")}
                       </button>
                     </div>
                   </div>
@@ -2806,10 +2803,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       </div>
                       <div className="text-left">
                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">
-                          Data e Hora
+                          {tr("Data e Hora")}
                         </p>
                         <p className="text-xs font-bold text-slate-950 leading-none">
-                          {viewingDetail.data} às{" "}
+                          {viewingDetail.data} {tr("às")}{" "}
                           {viewingDetail.hora || "--:--"}
                         </p>
                       </div>
@@ -2821,7 +2818,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       </div>
                       <div className="text-left">
                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">
-                          Morada de Entrega/Serviço
+                          {tr("Morada de Entrega/Serviço")}
                         </p>
                         <p className="text-xs font-bold text-slate-700 leading-normal">
                           {viewingDetail.morada}
@@ -2835,10 +2832,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       </div>
                       <div className="text-left">
                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">
-                          Número de Pessoas
+                          {tr("Número de Pessoas")}
                         </p>
                         <p className="text-xs font-bold text-slate-950 leading-none">
-                          {viewingDetail.numPessoas || 1} Pessoas (PAX)
+                          {viewingDetail.numPessoas || 1} {tr("Pessoas (PAX)")}
                         </p>
                       </div>
                     </div>
@@ -2870,7 +2867,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                                     })
                                   ) : (
                                     <span className="text-emerald-600 text-[8px] font-extrabold uppercase">
-                                      Sem restrições
+                                      {tr("Sem restrições")}
                                     </span>
                                   )}
                                 </div>
@@ -2890,7 +2887,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full -mr-16 -mt-16 blur-3xl" />
                     <div className="relative z-10">
                       <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2 italic">
-                        Ritual Selecionado
+                        {tr("Ritual Selecionado")}
                       </p>
                       <h4 className="text-xl font-black uppercase italic tracking-tight leading-tight">
                         {viewingDetail.menu_selected}
@@ -2898,7 +2895,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-end">
                         <div className="space-y-1">
                           <p className="text-[8px] font-black text-white/30 uppercase tracking-widest italic">
-                            Valor Total
+                            {tr("Valor Total")}
                           </p>
                           <p className="text-lg font-black text-white italic">
                             {formatPrice(viewingDetail.valorTotal)}
@@ -2909,18 +2906,18 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       {viewingDetail.splitBill && (
                         <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
                           <p className="text-[8px] font-black text-white/30 uppercase tracking-widest italic">
-                            Divisão de Conta (Split Bill)
+                            {tr("Divisão de Conta (Split Bill)")}
                           </p>
                           <div className="bg-white/5 border border-white/10 rounded-xl p-3 space-y-1.5 text-left">
                             <div className="flex justify-between items-center text-[10px] font-bold text-white/60">
-                              <span>Parcela por Email:</span>
+                              <span>{tr("Parcela por Email:")}</span>
                               <span className="text-orange-400">{formatPrice(viewingDetail.splitBill.shareAmount)}</span>
                             </div>
                             <div className="space-y-1">
                               {/* Buyer share */}
                               <div className="flex justify-between items-center text-[9px] font-bold text-emerald-400">
-                                <span>{user.email} (Comprador)</span>
-                                <span>Pago</span>
+                                <span>{user.email} {tr("(Comprador)")}</span>
+                                <span>{tr("Pago")}</span>
                               </div>
                               {/* Guests shares */}
                               {viewingDetail.splitBill.emails.map((email: string, eIdx: number) => {
@@ -2929,7 +2926,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                                   <div key={eIdx} className="flex justify-between items-center text-[9px] font-bold">
                                     <span className="text-white/70">{email}</span>
                                     <span className={isPaid ? "text-emerald-400" : "text-amber-400 animate-pulse"}>
-                                      {isPaid ? "Pago" : "Pendente"}
+                                      {isPaid ? tr("Pago") : tr("Pendente")}
                                     </span>
                                   </div>
                                 );
@@ -2946,7 +2943,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                     <div className="flex items-center gap-2">
                       <ICONS.Utensils size={14} className="text-orange-500" />
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">
-                        Pratos do Ritual
+                        {tr("Pratos do Ritual")}
                       </p>
                     </div>
                     {isLoadingMenu ? (
@@ -2977,7 +2974,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                       <div className="p-5 bg-slate-50 border border-slate-100 rounded-3xl">
                         <p className="text-xs font-medium text-slate-400 italic">
                           {selectedMenu?.descricao ||
-                            "Informação detalhada dos pratos não disponível."}
+                            tr("Informação detalhada dos pratos não disponível.")}
                         </p>
                       </div>
                     )}
@@ -2992,7 +2989,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                           className="text-orange-500"
                         />
                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">
-                          As tuas notas para o Chef
+                          {tr("As tuas notas para o Chef")}
                         </p>
                       </div>
                       <div className="p-5 bg-orange-50/50 border border-orange-100 rounded-3xl">
@@ -3011,7 +3008,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                   onClick={() => setViewingDetail(null)}
                   className="flex-1 min-h-[58px] py-4 px-6 bg-slate-950 hover:bg-orange-500 text-white rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all active:scale-97 shadow-lg flex items-center justify-center shrink-0 border border-white/15 cursor-pointer"
                 >
-                  Fechar Detalhes
+                  {tr("Fechar Detalhes")}
                 </button>
               </div>
             </div>
