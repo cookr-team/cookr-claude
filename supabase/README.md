@@ -17,6 +17,7 @@ Ordem de aplicação (SQL Editor do projeto Supabase da Cookr):
 11. `migrations/20261123070000_haccp_favoritos_espera.sql` — tabelas e permissões de HACCP, favoritos e lista de espera.
 12. `migrations/20261123080000_save_my_private.sql` — função segura para guardar NIF/IBAN/faturação.
 13. `migrations/20261123090000_booking_sanity.sql` — validações de sanidade em reservas.
+14. `migrations/20261123100000_stripe_payments.sql` — pagamentos Stripe (estado dos pagamentos e contas Connect dos chefs).
 
 Depois do passo 3, confirme que o administrador existe em `public.profiles` com `role = 'admin'`:
 

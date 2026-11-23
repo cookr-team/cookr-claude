@@ -1,3 +1,4 @@
+import { paymentService, PaymentRequiredError } from './paymentService';
 import { todayLocal } from "../lib/dateUtils";
 export { supabase } from '../lib/supabaseClient';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
@@ -1811,8 +1812,29 @@ export const supabaseService = {
         if (extraData.service_pin !== undefined) updates.service_pin = extraData.service_pin;
       }
 
+      // Pagamento: ao aceitar, o servidor captura o valor autorizado. Sem pagamento do cliente, não há aceitação.
+      const paymentsOn = await paymentService.isEnabled();
+      if (paymentsOn && status === BookingStatus.ACCEPTED) {
+        try {
+          await paymentService.capture(id);
+        } catch (payErr: any) {
+          if (payErr instanceof PaymentRequiredError) {
+            throw new Error(tr("O cliente ainda não concluiu o pagamento desta reserva. Só pode aceitar depois de o pagamento ser autorizado."));
+          }
+          throw new Error(payErr?.message || tr("Não foi possível confirmar o pagamento."));
+        }
+      }
+
       const { error } = await supabase.from('bookings').update(updates).eq('id', id);
       if (error) throw error;
+
+      if (paymentsOn) {
+        if (status === BookingStatus.REJECTED || status === BookingStatus.CANCELLED || status === BookingStatus.CANCELLED_PARTIAL_REFUND) {
+          paymentService.release(id).catch((e) => console.warn('[Pagamentos] release:', e?.message || e));
+        } else if (status === BookingStatus.COMPLETED) {
+          paymentService.payout(id).catch((e) => console.warn('[Pagamentos] payout:', e?.message || e));
+        }
+      }
 
       // Buscar detalhes da reserva para disparar notificações e atualizar disponibilidade
       const { data: booking } = await supabase.from('bookings').select('*').eq('id', id).maybeSingle();
@@ -1903,6 +1925,10 @@ export const supabaseService = {
     if (error) {
       console.warn('[Supabase] complete_booking_with_pin:', error.message);
       return false;
+    }
+    if (data === true && (await paymentService.isEnabled())) {
+      // Serviço concluído: transfere ao chef a parte dele (se a conta Stripe dele estiver pronta).
+      paymentService.payout(bookingId).catch((e) => console.warn('[Pagamentos] payout:', e?.message || e));
     }
     return data === true;
   },

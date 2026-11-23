@@ -6,6 +6,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 import { createClient } from "@supabase/supabase-js";
+import { registerStripeWebhook, registerStripeRoutes } from "./serverlib/stripeRoutes";
 import {
   getBookingConfirmationTemplate,
   getBookingCancellationTemplate,
@@ -38,6 +39,15 @@ app.use((req, res, next) => {
   if (req.path.startsWith("/api")) res.setHeader("Cache-Control", "no-store");
   next();
 });
+
+const stripeDeps = {
+  admin: () => supabaseAdminServer,
+  userClient: (token: string) => createUserClient(token),
+  isAdmin: (req: any) => isAdminRequest(req),
+  rateLimited: (key: string, max: number, windowMs: number) => hitRateLimit(key, max, windowMs),
+};
+// Webhook do Stripe: corpo em bruto + assinatura; tem de vir antes do express.json() e da autenticação.
+registerStripeWebhook(app, stripeDeps);
 
 // Limite global por IP (travão a abusos e força bruta); os limites finos por utilizador vêm depois.
 app.use("/api", (req, res, next) => {
@@ -393,6 +403,7 @@ const requireSupabaseAuth = async (
 
 // Registar o middleware de autenticação obrigatório para todas as rotas /api/*
 app.use("/api", requireSupabaseAuth);
+registerStripeRoutes(app, stripeDeps);
 
 // Limite por utilizador nos endpoints de IA (protege a quota do Gemini)
 app.use("/api/gemini", (req: AuthenticatedRequest, res, next) => {

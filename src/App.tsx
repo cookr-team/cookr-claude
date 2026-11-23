@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, Suspense, useCallback } from "react";
 import { persistableUser } from "./lib/persistUser";
 import Layout from "./components/Layout";
+import { paymentService } from "./services/paymentService";
 import LandingPage from "./components/LandingPage";
 import Logo from "./components/Logo";
 
@@ -1570,6 +1571,27 @@ const App: React.FC = () => {
     setIsMobileMenuOpen(false);
   }, [refreshData]);
 
+  // Regresso do Stripe (pagamento do cliente / configuração de recebimentos do chef).
+  useEffect(() => {
+    if (!currentUser?.id || typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const pay = params.get("payment");
+    const connect = params.get("connect");
+    if (!pay && !connect) return;
+    window.history.replaceState({}, "", window.location.pathname);
+    if (pay === "success") {
+      addToast(tr("Pagamento autorizado! O valor só é cobrado quando o chef aceitar a reserva."), "success");
+      navigateTo("agenda");
+    } else if (pay === "cancelled") {
+      addToast(tr("Pagamento cancelado. A reserva fica pendente; pode pagar a partir da Agenda."), "info");
+      navigateTo("agenda");
+    } else if (connect) {
+      navigateTo("settings");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser?.id]);
+
+
   const handleSelectChef = useCallback((
     chefId: string,
     date?: string,
@@ -2336,8 +2358,22 @@ const App: React.FC = () => {
           onNotify={addToast}
           onBook={async (d) => {
             try {
-              await supabaseService.createBooking(d);
+              const created: any = await supabaseService.createBooking(d);
               await refreshData();
+              // Pagamento: com o Stripe ativo, o cliente segue para o Checkout (o valor só fica retido; é cobrado quando o chef aceitar).
+              if (created?.id && !created.offline && (await paymentService.isEnabled())) {
+                try {
+                  const url = await paymentService.startCheckout(created.id);
+                  addToast(tr("A redirecionar para o pagamento seguro..."), "info");
+                  window.location.href = url;
+                  await new Promise(() => {});
+                } catch (payErr: any) {
+                  addToast(
+                    tr("Reserva criada, mas não foi possível iniciar o pagamento. Pague a partir da Agenda.") + (payErr?.message ? ` (${payErr.message})` : ""),
+                    "error"
+                  );
+                }
+              }
               addToast(
                 getLangText({
                   pt: "Ritual agendado com sucesso!",
