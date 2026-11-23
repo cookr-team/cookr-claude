@@ -44,7 +44,7 @@ const ViewLoadingPlaceholder = () => {
         <p className="text-[9px] font-black uppercase text-slate-400 tracking-[0.25em] italic">
           {getLangText({ pt: "Carregando", es: "Cargando", en: "Loading", fr: "Chargement" })}
         </p>
-        <p className="text-[7px] font-bold text-slate-300 uppercase tracking-widest italic">Cookr Command Center</p>
+        <p className="text-[7px] font-bold text-slate-300 uppercase tracking-widest italic">{tr("Cookr Command Center")}</p>
       </div>
     </div>
   );
@@ -73,6 +73,7 @@ import { ICONS, PLATFORM_NAME, COOKR_COLLECTIONS } from "./constants";
 import toast, { Toaster } from "react-hot-toast";
 import { PremiumToastContainer, Toast } from "./components/PremiumToast";
 
+import { tr } from "./lib/tr";
 function cleanUserData(user: any): User | null {
   if (!user) return null;
   const sanitized = sanitizeUserUrls(user);
@@ -662,7 +663,7 @@ const App: React.FC = () => {
     } else {
       setCurrentView("home");
     }
-    addToast(`Modo Simulação Ativo: A navegar como ${targetUser.nome} (${targetUser.role.toUpperCase()})`, "info");
+    addToast(tr("Modo Simulação Ativo: A navegar como {v0} ({v1})", { v0: targetUser.nome, v1: targetUser.role.toUpperCase() }), "info");
   }, [currentUser, realAdminUser, addToast]);
 
   const handleStopImpersonation = useCallback(() => {
@@ -670,7 +671,7 @@ const App: React.FC = () => {
       setCurrentUser(realAdminUser);
       setRealAdminUser(null);
       setCurrentView("admin");
-      addToast("Modo de simulação encerrado. Regressado ao Painel de Administrador.", "success");
+      addToast(tr("Modo de simulação encerrado. Regressado ao Painel de Administrador."), "success");
     }
   }, [realAdminUser, addToast]);
 
@@ -1257,7 +1258,7 @@ const App: React.FC = () => {
       // Resposta igual com ou sem conta, para não revelar que emails existem.
     }
     addToast(
-      "Se existir uma conta com esse email, enviámos instruções para definir uma nova palavra-passe.",
+      tr("Se existir uma conta com esse email, enviámos instruções para definir uma nova palavra-passe."),
       "success",
     );
   };
@@ -1281,7 +1282,7 @@ const App: React.FC = () => {
       setShowRecoveryModal(false);
       setRecoveryPassword("");
       setRecoveryPassword2("");
-      addToast("Palavra-passe atualizada! Entre com a nova palavra-passe.", "success");
+      addToast(tr("Palavra-passe atualizada! Entre com a nova palavra-passe."), "success");
       navigateTo("login-selection");
     } catch (err: any) {
       setRecoveryError(err?.message || "Não foi possível atualizar a palavra-passe. Peça um novo link.");
@@ -1612,7 +1613,7 @@ const App: React.FC = () => {
       addToast("Curadoria atualizada.", "success");
       return true;
     } catch (e) {
-      addToast("Erro na curadoria.", "error");
+      addToast(tr("Erro na curadoria."), "error");
       return false;
     }
   };
@@ -1665,7 +1666,7 @@ const App: React.FC = () => {
               );
               if (user && (user as any).pendingEmailConfirmation) {
                 addToast(
-                  "Conta criada! Enviámos um email para confirmar o seu endereço. Confirme e depois entre com a sua palavra-passe.",
+                  tr("Conta criada! Enviámos um email para confirmar o seu endereço. Confirme e depois entre com a sua palavra-passe."),
                   "success",
                 );
                 setTimeout(() => navigateTo("login-selection"), 4000);
@@ -1740,13 +1741,13 @@ const App: React.FC = () => {
                 onClick={() => navigateTo("login-selection")}
                 className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-950 hover:text-orange-500 transition-colors cursor-pointer"
               >
-                Entrar
+                {tr("Entrar")}
               </button>
               <button
                 onClick={() => navigateTo("register-selection")}
                 className="h-8.5 sm:h-10 px-4 sm:px-6 bg-[#0A0A0B] text-white rounded-full font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all hover:bg-orange-500 shadow-md hover:shadow-orange-500/20 active:scale-95 flex items-center justify-center cursor-pointer relative before:absolute before:-inset-2 before:content-['']"
               >
-                Aderir
+                {tr("Aderir")}
               </button>
             </div>
           </nav>
@@ -1756,12 +1757,12 @@ const App: React.FC = () => {
               <div className="inline-flex items-center gap-1.5 bg-orange-50 px-2.5 py-0.5 sm:py-1 rounded-full border border-orange-100">
                 <ICONS.ShieldCheck className="text-orange-500" size={10} />
                 <span className="text-[8px] sm:text-[9px] font-bold text-orange-500 uppercase tracking-widest">
-                  Acesso Seguro
+                  {tr("Acesso Seguro")}
                 </span>
               </div>
               <h2 className="text-xl sm:text-3xl md:text-5xl font-black text-slate-950 uppercase italic leading-none tracking-tighter">
-                Entrar no <br className="sm:hidden" />
-                <span className="text-orange-500">Portal Cookr.</span>
+                {tr("Entrar no")} <br className="sm:hidden" />
+                <span className="text-orange-500">{tr("Portal Cookr.")}</span>
               </h2>
             </div>
 
@@ -1779,10 +1780,10 @@ const App: React.FC = () => {
                 </div>
                 <div className="space-y-0.5 sm:space-y-1">
                   <h3 className="text-[2xs] sm:text-sm md:text-base font-black uppercase italic tracking-tight text-slate-950">
-                    Sou Cliente
+                    {tr("Sou Cliente")}
                   </h3>
                   <p className="hidden sm:block text-[9px] sm:text-xs font-medium text-slate-400 leading-normal italic">
-                    Aceda aos seus rituais e chefs favoritos.
+                    {tr("Aceda aos seus rituais e chefs favoritos.")}
                   </p>
                 </div>
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-slate-200/60 flex items-center justify-center group-hover:bg-slate-950 group-hover:text-white group-hover:border-slate-950 transition-all duration-300">
@@ -1803,10 +1804,10 @@ const App: React.FC = () => {
                 </div>
                 <div className="space-y-0.5 sm:space-y-1">
                   <h3 className="text-[2xs] sm:text-sm md:text-base font-black uppercase italic tracking-tight text-white">
-                    Sou Chef
+                    {tr("Sou Chef")}
                   </h3>
                   <p className="hidden sm:block text-[9px] sm:text-xs font-medium text-slate-400 leading-normal italic">
-                    Gerir a sua cozinha e reservas profissionais.
+                    {tr("Gerir a sua cozinha e reservas profissionais.")}
                   </p>
                 </div>
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-slate-950 group-hover:border-white transition-all duration-300">
@@ -1817,7 +1818,7 @@ const App: React.FC = () => {
 
             <div className="w-full max-w-xs mx-auto pt-3 border-t border-slate-100 flex flex-col items-center gap-1.5">
               <div className="text-[7.5px] sm:text-[9px] font-bold uppercase text-slate-400 tracking-widest">
-                Ou aceda num instante
+                {tr("Ou aceda num instante")}
               </div>
               <button
                 type="button"
@@ -1842,7 +1843,7 @@ const App: React.FC = () => {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.08l3.66 2.84c.87-2.6 3.3-4.54 6.16-4.54z"
                   />
                 </svg>
-                Entrar com o Google
+                {tr("Entrar com o Google")}
               </button>
             </div>
           </div>
@@ -1863,11 +1864,11 @@ const App: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h2 className="text-2xl font-black uppercase italic tracking-tighter">
-                  Portal{" "}
-                  {selectedRoleForAuth === UserRole.COOK ? "Chef" : "Cliente"}
+                  {tr("Portal")}{" "}
+                  {selectedRoleForAuth === UserRole.COOK ? tr("Chef") : tr("Cliente")}
                 </h2>
                 <p className="text-slate-400 font-medium italic text-xs">
-                  Bem-vindo de volta à elite gastronómica.
+                  {tr("Bem-vindo de volta à elite gastronómica.")}
                 </p>
               </div>
             </div>
@@ -1875,20 +1876,20 @@ const App: React.FC = () => {
             <form onSubmit={handleLogin} className="space-y-4 md:space-y-5">
               <div className="space-y-1.5">
                 <label className="text-[8px] font-black text-slate-400 uppercase tracking-[0.15em] ml-3">
-                  Email de Acesso
+                  {tr("Email de Acesso")}
                 </label>
                 <input
                   type="email"
                   required
                   className="w-full h-11 px-5 bg-slate-50 border-2 border-transparent rounded-xl focus:border-orange-500 focus:bg-white outline-none font-bold text-xs transition-all"
-                  placeholder="exemplo@cookr.pt"
+                  placeholder={tr("exemplo@cookr.pt")}
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
                 />
               </div>
               <div className="space-y-1.5">
                 <label className="text-[8px] font-black text-slate-400 uppercase tracking-[0.15em] ml-3">
-                  Palavra-passe
+                  {tr("Palavra-passe")}
                 </label>
                 <input
                   type="password"
@@ -1905,7 +1906,7 @@ const App: React.FC = () => {
                     onClick={handleForgotPassword}
                     className="text-[11px] font-bold text-slate-500 hover:text-orange-500 underline-offset-2 hover:underline transition-colors cursor-pointer py-1"
                   >
-                    Esqueci-me da palavra-passe
+                    {tr("Esqueci-me da palavra-passe")}
                   </button>
                 </div>
               </div>
@@ -1930,7 +1931,7 @@ const App: React.FC = () => {
                 {isLoginPending ? (
                   <ICONS.RefreshCw className="animate-spin mx-auto" size={16} />
                 ) : (
-                  "Entrar no Dashboard"
+                  tr("Entrar no Dashboard")
                 )}
               </button>
 
@@ -1940,7 +1941,7 @@ const App: React.FC = () => {
                 </div>
                 <div className="relative flex justify-center text-[10px] font-black uppercase">
                   <span className="bg-white px-3 text-slate-300 tracking-widest">
-                    Ou continue com
+                    {tr("Ou continue com")}
                   </span>
                 </div>
               </div>
@@ -1968,7 +1969,7 @@ const App: React.FC = () => {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.08l3.66 2.84c.87-2.6 3.3-4.54 6.16-4.54z"
                   />
                 </svg>
-                Google
+                {tr("Google")}
               </button>
 
               <button
@@ -1976,7 +1977,7 @@ const App: React.FC = () => {
                 onClick={() => navigateTo("login-selection")}
                 className="w-full text-[10px] font-black text-slate-300 uppercase tracking-widest hover:text-slate-950 transition-colors"
               >
-                Voltar à seleção
+                {tr("Voltar à seleção")}
               </button>
             </form>
           </div>
@@ -1997,13 +1998,13 @@ const App: React.FC = () => {
                 onClick={() => navigateTo("login-selection")}
                 className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-950 hover:text-orange-500 transition-colors cursor-pointer"
               >
-                Entrar
+                {tr("Entrar")}
               </button>
               <button
                 onClick={() => navigateTo("register-selection")}
                 className="h-8.5 sm:h-10 px-4 sm:px-6 bg-[#0A0A0B] text-white rounded-full font-bold text-[10px] sm:text-xs uppercase tracking-wider transition-all hover:bg-orange-500 shadow-md hover:shadow-orange-500/20 active:scale-95 flex items-center justify-center cursor-pointer relative before:absolute before:-inset-2 before:content-['']"
               >
-                Aderir
+                {tr("Aderir")}
               </button>
             </div>
           </nav>
@@ -2013,12 +2014,12 @@ const App: React.FC = () => {
               <div className="inline-flex items-center gap-1.5 bg-orange-50 px-2.5 py-0.5 sm:py-1 rounded-full border border-orange-100">
                 <ICONS.Star className="text-orange-500" size={10} />
                 <span className="text-[8px] sm:text-[9px] font-bold text-orange-500 uppercase tracking-widest">
-                  Junte-se à Comunidade
+                  {tr("Junte-se à Comunidade")}
                 </span>
               </div>
               <h2 className="text-xl sm:text-3xl md:text-5xl font-black text-slate-950 uppercase italic leading-none tracking-tighter">
-                Criar Nova <br className="sm:hidden" />
-                <span className="text-orange-500">Experiência.</span>
+                {tr("Criar Nova")} <br className="sm:hidden" />
+                <span className="text-orange-500">{tr("Experiência.")}</span>
               </h2>
             </div>
 
@@ -2033,10 +2034,10 @@ const App: React.FC = () => {
                 </div>
                 <div className="space-y-0.5 sm:space-y-1">
                   <h3 className="text-[2xs] sm:text-sm md:text-base font-black uppercase italic tracking-tight text-slate-950">
-                    Registo Cliente
+                    {tr("Registo Cliente")}
                   </h3>
                   <p className="hidden sm:block text-[9px] sm:text-xs font-medium text-slate-400 leading-normal italic">
-                    Descubra os melhores chefs e menus exclusivos.
+                    {tr("Descubra os melhores chefs e menus exclusivos.")}
                   </p>
                 </div>
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-slate-200/60 flex items-center justify-center group-hover:bg-slate-950 group-hover:text-white group-hover:border-slate-950 transition-all duration-300">
@@ -2054,10 +2055,10 @@ const App: React.FC = () => {
                 </div>
                 <div className="space-y-0.5 sm:space-y-1">
                   <h3 className="text-[2xs] sm:text-sm md:text-base font-black uppercase italic tracking-tight text-white">
-                    Registo Chef
+                    {tr("Registo Chef")}
                   </h3>
                   <p className="hidden sm:block text-[9px] sm:text-xs font-medium text-slate-400 leading-normal italic">
-                    Profissionalize o seu serviço e ganhe visibilidade.
+                    {tr("Profissionalize o seu serviço e ganhe visibilidade.")}
                   </p>
                 </div>
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-slate-950 group-hover:border-white transition-all duration-300">
@@ -2068,7 +2069,7 @@ const App: React.FC = () => {
 
             <div className="w-full max-w-xs mx-auto pt-3 border-t border-slate-100 flex flex-col items-center gap-1.5">
               <div className="text-[7.5px] sm:text-[9px] font-bold uppercase text-slate-400 tracking-widest">
-                Ou registe-se num clique
+                {tr("Ou registe-se num clique")}
               </div>
               <button
                 type="button"
@@ -2093,7 +2094,7 @@ const App: React.FC = () => {
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.08l3.66 2.84c.87-2.6 3.3-4.54 6.16-4.54z"
                   />
                 </svg>
-                Aderir com o Google
+                {tr("Aderir com o Google")}
               </button>
             </div>
           </div>
@@ -2181,16 +2182,16 @@ const App: React.FC = () => {
             
             <div className="space-y-2">
               <h2 className="text-xl font-black uppercase italic tracking-tight text-slate-800">
-                Acesso Suspenso
+                {tr("Acesso Suspenso")}
               </h2>
               <p className="text-xs text-slate-500 leading-relaxed">
-                A sua conta foi temporariamente suspensa por violação das diretrizes da comunidade ou termos de serviço da Cookr.
+                {tr("A sua conta foi temporariamente suspensa por violação das diretrizes da comunidade ou termos de serviço da Cookr.")}
               </p>
             </div>
 
             {currentUser.admin_notes && (
               <div className="bg-red-50/50 border border-red-100/50 p-4 rounded-2xl text-left">
-                <span className="text-[9px] font-bold uppercase text-red-700 block mb-1">Motivo administrativo:</span>
+                <span className="text-[9px] font-bold uppercase text-red-700 block mb-1">{tr("Motivo administrativo:")}</span>
                 <p className="text-xs text-slate-700 italic">
                   "{currentUser.admin_notes}"
                 </p>
@@ -2204,13 +2205,13 @@ const App: React.FC = () => {
                 }}
                 className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-extrabold uppercase text-xs tracking-widest rounded-xl shadow-md transition-all active:scale-97"
               >
-                Contactar Suporte
+                {tr("Contactar Suporte")}
               </button>
               <button
                 onClick={handleLogout}
                 className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-750 font-bold uppercase text-xs rounded-xl transition-all"
               >
-                Terminar Sessão
+                {tr("Terminar Sessão")}
               </button>
             </div>
           </div>
@@ -2427,10 +2428,10 @@ const App: React.FC = () => {
         <div className="sticky top-[calc(4rem+env(safe-area-inset-top,0px))] md:top-0 z-[45] w-full bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 text-white px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs font-bold shadow-2xl border-b border-white/20 animate-in slide-in-from-top duration-300 gap-2">
           <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
             <span className="bg-white/20 backdrop-blur-sm px-2 sm:px-2.5 py-0.5 rounded-md text-[9px] sm:text-[9.5px] font-black tracking-widest uppercase shadow-2xs">
-              🚨 MODO SIMULAÇÃO
+              {tr("🚨 MODO SIMULAÇÃO")}
             </span>
             <span className="text-[10px] sm:text-[11px] font-medium">
-              A visualizar como <strong className="underline decoration-amber-300 font-black">{currentUser?.nome}</strong> ({currentUser?.email} — <span className="uppercase font-bold">{currentUser?.role}</span>)
+              {tr("A visualizar como")} <strong className="underline decoration-amber-300 font-black">{currentUser?.nome}</strong> ({currentUser?.email} — <span className="uppercase font-bold">{currentUser?.role}</span>)
             </span>
           </div>
           <button
@@ -2438,7 +2439,7 @@ const App: React.FC = () => {
             className="self-end sm:self-auto bg-white text-slate-950 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-lg text-[9px] sm:text-[10px] font-black uppercase tracking-wider hover:bg-slate-100 transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0"
           >
             <ICONS.X size={12} />
-            <span>Sair da Simulação</span>
+            <span>{tr("Sair da Simulação")}</span>
           </button>
         </div>
       )}
@@ -2454,7 +2455,7 @@ const App: React.FC = () => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
-          <span className="text-[11px] font-black tracking-wider uppercase pr-0.5 whitespace-nowrap">Sem ligação</span>
+          <span className="text-[11px] font-black tracking-wider uppercase pr-0.5 whitespace-nowrap">{tr("Sem ligação")}</span>
         </div>
       )}
       <Suspense fallback={<ViewLoadingPlaceholder />}>
@@ -2468,9 +2469,9 @@ const App: React.FC = () => {
             className="bg-white rounded-[2rem] p-7 md:p-10 max-w-sm w-full shadow-2xl space-y-5 my-auto"
           >
             <div className="text-center space-y-2">
-              <h3 className="text-xl font-black tracking-tight">Nova palavra-passe</h3>
+              <h3 className="text-xl font-black tracking-tight">{tr("Nova palavra-passe")}</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                Escolha uma palavra-passe nova, com pelo menos 8 caracteres.
+                {tr("Escolha uma palavra-passe nova, com pelo menos 8 caracteres.")}
               </p>
             </div>
             <input
@@ -2478,7 +2479,7 @@ const App: React.FC = () => {
               required
               minLength={8}
               autoComplete="new-password"
-              placeholder="Nova palavra-passe"
+              placeholder={tr("Nova palavra-passe")}
               value={recoveryPassword}
               onChange={(e) => setRecoveryPassword(e.target.value)}
               className="w-full h-12 px-5 bg-slate-50 border-2 border-transparent rounded-xl focus:border-orange-500 focus:bg-white outline-none font-bold text-sm"
@@ -2488,7 +2489,7 @@ const App: React.FC = () => {
               required
               minLength={8}
               autoComplete="new-password"
-              placeholder="Repita a palavra-passe"
+              placeholder={tr("Repita a palavra-passe")}
               value={recoveryPassword2}
               onChange={(e) => setRecoveryPassword2(e.target.value)}
               className="w-full h-12 px-5 bg-slate-50 border-2 border-transparent rounded-xl focus:border-orange-500 focus:bg-white outline-none font-bold text-sm"
@@ -2503,7 +2504,7 @@ const App: React.FC = () => {
               disabled={isRecoveryPending}
               className="w-full h-12 bg-slate-950 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-orange-500 transition-all active:scale-[0.98] disabled:opacity-50"
             >
-              {isRecoveryPending ? "A guardar..." : "Guardar palavra-passe"}
+              {isRecoveryPending ? tr("A guardar...") : tr("Guardar palavra-passe")}
             </button>
           </form>
         </div>

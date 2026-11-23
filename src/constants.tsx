@@ -76,6 +76,7 @@ import {
   Wine
 } from 'lucide-react';
 
+import { trLocale } from "./lib/tr";
 export const COMMISSION_RATE = 0.20;
 export const PLATFORM_NAME = "Cookr";
 export const CURRENCY = "€";
@@ -326,7 +327,7 @@ export const ICONS = {
 export const formatPrice = (value: number | string): string => {
   const num = typeof value === 'string' ? parseFloat(value) : value;
   if (isNaN(num)) return `0,00 ${CURRENCY}`;
-  return new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' }).format(num);
+  return new Intl.NumberFormat(trLocale(), { style: 'currency', currency: 'EUR' }).format(num);
 };
 
 export interface SustainabilityBadgeInfo {

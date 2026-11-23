@@ -17,6 +17,7 @@ import { GoogleAddressAutocomplete, AddressData } from "./GoogleAddressAutocompl
 import { formatPostalCode } from "../utils/formatters";
 import { toLocalDateStr } from "../lib/dateUtils";
 
+import { tr, trLocale } from "../lib/tr";
 export interface WineOption {
   id: string;
   nome: string;
@@ -155,6 +156,7 @@ const PublicMenuCard: React.FC<PublicMenuCardProps> = React.memo(({
   onSelectMenu,
   onDeleteItem,
 }) => {
+  useLanguage();
   return (
     <div
       onClick={() => onSelectMenu(menu)}
@@ -212,7 +214,7 @@ const PublicMenuCard: React.FC<PublicMenuCardProps> = React.memo(({
             className={`absolute ${currentUserId === chefId ? "top-10" : "top-2"} left-2 px-1.5 py-0.5 bg-orange-500 text-white rounded-md text-[6.5px] font-bold uppercase tracking-wider shadow-sm transition-all flex items-center gap-1`}
           >
             <ICONS.Calendar size={6} className="text-white shrink-0" />
-            Pack {menu.pack_size}
+            {tr("Pack")} {menu.pack_size}
           </div>
         )}
       </div>
@@ -385,7 +387,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     try {
       const card = await supabaseService.redeemGiftCard(giftCode);
       setAppliedGiftCard(card);
-      onNotify?.("Vale de oferta aplicado com sucesso!", "success");
+      onNotify?.(tr("Vale de oferta aplicado com sucesso!"), "success");
     } catch (e: any) {
       onNotify?.(e.message || "Erro ao aplicar vale de oferta.", "error");
     }
@@ -448,14 +450,14 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       await supabaseService.flagReview(reviewId, reason || "Denúncia de utilizador");
       setReportedReviewIds(prev => [...prev, reviewId]);
       if (onNotify) {
-        onNotify("Avaliação reportada com sucesso. Um administrador irá analisá-la em breve.", "success");
+        onNotify(tr("Avaliação reportada com sucesso. Um administrador irá analisá-la em breve."), "success");
       } else {
-        alert("Avaliação reportada com sucesso. Um administrador irá analisá-la em breve.");
+        alert(tr("Avaliação reportada com sucesso. Um administrador irá analisá-la em breve."));
       }
       if (onRefresh) onRefresh();
     } catch (err: any) {
       console.error("Erro ao reportar avaliação:", err);
-      alert("Erro ao reportar avaliação. Tente novamente.");
+      alert(tr("Erro ao reportar avaliação. Tente novamente."));
     }
   };
 
@@ -552,7 +554,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     );
     setIsFavorite(result);
     if (result) {
-      onNotify?.("Chef adicionado aos favoritos!", "success");
+      onNotify?.(tr("Chef adicionado aos favoritos!"), "success");
       onNavigate("profile", "favorites");
     }
   };
@@ -716,11 +718,11 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
   const handleBooking = async () => {
     if (!currentUser) {
-      onNotify?.("Por favor, faça login para reservar.", "error");
+      onNotify?.(tr("Por favor, faça login para reservar."), "error");
       return;
     }
     if (!selectedMenu || !selectedDate || !selectedTime || !morada) {
-      onNotify?.("Por favor, preencha todos os campos.", "error");
+      onNotify?.(tr("Por favor, preencha todos os campos."), "error");
       return;
     }
 
@@ -804,7 +806,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       setBookingStep("success");
     } catch (e: any) {
       onNotify?.(
-        `Erro ao reservar: ${e.message || "Erro desconhecido"}`,
+        tr("Erro ao reservar: {v0}", { v0: e.message || "Erro desconhecido" }),
         "error",
       );
     } finally {
@@ -815,13 +817,13 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
   const handleWaitlist = async () => {
     if (!currentUser) {
       onNotify?.(
-        "Por favor, faça login para entrar na lista de espera.",
+        tr("Por favor, faça login para entrar na lista de espera."),
         "error",
       );
       return;
     }
     if (!waitlistDate) {
-      onNotify?.("Por favor, selecione uma data.", "error");
+      onNotify?.(tr("Por favor, selecione uma data."), "error");
       return;
     }
 
@@ -841,7 +843,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       setWaitlistDate("");
     } catch (e: any) {
       onNotify?.(
-        `Erro ao entrar na lista de espera: ${e.message || "Erro desconhecido"}`,
+        tr("Erro ao entrar na lista de espera: {v0}", { v0: e.message || "Erro desconhecido" }),
         "error",
       );
     } finally {
@@ -863,10 +865,10 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       console.log("[ChefProfileView] Delete successful, refreshing...");
       if (onRefresh) onRefresh();
       setItemToDelete(null);
-      alert("Item eliminado com sucesso.");
+      alert(tr("Item eliminado com sucesso."));
     } catch (err: any) {
       console.error("[ChefProfileView] Erro ao eliminar item:", err);
-      alert(`Erro ao eliminar item: ${err.message || "Erro desconhecido"}`);
+      alert(tr("Erro ao eliminar item: {v0}", { v0: err.message || "Erro desconhecido" }));
     }
   };
 
@@ -908,10 +910,10 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   <ICONS.ChefHat size={10} />
                   <span className="text-[8px] font-bold uppercase tracking-wider">
                     {selectedMenu.is_meal_prep || selectedMenu.type === "daily"
-                      ? "Pack Daily"
+                      ? tr("Pack Daily")
                       : selectedMenu.type === "dish"
-                      ? "Prato Gastronómico"
-                      : "Ritual Gastronómico"}
+                      ? tr("Prato Gastronómico")
+                      : tr("Ritual Gastronómico")}
                   </span>
                 </div>
                 <h2 className="text-xl md:text-3xl font-extrabold text-slate-900 tracking-tight uppercase leading-tight">
@@ -922,7 +924,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     {formatPrice(selectedMenu.preco)}
                   </span>
                   <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
-                    / Pessoa
+                    {tr("/ Pessoa")}
                   </span>
                 </div>
               </div>
@@ -938,34 +940,34 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 <div className="flex flex-wrap gap-2 pt-1.5 justify-start text-left">
                   {selectedMenu.cuisine_type && (
                     <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white text-slate-700 border border-slate-200/50 rounded-lg text-[9px] font-bold shadow-2xs">
-                      <span className="text-slate-400 font-black uppercase tracking-wider text-[8px]">Cozinha:</span>
+                      <span className="text-slate-400 font-black uppercase tracking-wider text-[8px]">{tr("Cozinha:")}</span>
                       <span className="text-slate-900 uppercase font-black">{selectedMenu.cuisine_type}</span>
                     </div>
                   )}
 
                   {selectedMenu.calories && (
                     <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white text-slate-700 border border-slate-200/50 rounded-lg text-[9px] font-bold shadow-2xs">
-                      <span className="text-slate-400 font-black uppercase tracking-wider text-[8px]">Energia:</span>
+                      <span className="text-slate-400 font-black uppercase tracking-wider text-[8px]">{tr("Energia:")}</span>
                       <span className="text-slate-900 uppercase font-black">{selectedMenu.calories} kcal</span>
                     </div>
                   )}
 
                   {selectedMenu.pack_size && selectedMenu.pack_size > 1 && (
                     <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white text-slate-700 border border-slate-200/50 rounded-lg text-[9px] font-bold shadow-2xs">
-                      <span className="text-slate-400 font-black uppercase tracking-wider text-[8px]">Pack:</span>
-                      <span className="text-slate-900 uppercase font-black">{selectedMenu.pack_size} Refeições</span>
+                      <span className="text-slate-400 font-black uppercase tracking-wider text-[8px]">{tr("Pack:")}</span>
+                      <span className="text-slate-900 uppercase font-black">{selectedMenu.pack_size} {tr("Refeições")}</span>
                     </div>
                   )}
 
                   {selectedMenu.delivery_type && (selectedMenu.is_meal_prep || selectedMenu.type === "daily") && (
                     <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white text-slate-700 border border-slate-200/50 rounded-lg text-[9px] font-bold shadow-2xs">
-                      <span className="text-slate-400 font-black uppercase tracking-wider text-[8px]">Formato:</span>
+                      <span className="text-slate-400 font-black uppercase tracking-wider text-[8px]">{tr("Formato:")}</span>
                       <span className="text-slate-900 uppercase font-black">
                         {selectedMenu.delivery_type === "both"
-                          ? "Domicílio ou Takeaway"
+                          ? tr("Domicílio ou Takeaway")
                           : selectedMenu.delivery_type === "pickup"
-                          ? "Takeaway"
-                          : "Domicílio"}
+                          ? tr("Takeaway")
+                          : tr("Domicílio")}
                       </span>
                     </div>
                   )}
@@ -984,15 +986,15 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     <div className="w-full flex flex-wrap gap-1.5 mt-1 border-t border-slate-200/30 pt-2">
                       {selectedMenu.dynamic_pricing.weekend_surcharge ? (
                         <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/5 text-amber-600 border border-amber-500/15 rounded-lg text-[9px] font-bold">
-                          <span className="text-amber-500 font-black uppercase text-[8px] tracking-wider">Fim de Semana:</span>
+                          <span className="text-amber-500 font-black uppercase text-[8px] tracking-wider">{tr("Fim de Semana:")}</span>
                           <span className="font-extrabold">+{selectedMenu.dynamic_pricing.weekend_surcharge}%</span>
                         </div>
                       ) : null}
                       {selectedMenu.dynamic_pricing.group_discount ? (
                         <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/5 text-emerald-600 border border-emerald-500/15 rounded-lg text-[9px] font-bold">
-                          <span className="text-emerald-500 font-black uppercase text-[8px] tracking-wider">Desconto Grupo:</span>
+                          <span className="text-emerald-500 font-black uppercase text-[8px] tracking-wider">{tr("Desconto Grupo:")}</span>
                           <span className="font-extrabold">-{selectedMenu.dynamic_pricing.group_discount}%</span>
-                          <span className="text-slate-400 text-[8px] font-normal tracking-wide">(mín. {selectedMenu.dynamic_pricing.min_group_size || 5} pax)</span>
+                          <span className="text-slate-400 text-[8px] font-normal tracking-wide">{tr("(mín.")} {selectedMenu.dynamic_pricing.min_group_size || 5} {tr("pax)")}</span>
                         </div>
                       ) : null}
                     </div>
@@ -1004,7 +1006,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 <div className="flex items-center gap-2">
                   <div className="w-1 h-3.5 bg-slate-950 rounded-full" />
                   <h4 className="text-[9px] font-bold text-slate-950 uppercase tracking-wider">
-                    A Sequência Gastronómica
+                    {tr("A Sequência Gastronómica")}
                   </h4>
                 </div>
 
@@ -1026,16 +1028,16 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       <div className="relative">
                         <div className="absolute -left-[24px] top-1 w-1.5 h-1.5 rounded-full bg-white border border-orange-500" />
                         <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
-                          Entrada
+                          {tr("Entrada")}
                         </p>
                         <p className="text-xs font-semibold text-slate-800 uppercase tracking-tight">
-                          Criação do Chef para despertar os sentidos
+                          {tr("Criação do Chef para despertar os sentidos")}
                         </p>
                       </div>
                       <div className="relative">
                         <div className="absolute -left-[24px] top-1 w-1.5 h-1.5 rounded-full bg-white border border-orange-500" />
                         <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
-                          Prato Principal
+                          {tr("Prato Principal")}
                         </p>
                         <p className="text-xs font-semibold text-slate-800 uppercase tracking-tight">
                           {selectedMenu.nome}
@@ -1044,10 +1046,10 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       <div className="relative">
                         <div className="absolute -left-[24px] top-1 w-1.5 h-1.5 rounded-full bg-white border border-orange-500" />
                         <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
-                          Sobremesa
+                          {tr("Sobremesa")}
                         </p>
                         <p className="text-xs font-semibold text-slate-800 uppercase tracking-tight">
-                          Finalização doce e memorável
+                          {tr("Finalização doce e memorável")}
                         </p>
                       </div>
                     </>
@@ -1164,7 +1166,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     className="flex-1 h-10 bg-slate-950 hover:bg-orange-500 text-white rounded-lg flex items-center justify-center gap-2 group transition-all duration-200 shadow-sm"
                   >
                     <span className="text-[9px] font-bold uppercase tracking-wider">
-                      {selectedMenu?.is_meal_prep || selectedMenu?.type === "daily" ? "Agendar este Pack" : "Agendar este Ritual"}
+                      {selectedMenu?.is_meal_prep || selectedMenu?.type === "daily" ? tr("Agendar este Pack") : tr("Agendar este Ritual")}
                     </span>
                     <ICONS.ArrowRight
                       size={14}
@@ -1173,7 +1175,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   </button>
                 </div>
                 <p className="text-[6px] font-semibold text-slate-400 uppercase tracking-widest text-center">
-                  Inclui: Ingredientes, Confecção, Serviço e Limpeza
+                  {tr("Inclui: Ingredientes, Confecção, Serviço e Limpeza")}
                 </p>
               </div>
             </div>
@@ -1192,16 +1194,16 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
             <div className="space-y-4 md:space-y-5 text-left">
               <div className="space-y-1">
                 <h2 className="text-lg md:text-xl font-bold text-white uppercase tracking-tight">
-                  Agendar.
+                  {tr("Agendar.")}
                 </h2>
                 <p className="text-[9px] font-medium text-white/40 leading-relaxed">
-                  Inicie o ritual escolhendo uma das experiências ou pratos disponíveis na ementa.
+                  {tr("Inicie o ritual escolhendo uma das experiências ou pratos disponíveis na ementa.")}
                 </p>
               </div>
 
               <div className="bg-white/5 border border-white/10 rounded-xl p-4 md:p-5 space-y-1.5">
                 <p className="text-[8px] font-bold text-white/30 uppercase tracking-wider">
-                  Item Selecionado
+                  {tr("Item Selecionado")}
                 </p>
                 <p className="text-sm md:text-base font-bold text-orange-500 uppercase tracking-tight">
                   {selectedMenu.nome}
@@ -1219,7 +1221,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   onClick={() => setBookingStep("logistics")}
                   className="flex-1 h-10 bg-white hover:bg-orange-500 hover:text-white text-slate-950 rounded-lg font-bold text-[9px] uppercase tracking-wider transition-all duration-200"
                 >
-                  Continuar
+                  {tr("Continuar")}
                 </button>
               </div>
             </div>
@@ -1241,17 +1243,17 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   <ICONS.MapPin size={14} />
                 </div>
                 <h2 className="text-lg md:text-xl font-bold text-white uppercase tracking-tight leading-none">
-                  Logística.
+                  {tr("Logística.")}
                 </h2>
                 <p className="text-[8px] font-bold text-white/30 uppercase tracking-wider">
-                  Onde e quando a magia acontece.
+                  {tr("Onde e quando a magia acontece.")}
                 </p>
               </div>
 
               <div className="space-y-3.5 md:space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                    Disponibilidade Mensal
+                    {tr("Disponibilidade Mensal")}
                   </label>
                   <ChefAvailabilityCalendar
                      chef={chef}
@@ -1262,7 +1264,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                 <div className="space-y-1.5">
                   <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                    Localização
+                    {tr("Localização")}
                   </label>
                   <div className="relative group">
                     <select
@@ -1271,7 +1273,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       onChange={(e) => setMorada(e.target.value)}
                     >
                       <option value="" className="bg-slate-900">
-                        Selecionar Morada
+                        {tr("Selecionar Morada")}
                       </option>
                       {currentUser?.addresses?.map((addr, idx) => (
                         <option
@@ -1279,11 +1281,11 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                           value={`${addr.address}, ${addr.city}`}
                           className="bg-slate-900"
                         >
-                          {addr.label || "Morada"} ({addr.city})
+                          {addr.label || tr("Morada")} ({addr.city})
                         </option>
                       ))}
                       <option value="custom" className="bg-slate-900">
-                        Outra morada...
+                        {tr("Outra morada...")}
                       </option>
                     </select>
                     <ICONS.ChevronDown
@@ -1298,12 +1300,12 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     <div className="grid grid-cols-3 gap-2">
                       <div className="col-span-2 space-y-1">
                         <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                          Rua
+                          {tr("Rua")}
                         </label>
                         <GoogleAddressAutocomplete
                           theme="dark"
                           className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-white font-semibold text-xs outline-none focus:border-orange-500 focus:bg-white/10 transition-all placeholder:text-white/15"
-                          placeholder="Rua, avenida, praça..."
+                          placeholder={tr("Rua, avenida, praça...")}
                           value={customRua || ""}
                           onChange={(val) => setCustomRua(val)}
                           onAddressSelect={(addressData) => {
@@ -1316,7 +1318,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       </div>
                       <div className="col-span-1 space-y-1">
                         <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                          Número / Apt
+                          {tr("Número / Apt")}
                         </label>
                         <input
                           type="text"
@@ -1330,7 +1332,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
                         <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                          Código Postal
+                          {tr("Código Postal")}
                         </label>
                         <input
                           type="text"
@@ -1344,12 +1346,12 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       </div>
                       <div className="space-y-1">
                         <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                          Localidade
+                          {tr("Localidade")}
                         </label>
                         <input
                           type="text"
                           className="w-full h-10 px-3 bg-white/5 border border-white/10 rounded-lg text-white font-semibold text-xs outline-none focus:border-orange-500 focus:bg-white/10 transition-all placeholder:text-white/15"
-                          placeholder="Cidade..."
+                          placeholder={tr("Cidade...")}
                           value={customLocalidade || ""}
                           onChange={(e) => setCustomLocalidade(e.target.value)}
                         />
@@ -1389,7 +1391,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   }
                   className="flex-1 h-12 bg-white text-slate-950 hover:bg-orange-500 hover:text-white rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all disabled:opacity-20 active:scale-95"
                 >
-                  {selectedMenu ? "Seguinte" : "Escolher Menu"}
+                  {selectedMenu ? tr("Seguinte") : tr("Escolher Menu")}
                 </button>
               </div>
             </div>
@@ -1411,10 +1413,10 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   <ICONS.Utensils size={14} />
                 </div>
                 <h2 className="text-lg md:text-xl font-bold text-white uppercase tracking-tight leading-none">
-                  Desejos.
+                  {tr("Desejos.")}
                 </h2>
                 <p className="text-[8px] font-bold text-white/30 uppercase tracking-wider">
-                  Personaliza a tua experiência.
+                  {tr("Personaliza a tua experiência.")}
                 </p>
               </div>
 
@@ -1422,7 +1424,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                      Pax
+                      {tr("Pax")}
                     </label>
                     <div className="relative group">
                       <input
@@ -1442,7 +1444,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                      Hora
+                      {tr("Hora")}
                     </label>
                     <div className="relative group">
                       <select
@@ -1451,7 +1453,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                         onChange={(e) => setSelectedTime(e.target.value)}
                       >
                         <option value="" className="bg-slate-900">
-                          Hora
+                          {tr("Hora")}
                         </option>
                         {availableTimes.map((t) => (
                           <option key={t} value={t} className="bg-slate-900">
@@ -1476,10 +1478,10 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     {guests.map((g, idx) => (
                       <div key={idx} className="bg-white/[0.02] border border-white/5 p-2.5 rounded-lg space-y-2">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="text-[8px] font-bold text-white/40 uppercase">Convidado {idx + 1}</span>
+                          <span className="text-[8px] font-bold text-white/40 uppercase">{tr("Convidado")} {idx + 1}</span>
                           <input
                             type="text"
-                            placeholder="Nome (Opcional)"
+                            placeholder={tr("Nome (Opcional)")}
                             value={g.name || ""}
                             onChange={(e) => {
                               const updated = [...guests];
@@ -1520,7 +1522,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                           <div className="mt-1.5 animate-in fade-in slide-in-from-top-1 duration-200 text-left">
                             <input
                               type="text"
-                              placeholder="Especifique a restrição alimentar..."
+                              placeholder={tr("Especifique a restrição alimentar...")}
                               value={g.customAllergy || ""}
                               onChange={(e) => {
                                 const updated = [...guests];
@@ -1541,7 +1543,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   <div className="space-y-2 border-t border-white/5 pt-3">
                     <div className="flex items-center justify-between">
                       <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">
-                        Dividir Conta (Split Bill)
+                        {tr("Dividir Conta (Split Bill)")}
                       </span>
                       <button
                         type="button"
@@ -1552,21 +1554,21 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                             : "bg-white/5 text-white/40 border-white/5 hover:border-white/10"
                         }`}
                       >
-                        {splitEnabled ? "Ativado" : "Desativado"}
+                        {splitEnabled ? tr("Ativado") : tr("Desativado")}
                       </button>
                     </div>
                     {splitEnabled && (
                       <div className="space-y-2">
                         <p className="text-[8px] text-white/40 leading-normal">
-                          Insere os e-mails dos restantes {numPessoas - 1} convidados. Cada um pagará a sua parte proporcional.
+                          {tr("Insere os e-mails dos restantes")} {numPessoas - 1} {tr("convidados. Cada um pagará a sua parte proporcional.")}
                         </p>
                         <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1">
                           {splitEmails.map((email, idx) => (
                             <div key={idx} className="flex items-center gap-2">
-                              <span className="text-[8px] font-bold text-white/40 uppercase w-14 shrink-0">E-mail {idx + 1}</span>
+                              <span className="text-[8px] font-bold text-white/40 uppercase w-14 shrink-0">{tr("E-mail")} {idx + 1}</span>
                               <input
                                 type="email"
-                                placeholder="exemplo@cookr.pt"
+                                placeholder={tr("exemplo@cookr.pt")}
                                 value={email || ""}
                                 onChange={(e) => {
                                   const updated = [...splitEmails];
@@ -1585,11 +1587,11 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                 <div className="space-y-1.5 pt-1">
                   <label className="text-[8px] font-bold text-white/30 uppercase tracking-wider ml-1">
-                    Notas Extra para o Chef
+                    {tr("Notas Extra para o Chef")}
                   </label>
                   <textarea
                     className="w-full h-12 p-2 bg-white/5 border border-white/10 rounded-lg text-white font-semibold text-xs outline-none focus:border-orange-500 focus:bg-white/10 transition-all resize-none placeholder:text-white/15"
-                    placeholder="Algum pedido especial..."
+                    placeholder={tr("Algum pedido especial...")}
                     value={kitchenNotes}
                     onChange={(e) => setKitchenNotes(e.target.value)}
                   />
@@ -1608,7 +1610,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   disabled={!selectedTime}
                   className="flex-1 h-12 bg-white text-slate-950 hover:bg-orange-500 hover:text-white rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all disabled:opacity-20 active:scale-95"
                 >
-                  Resumo
+                  {tr("Resumo")}
                 </button>
               </div>
             </div>
@@ -1633,7 +1635,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   onMouseEnter={() => setShowHelpTooltip(true)}
                   onMouseLeave={() => setShowHelpTooltip(false)}
                   className="w-7 h-7 bg-white/5 hover:bg-orange-500/10 border border-white/10 hover:border-orange-500/30 text-white/40 hover:text-orange-500 rounded-full flex items-center justify-center transition-all cursor-pointer focus:outline-none"
-                  title="Termos & Condições"
+                  title={tr("Termos & Condições")}
                 >
                   <ICONS.HelpCircle size={14} />
                 </button>
@@ -1643,7 +1645,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     <div className="flex items-center gap-1.5 border-b border-white/5 pb-1.5">
                       <ICONS.HelpCircle size={12} className="text-orange-500" />
                       <span className="text-[10px] font-bold text-white uppercase tracking-wider">
-                        Políticas do Ritual Cookr
+                        {tr("Políticas do Ritual Cookr")}
                       </span>
                     </div>
                     <div className="space-y-2 text-[9px] text-white/70 leading-relaxed font-medium">
@@ -1652,7 +1654,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                           Cancelamento & Reagendamento
                         </p>
                         <p>
-                          Reembolso total ou alteração gratuita até 48h antes do ritual. Cancelamentos com menos de 48h não são reembolsáveis para salvaguardar os custos logísticos e de aquisição do Chef.
+                          {tr("Reembolso total ou alteração gratuita até 48h antes do ritual. Cancelamentos com menos de 48h não são reembolsáveis para salvaguardar os custos logísticos e de aquisição do Chef.")}
                         </p>
                       </div>
                       <div>
@@ -1660,15 +1662,15 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                           Matérias-Primas & Serviço
                         </p>
                         <p>
-                          O Chef seleciona e adquire os ingredientes mais frescos, confeciona as receitas e assegura a limpeza total do espaço da sua cozinha.
+                          {tr("O Chef seleciona e adquire os ingredientes mais frescos, confeciona as receitas e assegura a limpeza total do espaço da sua cozinha.")}
                         </p>
                       </div>
                       <div>
                         <p className="font-extrabold text-orange-400 uppercase tracking-wider text-[7px] mb-0.5">
-                          Segurança Alimentar (HACCP)
+                          {tr("Segurança Alimentar (HACCP)")}
                         </p>
                         <p>
-                          Todos os parceiros da plataforma cumprem com as exigentes normas HACCP para garantir a máxima qualidade, higiene e segurança.
+                          {tr("Todos os parceiros da plataforma cumprem com as exigentes normas HACCP para garantir a máxima qualidade, higiene e segurança.")}
                         </p>
                       </div>
                     </div>
@@ -1683,10 +1685,10 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   <ICONS.CreditCard size={14} />
                 </div>
                 <h2 className="text-lg md:text-xl font-bold text-white uppercase tracking-tight leading-none">
-                  Checkout.
+                  {tr("Checkout.")}
                 </h2>
                 <p className="text-[8px] font-bold text-white/30 uppercase tracking-wider">
-                  Confirmação final da reserva.
+                  {tr("Confirmação final da reserva.")}
                 </p>
               </div>
 
@@ -1696,7 +1698,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 <div className="flex justify-between items-start relative z-10">
                   <div className="space-y-0.5">
                     <p className="text-[8px] font-bold text-white/30 uppercase tracking-wider">
-                      Menu Selecionado
+                      {tr("Menu Selecionado")}
                     </p>
                     <p className="text-sm font-bold text-white uppercase tracking-tight leading-none">
                       {selectedMenu.nome}
@@ -1704,7 +1706,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   </div>
                   <div className="text-right">
                     <p className="text-[8px] font-bold text-white/30 uppercase tracking-wider">
-                      Preço Base
+                      {tr("Preço Base")}
                     </p>
                     <p className="text-[10px] font-bold text-white/60">
                       {formatPrice(selectedMenu.preco)}/pax
@@ -1722,7 +1724,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                         </p>
                         <p className="text-xs font-bold text-orange-400 uppercase tracking-tight leading-none flex items-center gap-1">
                           <ICONS.Wine size={10} className="animate-pulse text-orange-400" />
-                          {translatedWineOptions.find(w => w.id === selectedWineId)?.nome || "Vinho Selecionado"}
+                          {translatedWineOptions.find(w => w.id === selectedWineId)?.nome || tr("Vinho Selecionado")}
                         </p>
                       </div>
                       <div className="text-right">
@@ -1743,7 +1745,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 <div className="space-y-2 relative z-10 bg-white/[0.02] border border-white/5 rounded-lg p-2.5">
                   <div className="flex justify-between items-center">
                     <p className="text-[8px] font-bold text-white/40 uppercase tracking-wider">
-                      Gratificação ao Chef (Opcional)
+                      {tr("Gratificação ao Chef (Opcional)")}
                     </p>
                     <span className="text-[9px] font-bold text-orange-400">
                       {(() => {
@@ -1784,20 +1786,20 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                           : "bg-white/5 text-white/60 border-white/5 hover:border-white/10"
                       }`}
                     >
-                      Outro
+                      {tr("Outro")}
                     </button>
                   </div>
 
                   {tipPercentage === "custom" && (
                     <div className="relative mt-1.5 animate-in slide-in-from-top-1 duration-150">
                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[8px] font-bold text-white/40">
-                        EUR (€)
+                        {tr("EUR (€)")}
                       </span>
                       <input
                         type="number"
                         min="0"
                         step="1"
-                        placeholder="Valor personalizado"
+                        placeholder={tr("Valor personalizado")}
                         value={customTipValue}
                         onChange={(e) => setCustomTipValue(e.target.value)}
                         className="w-full h-7 bg-white/5 border border-white/10 rounded-md pl-10 pr-2 text-[9px] text-white font-semibold focus:border-orange-500/50 focus:outline-none transition-all placeholder:text-white/20"
@@ -1811,12 +1813,12 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 {/* Gift Card Redemption Section */}
                 <div className="space-y-2 bg-white/[0.02] border border-white/5 rounded-lg p-2.5 relative z-10">
                   <p className="text-[8px] font-bold text-white/40 uppercase tracking-wider">
-                    Aplicar Vale de Oferta / Gift Card
+                    {tr("Aplicar Vale de Oferta / Gift Card")}
                   </p>
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Código do Vale (ex: COOKR-GIFT-XXXX)"
+                      placeholder={tr("Código do Vale (ex: COOKR-GIFT-XXXX)")}
                       value={giftCode}
                       onChange={(e) => setGiftCode(e.target.value.toUpperCase())}
                       disabled={appliedGiftCard !== null}
@@ -1831,7 +1833,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                         }}
                         className="px-2 h-7 bg-red-500/20 text-red-400 border border-red-500/30 rounded-md text-[8px] font-bold uppercase transition-all"
                       >
-                        Remover
+                        {tr("Remover")}
                       </button>
                     ) : (
                       <button
@@ -1840,13 +1842,13 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                         disabled={!giftCode.trim()}
                         className="px-3 h-7 bg-orange-500 text-white rounded-md text-[8px] font-bold uppercase transition-all hover:bg-orange-600 disabled:opacity-30"
                       >
-                        Aplicar
+                        {tr("Aplicar")}
                       </button>
                     )}
                   </div>
                   {appliedGiftCard && (
                     <p className="text-[8px] text-emerald-400 font-bold uppercase tracking-wider animate-pulse">
-                      ✓ Vale de {formatPrice(appliedGiftCard.value)} aplicado!
+                      {tr("✓ Vale de")} {formatPrice(appliedGiftCard.value)} {tr("aplicado!")}
                     </p>
                   )}
                 </div>
@@ -1856,7 +1858,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 <div className="flex justify-between items-end relative z-10">
                   <div className="space-y-1">
                     <p className="text-[8px] font-bold text-orange-500 uppercase tracking-wider">
-                      Total a Pagar
+                      {tr("Total a Pagar")}
                     </p>
                     <span className="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-none">
                       {(() => {
@@ -1872,15 +1874,15 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       })()}
                     </span>
                     <p className="text-[6px] font-bold text-white/30 uppercase tracking-wider">
-                      Inclui taxa de serviço{" "}
+                      {tr("Inclui taxa de serviço")}{" "}
                       {(currentUser?.loyalty_points || 0) >= 500
-                        ? "reduzida (5%)"
+                        ? tr("reduzida (5%)")
                         : "(10%)"}
                     </p>
                   </div>
                   <div className="px-2.5 py-1 bg-white/5 rounded-lg border border-white/10">
                     <span className="text-[8px] font-bold text-white/60 uppercase tracking-wider">
-                      {numPessoas} Pessoas
+                      {numPessoas} {tr("Pessoas")}
                     </span>
                   </div>
                 </div>
@@ -1898,7 +1900,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   disabled={isBooking}
                   className="flex-1 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all disabled:opacity-50"
                 >
-                  {isBooking ? "A Processar..." : "Confirmar Reserva"}
+                  {isBooking ? tr("A Processar...") : tr("Confirmar Reserva")}
                 </button>
               </div>
             </div>
@@ -1921,11 +1923,11 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
             <div className="space-y-1.5 animate-in slide-in-from-top-2 duration-300">
               <h2 className="text-xl font-bold text-slate-950 uppercase tracking-tight leading-tight">
-                Pedido <br />
-                <span className="text-orange-500 font-extrabold">Enviado.</span>
+                {tr("Pedido")} <br />
+                <span className="text-orange-500 font-extrabold">{tr("Enviado.")}</span>
               </h2>
               <p className="text-[11px] font-medium text-slate-500 max-w-xs mx-auto">
-                O seu pedido de reserva foi enviado e aguarda confirmação pelo Chef. O chef entrará em contacto em breve.
+                {tr("O seu pedido de reserva foi enviado e aguarda confirmação pelo Chef. O chef entrará em contacto em breve.")}
               </p>
             </div>
 
@@ -1937,13 +1939,13 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 }}
                 className="w-full h-12 bg-slate-950 hover:bg-orange-500 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg transition-all duration-200 active:scale-95"
               >
-                Ver Minha Agenda
+                {tr("Ver Minha Agenda")}
               </button>
               <button
                 onClick={() => setBookingStep(null)}
                 className="mt-3 text-[8px] font-bold text-slate-400 uppercase tracking-widest hover:text-orange-500 transition-colors w-full text-center active:scale-95"
               >
-                Voltar ao Perfil
+                {tr("Voltar ao Perfil")}
               </button>
             </div>
           </div>
@@ -1967,18 +1969,18 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   <ICONS.Bell size={24} />
                 </div>
                 <h2 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter leading-none">
-                  Lista de <br />
-                  Espera.
+                  {tr("Lista de")} <br />
+                  {tr("Espera.")}
                 </h2>
                 <p className="text-[10px] font-medium text-white/30 uppercase tracking-widest">
-                  Notificaremos se houver desistências.
+                  {tr("Notificaremos se houver desistências.")}
                 </p>
               </div>
 
               <div className="space-y-6">
                 <div className="space-y-3">
                   <label className="text-[8px] font-black text-white/20 uppercase tracking-widest ml-4">
-                    Data Preferencial
+                    {tr("Data Preferencial")}
                   </label>
                   <div className="relative group">
                     <input
@@ -2008,7 +2010,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   ) : (
                     <>
                       <ICONS.Bell size={16} />
-                      Entrar na Lista
+                      {tr("Entrar na Lista")}
                     </>
                   )}
                 </button>
@@ -2026,26 +2028,25 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
               <ICONS.Trash2 className="text-red-500" size={32} />
             </div>
             <h3 className="text-xl font-black text-slate-950 text-center mb-2 italic uppercase tracking-tighter">
-              Eliminar {itemToDelete.type}?
+              {tr("Eliminar")} {itemToDelete.type}?
             </h3>
             <p className="text-slate-500 text-center text-[10px] font-black uppercase tracking-widest mb-8">
-              Tem a certeza que deseja eliminar o{" "}
+              {tr("Tem a certeza que deseja eliminar o")}{" "}
               {itemToDelete.type.toLowerCase()}{" "}
-              <span className="text-slate-900">"{itemToDelete.name}"</span>?
-              Esta ação não pode ser desfeita.
+              <span className="text-slate-900">"{tr(itemToDelete.name as any) as any}"</span>{tr("? Esta ação não pode ser desfeita.")}
             </p>
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => handleDeleteItem(itemToDelete.id)}
                 className="w-full py-4 bg-red-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-600 transition-all shadow-lg shadow-red-200"
               >
-                Sim, eliminar permanentemente
+                {tr("Sim, eliminar permanentemente")}
               </button>
               <button
                 onClick={() => setItemToDelete(null)}
                 className="w-full py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-200 transition-all"
               >
-                Cancelar
+                {tr("Cancelar")}
               </button>
             </div>
           </div>
@@ -2058,7 +2059,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
           <img
             src={chef.cover_url}
             className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105"
-            alt="Chef Cover"
+            alt={tr("Chef Cover")}
             referrerPolicy="no-referrer"
             loading="lazy"
           />
@@ -2066,7 +2067,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
           <img
             src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=2070&auto=format&fit=crop"
             className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105"
-            alt="Chef Cover Fallback"
+            alt={tr("Chef Cover Fallback")}
             referrerPolicy="no-referrer"
             loading="lazy"
           />
@@ -2094,18 +2095,18 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 size={9}
                 className="group-hover/edit:rotate-90 transition-transform"
               />
-              <span>Mais Opções</span>
+              <span>{tr("Mais Opções")}</span>
             </button>
           )}
           {chef.isAvailable ? (
             <div className="flex items-center gap-1 px-2.5 py-1 bg-emerald-500/90 backdrop-blur-md text-white text-[7.5px] font-bold uppercase rounded-full tracking-wider border border-emerald-400/20 shadow-md">
               <div className="w-1 h-1 bg-white rounded-full animate-pulse" />
-              <span>{t("common.available_now") || "Disponível Agora"}</span>
+              <span>{t("common.available_now") || tr("Disponível Agora")}</span>
             </div>
           ) : availableDates.length > 0 ? (
             <div className="flex items-center gap-1 px-2.5 py-1 bg-slate-900/80 backdrop-blur-md text-slate-200 text-[7.5px] font-bold uppercase rounded-full tracking-wider border border-slate-700/50 shadow-md">
               <ICONS.Calendar size={10} className="text-orange-400" />
-              <span>{t("agenda.available_by_booking") || "Agenda Disponível"}</span>
+              <span>{t("agenda.available_by_booking") || tr("Agenda Disponível")}</span>
             </div>
           ) : null}
           <button
@@ -2139,7 +2140,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                 {!chef.isAvailable && availableDates.length === 0 && (
                   <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[1px] flex items-center justify-center">
                     <span className="px-1.5 py-0.5 bg-white/90 text-slate-950 text-[6.5px] font-bold uppercase rounded tracking-wider shadow">
-                      {t("common.unavailable") || "Indisponível"}
+                      {t("common.unavailable") || tr("Indisponível")}
                     </span>
                   </div>
                 )}
@@ -2151,24 +2152,24 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     <div className="relative group/verify">
                       <span className="px-2 py-0.5 bg-emerald-500 text-white text-[7.5px] font-extrabold uppercase rounded-md tracking-wider flex items-center gap-1 shadow-sm border border-emerald-400 cursor-help">
                         <ICONS.ShieldCheck size={10} className="shrink-0" />
-                        Chef Verificado
+                        {tr("Chef Verificado")}
                       </span>
                       {/* Tooltip */}
                       <div className="absolute left-1/2 -translate-x-1/2 sm:left-0 sm:-translate-x-0 bottom-full mb-2 w-48 hidden group-hover/verify:block bg-slate-950 text-white text-[8px] font-extrabold p-3 rounded-xl border border-white/10 shadow-xl z-50 animate-in fade-in slide-in-from-bottom-1 uppercase tracking-wider leading-relaxed">
-                        <p className="font-black text-emerald-400 mb-1">✓ Selo de Verificação</p>
-                        <p className="text-white/70 font-bold normal-case">Este Chef cumpre os padrões mais elevados com Classificação superior a 4.5 e mais de 3 reservas concluídas.</p>
+                        <p className="font-black text-emerald-400 mb-1">{tr("✓ Selo de Verificação")}</p>
+                        <p className="text-white/70 font-bold normal-case">{tr("Este Chef cumpre os padrões mais elevados com Classificação superior a 4.5 e mais de 3 reservas concluídas.")}</p>
                       </div>
                     </div>
                   ) : (
                     <div className="relative group/verify">
                       <span className="px-2 py-0.5 bg-slate-100 text-slate-500 hover:text-slate-950 text-[7.5px] font-bold uppercase rounded-md tracking-wider border border-slate-200 flex items-center gap-1 cursor-help transition-colors">
                         <ICONS.Info size={10} className="shrink-0 text-slate-400" />
-                        Chef Parceiro
+                        {tr("Chef Parceiro")}
                       </span>
                       {/* Tooltip */}
                       <div className="absolute left-1/2 -translate-x-1/2 sm:left-0 sm:-translate-x-0 bottom-full mb-2 w-52 hidden group-hover/verify:block bg-slate-950 text-white text-[8px] font-bold p-3 rounded-xl border border-white/10 shadow-xl z-50 animate-in fade-in slide-in-from-bottom-1 uppercase tracking-wider leading-relaxed text-left">
-                        <p className="font-black text-orange-400 mb-1">Como obter Verificação?</p>
-                        <p className="text-white/60 mb-2 font-medium normal-case">Para obter o selo de verificação, o Chef beneficia de atingir os seguintes objetivos:</p>
+                        <p className="font-black text-orange-400 mb-1">{tr("Como obter Verificação?")}</p>
+                        <p className="text-white/60 mb-2 font-medium normal-case">{tr("Para obter o selo de verificação, o Chef beneficia de atingir os seguintes objetivos:")}</p>
                         <div className="space-y-1 text-white/50 text-[7.5px]">
                           <div className="flex justify-between items-center bg-white/5 p-1 rounded">
                             <span>Média de Avaliação &gt; 4.5</span>
@@ -2177,7 +2178,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                             </span>
                           </div>
                           <div className="flex justify-between items-center bg-white/5 p-1 rounded">
-                            <span>Reservas Concluídas (Min. 3)</span>
+                            <span>{tr("Reservas Concluídas (Min. 3)")}</span>
                             <span className={(completedBookings.length || chef.total_reservas || 0) >= 3 ? "text-emerald-400" : "text-amber-400"}>
                               {completedBookings.length || chef.total_reservas || 0}/3
                             </span>
@@ -2188,12 +2189,12 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   )}
                   <div className="flex items-center gap-1 text-orange-500 bg-orange-50 px-2 py-0.5 rounded-md border border-orange-100 text-[7.5px] font-bold uppercase tracking-wider">
                     <ICONS.Star size={9} fill="currentColor" />
-                    <span>{chef.rating !== undefined ? chef.rating : "5.0"} • {completedBookings.length || chef.total_reservas || 0} Reservas</span>
+                    <span>{chef.rating !== undefined ? chef.rating : "5.0"} • {completedBookings.length || chef.total_reservas || 0} {tr("Reservas")}</span>
                   </div>
                 </div>
 
                 <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight uppercase leading-none">
-                  Chef <span className="text-orange-500">{chef.nome.replace(/^chef\s+/gi, "")}.</span>
+                  {tr("Chef")} <span className="text-orange-500">{chef.nome.replace(/^chef\s+/gi, "")}.</span>
                 </h1>
 
                 <div className="flex flex-wrap justify-center sm:justify-start gap-1">
@@ -2247,15 +2248,15 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
             <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm text-left space-y-2.5">
               <div className="space-y-0.5">
                 <span className="text-[7.5px] font-bold text-orange-500 uppercase tracking-widest leading-none">
-                  A Minha Essência
+                  {tr("A Minha Essência")}
                 </span>
                 <h3 className="text-xs font-bold text-slate-950 uppercase tracking-wider leading-none">
-                  A Minha História
+                  {tr("A Minha História")}
                 </h3>
               </div>
               <p className="text-xs text-slate-500 font-medium leading-relaxed italic border-l-2 border-orange-500/50 pl-3">
                 {chef.biografia ||
-                  "Especialista em criar rituais gastronómicos únicos no conforto da sua casa, transformando ingredientes frescos em memórias inesquecíveis."}
+                  tr("Especialista em criar rituais gastronómicos únicos no conforto da sua casa, transformando ingredientes frescos em memórias inesquecíveis.")}
               </p>
             </div>
 
@@ -2264,11 +2265,11 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
               <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm text-left space-y-3">
                 <div className="space-y-0.5 border-b border-slate-100 pb-2.5">
                   <span className="text-[7.5px] font-bold text-orange-500 uppercase tracking-widest leading-none block">
-                    A Minha Arte
+                    {tr("A Minha Arte")}
                   </span>
                   <h3 className="text-xs font-bold text-slate-950 uppercase tracking-wider leading-none flex items-center gap-1.5">
                     <ICONS.Camera size={14} className="text-orange-500" />
-                    <span>Galeria de Portefólio</span>
+                    <span>{tr("Galeria de Portefólio")}</span>
                   </h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -2300,7 +2301,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     </h3>
                   </div>
                   <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded text-[7.5px] font-bold uppercase tracking-wider">
-                    {chef.certifications_and_awards.length} {chef.certifications_and_awards.length === 1 ? "Distinção" : "Distinções"}
+                    {chef.certifications_and_awards.length} {chef.certifications_and_awards.length === 1 ? tr("Distinção") : tr("Distinções")}
                   </span>
                 </div>
 
@@ -2331,10 +2332,10 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                             }`}
                           >
                             {isAward
-                              ? "Prémio"
+                              ? tr("Prémio")
                               : isTraining
-                                ? "Formação"
-                                : "Certificação"}
+                                ? tr("Formação")
+                                : tr("Certificação")}
                           </span>
                           {cert.year && (
                             <span className="text-[8px] font-extrabold text-slate-400">
@@ -2345,7 +2346,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                         <div>
                           <h4 className="text-[10.5px] font-extrabold text-slate-900 leading-tight">
-                            {cert.title}
+                            {tr(cert.title as any) as any}
                           </h4>
                           <p className="text-[8.5px] font-semibold text-slate-500">
                             {cert.issuer}
@@ -2354,7 +2355,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                         {cert.description && (
                           <p className="text-[8px] text-slate-600 leading-relaxed italic border-l border-orange-400/50 pl-2">
-                            "{cert.description}"
+                            "{tr(cert.description as any) as any}"
                           </p>
                         )}
                       </div>
@@ -2378,7 +2379,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     </h3>
                   </div>
                   <span className="px-2 py-0.5 bg-emerald-500 text-white rounded text-[7.5px] font-black uppercase tracking-wider shadow-2xs">
-                    Eco Chef
+                    {tr("Eco Chef")}
                   </span>
                 </div>
 
@@ -2432,7 +2433,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     </h3>
                   </div>
                   <span className="px-2 py-0.5 bg-amber-500 text-white rounded text-[7.5px] font-black uppercase tracking-wider shadow-2xs">
-                    Sem Contaminação
+                    {tr("Sem Contaminação")}
                   </span>
                 </div>
 
@@ -2482,11 +2483,11 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     </span>
                     <h3 className="text-xs font-bold text-slate-950 uppercase tracking-wider leading-none flex items-center gap-1.5">
                       <ICONS.HelpCircle size={14} className="text-orange-500" />
-                      <span>Perguntas Frequentes do Chef (FAQ)</span>
+                      <span>{tr("Perguntas Frequentes do Chef (FAQ)")}</span>
                     </h3>
                   </div>
                   <span className="px-2 py-0.5 bg-orange-50 text-orange-700 border border-orange-100 rounded text-[7.5px] font-bold uppercase tracking-wider">
-                    {chef.faqs.length} {chef.faqs.length === 1 ? "Resposta" : "Respostas"}
+                    {chef.faqs.length} {chef.faqs.length === 1 ? tr("Resposta") : tr("Respostas")}
                   </span>
                 </div>
 
@@ -2507,16 +2508,16 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className={`px-1.5 py-0.5 rounded text-[6.5px] font-black uppercase tracking-wider border ${catInfo.color}`}>
-                            {catInfo.label}
+                            {tr(catInfo.label as any) as any}
                           </span>
                         </div>
 
                         <h4 className="text-[11px] font-bold text-slate-900 leading-snug">
-                          {faq.question}
+                          {tr(faq.question as any) as any}
                         </h4>
 
                         <p className="text-[9.5px] font-medium text-slate-600 leading-relaxed pt-0.5 border-t border-slate-200/50">
-                          {faq.answer}
+                          {tr(faq.answer as any) as any}
                         </p>
                       </div>
                     );
@@ -2530,14 +2531,14 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3 text-left">
                 <div className="space-y-0.5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 leading-none">
-                    Ementas do Chef
+                    {tr("Ementas do Chef")}
                   </h3>
                   <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">
                     {activeTab === "experience"
-                      ? "Descobre as criações exclusivas do Chef"
+                      ? tr("Descobre as criações exclusivas do Chef")
                       : activeTab === "dish"
-                        ? "Pratos individuais para o teu dia-a-dia"
-                        : "Packs semanais de refeições prontas"}
+                        ? tr("Pratos individuais para o teu dia-a-dia")
+                        : tr("Packs semanais de refeições prontas")}
                   </p>
                 </div>
                 <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
@@ -2546,21 +2547,21 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "experience" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
                   >
                     <ICONS.Sparkles size={11} className="shrink-0" />
-                    Rituais
+                    {tr("Rituais")}
                   </button>
                   <button
                     onClick={() => setActiveTab("dish")}
                     className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "dish" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
                   >
                     <ICONS.Utensils size={11} className="shrink-0" />
-                    Pratos
+                    {tr("Pratos")}
                   </button>
                   <button
                     onClick={() => setActiveTab("daily")}
                     className={`px-2.5 py-1 rounded-md text-[7.5px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === "daily" ? "bg-orange-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-800"}`}
                   >
                     <ICONS.Calendar size={11} className="shrink-0" />
-                    Daily
+                    {tr("Daily")}
                   </button>
                 </div>
               </div>
@@ -2589,7 +2590,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       className="mx-auto text-slate-300 mb-1.5"
                     />
                     <p className="text-[7.5px] font-bold uppercase text-slate-400 tracking-wider">
-                      Sem itens nesta categoria.
+                      {tr("Sem itens nesta categoria.")}
                     </p>
                   </div>
                 )}
@@ -2601,7 +2602,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
               <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm text-left space-y-3">
                 <div className="space-y-0.5 border-b border-slate-50 pb-2">
                   <span className="text-[7.5px] font-bold text-orange-500 uppercase tracking-widest leading-none">
-                    Culinária de Assinatura
+                    {tr("Culinária de Assinatura")}
                   </span>
                   <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider leading-none">
                     Especialidades & Galeria
@@ -2624,7 +2625,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                           />
                           {item.isPopular && (
                             <span className="absolute top-1 left-1 px-1.5 py-0.5 bg-orange-500 text-white text-[5.5px] font-bold rounded uppercase tracking-wider shadow">
-                              Popular
+                              {tr("Popular")}
                             </span>
                           )}
                         </div>
@@ -2649,32 +2650,32 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
               <div id="chef-reviews-header-block" className="space-y-0.5 border-b border-slate-50 pb-2 flex justify-between items-center">
                 <div>
                   <span className="text-[7.5px] font-bold text-orange-500 uppercase tracking-widest leading-none">
-                    A Opinião de Quem Provou
+                    {tr("A Opinião de Quem Provou")}
                   </span>
                   <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider leading-none">
-                    Avaliações dos Clientes
+                    {tr("Avaliações dos Clientes")}
                   </h3>
                 </div>
                 <div id="chef-reviews-badge" className="flex items-center gap-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-md px-2 py-0.5 text-[8px] font-semibold">
                   <ICONS.Star size={10} fill="currentColor" />
-                  <span>{chef.rating || "5.0"} • {reviews.length} Opiniões</span>
+                  <span>{chef.rating || "5.0"} • {reviews.length} {tr("Opiniões")}</span>
                 </div>
               </div>
 
               {/* Opções de Ordenação */}
               {reviews && reviews.length > 0 && (
                 <div id="chef-reviews-sorting-container" className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-lg p-2 text-[10px]">
-                  <span className="font-semibold text-slate-500 uppercase tracking-wider">Ordenar por:</span>
+                  <span className="font-semibold text-slate-500 uppercase tracking-wider">{tr("Ordenar por:")}</span>
                   <select
                     id="reviews-sort-by-select"
                     value={reviewsSortBy}
                     onChange={(e) => setReviewsSortBy(e.target.value)}
                     className="bg-white border border-slate-200 rounded px-2 py-1 font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-orange-500 text-[10px] cursor-pointer"
                   >
-                    <option value="date_desc">Mais Recentes</option>
-                    <option value="date_asc">Mais Antigas</option>
-                    <option value="rating_desc">Melhor Classificação (Alta → Baixa)</option>
-                    <option value="rating_asc">Menor Classificação (Baixa → Alta)</option>
+                    <option value="date_desc">{tr("Mais Recentes")}</option>
+                    <option value="date_asc">{tr("Mais Antigas")}</option>
+                    <option value="rating_desc">{tr("Melhor Classificação (Alta → Baixa)")}</option>
+                    <option value="rating_asc">{tr("Menor Classificação (Baixa → Alta)")}</option>
                   </select>
                 </div>
               )}
@@ -2689,9 +2690,9 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                             {rev.clientName ? rev.clientName.charAt(0).toUpperCase() : "C"}
                           </div>
                           <div>
-                            <p className="font-bold text-slate-800 text-[10px] leading-none uppercase">{rev.clientName || "Cliente"}</p>
+                            <p className="font-bold text-slate-800 text-[10px] leading-none uppercase">{rev.clientName || tr("Cliente")}</p>
                             <span className="text-[7.5px] text-slate-400 font-semibold uppercase tracking-wider">
-                              {rev.created_at ? new Date(rev.created_at).toLocaleDateString("pt-PT") : "Recentemente"}
+                              {rev.created_at ? new Date(rev.created_at).toLocaleDateString(trLocale()) : tr("Recentemente")}
                             </span>
                           </div>
                         </div>
@@ -2712,15 +2713,15 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                         </p>
                         {reportedReviewIds.includes(rev.id) || rev.isFlagged ? (
                           <span className="text-[8px] font-bold text-red-500 uppercase flex items-center gap-1 shrink-0 bg-red-50 px-1.5 py-0.5 rounded">
-                            <ICONS.AlertTriangle size={10} /> Reportada
+                            <ICONS.AlertTriangle size={10} /> {tr("Reportada")}
                           </span>
                         ) : (
                           <button
                             onClick={() => handleReportReview(rev.id)}
                             className="text-[8px] font-black uppercase text-slate-400 hover:text-red-500 flex items-center gap-0.5 transition-colors shrink-0 bg-slate-50 hover:bg-red-50 px-1.5 py-0.5 rounded cursor-pointer"
-                            title="Denunciar comentário inapropriado"
+                            title={tr("Denunciar comentário inapropriado")}
                           >
-                            <ICONS.AlertTriangle size={10} /> Denunciar
+                            <ICONS.AlertTriangle size={10} /> {tr("Denunciar")}
                           </button>
                         )}
                       </div>
@@ -2730,7 +2731,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
               ) : (
                 <div id="chef-reviews-empty-state" className="py-6 text-center text-slate-400">
                   <ICONS.Star size={16} className="mx-auto text-slate-200 mb-1" />
-                  <p className="text-[8px] font-bold uppercase tracking-wider">Ainda sem avaliações escritas.</p>
+                  <p className="text-[8px] font-bold uppercase tracking-wider">{tr("Ainda sem avaliações escritas.")}</p>
                 </div>
               )}
             </div>
@@ -2753,7 +2754,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     <p className="text-sm font-bold text-white tracking-tight leading-none">
                       {chef.rating || "5.0"}
                     </p>
-                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">Rating</p>
+                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">{tr("Rating")}</p>
                   </div>
                 </div>
 
@@ -2765,7 +2766,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     <p className="text-sm font-bold text-white tracking-tight leading-none">
                       {chef.total_reservas || "0"}
                     </p>
-                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">Reservas</p>
+                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">{tr("Reservas")}</p>
                   </div>
                 </div>
 
@@ -2775,7 +2776,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   </div>
                   <div>
                     <p className="text-sm font-bold text-white tracking-tight leading-none">&lt; 1h</p>
-                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">Resposta</p>
+                    <p className="text-[6.5px] font-bold text-white/35 uppercase tracking-wider">{tr("Resposta")}</p>
                   </div>
                 </div>
               </div>
@@ -2784,7 +2785,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
             {/* Quick Actions Card */}
             <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm space-y-3">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-800 border-b border-slate-50 pb-1.5 leading-none">
-                Opções Rápidas
+                {tr("Opções Rápidas")}
               </h4>
               <div className="flex flex-col gap-2">
                 <button
@@ -2792,7 +2793,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                   className="w-full h-11 bg-slate-950 hover:bg-orange-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-sm flex items-center justify-center gap-1.5 group"
                 >
                   <ICONS.MessageSquare size={12} className="group-hover:scale-105 transition-transform" />
-                  <span>Mensagem Direta</span>
+                  <span>{tr("Mensagem Direta")}</span>
                 </button>
 
                 {(!chef.isAvailable || availableDates.length === 0) && (
@@ -2801,7 +2802,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                     className="w-full h-11 bg-white border border-slate-200 text-slate-800 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-slate-50 transition-all flex items-center justify-center gap-1.5 active:scale-95 group"
                   >
                     <ICONS.Bell size={12} className="text-orange-500" />
-                    <span>Lista de Espera</span>
+                    <span>{tr("Lista de Espera")}</span>
                   </button>
                 )}
               </div>
@@ -2810,13 +2811,13 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
             {/* Pro Credentials Bento (Idiomas, Equipamento, etc) */}
             <div className="bg-white rounded-xl border border-slate-100 p-4 shadow-sm space-y-3.5">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-slate-800 border-b border-slate-50 pb-1.5 leading-none">
-                Credenciais de Qualidade
+                {tr("Credenciais de Qualidade")}
               </h4>
 
               <div className="space-y-3 text-[10px]">
                 {/* Languages */}
                 <div className="space-y-1">
-                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">Idiomas de Trabalho</p>
+                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">{tr("Idiomas de Trabalho")}</p>
                   <div className="flex flex-wrap gap-1">
                     {chef.idiomas && chef.idiomas.length > 0 ? (
                       chef.idiomas.map((lg) => (
@@ -2824,8 +2825,8 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       ))
                     ) : (
                       <>
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 font-semibold rounded text-[7.5px] uppercase">Português (PT)</span>
-                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 font-semibold rounded text-[7.5px] uppercase">Inglês (EN)</span>
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 font-semibold rounded text-[7.5px] uppercase">{tr("Português (PT)")}</span>
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-700 font-semibold rounded text-[7.5px] uppercase">{tr("Inglês (EN)")}</span>
                       </>
                     )}
                   </div>
@@ -2833,7 +2834,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
                 {/* Specialties / Equipamentos */}
                 <div className="space-y-1">
-                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">Equipamento Profissional</p>
+                  <p className="text-[7.5px] font-bold text-slate-400 uppercase tracking-wider">{tr("Equipamento Profissional")}</p>
                   <div className="flex flex-wrap gap-1">
                     {chef.equipamento && chef.equipamento.length > 0 ? (
                       chef.equipamento.map((eq) => (
@@ -2841,9 +2842,9 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       ))
                     ) : (
                       <>
-                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">Facas Profissionais</span>
-                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">Kit de Degustação</span>
-                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">Acessórios de Precisão</span>
+                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">{tr("Facas Profissionais")}</span>
+                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">{tr("Kit de Degustação")}</span>
+                        <span className="px-2 py-0.5 bg-orange-50 text-orange-700 font-semibold rounded text-[7.5px] uppercase">{tr("Acessórios de Precisão")}</span>
                       </>
                     )}
                   </div>
@@ -2859,8 +2860,8 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       ))
                     ) : (
                       <>
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-semibold rounded text-[7.5px] uppercase">Higiene HACCP</span>
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-semibold rounded text-[7.5px] uppercase">Ingredientes Biológicos</span>
+                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-semibold rounded text-[7.5px] uppercase">{tr("Higiene HACCP")}</span>
+                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-semibold rounded text-[7.5px] uppercase">{tr("Ingredientes Biológicos")}</span>
                       </>
                     )}
                   </div>

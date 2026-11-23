@@ -6,6 +6,7 @@ import { Globe, ChevronDown, Sparkles, ShieldAlert, X, Wine, CheckCircle, Flame,
 import CategoryQuickModal from "./CategoryQuickModal";
 import ExcellenceStandard from "./ExcellenceStandard";
 
+import { tr } from "../lib/tr";
 interface LandingPageProps {
   onStart: (role: "CLIENT" | "COOK", flow?: "login" | "register") => void;
   onLogin: () => void;
@@ -123,7 +124,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     }`}
                   >
                     <span className="text-xs">{item.flag}</span>
-                    <span>{item.label}</span>
+                    <span>{tr(item.label as any) as any}</span>
                   </button>
                 ))}
               </div>
@@ -160,30 +161,30 @@ const LandingPage: React.FC<LandingPageProps> = ({
             <div className="space-y-2 md:space-y-3">
               {language === "pt" ? (
                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-950 tracking-tighter leading-[1.05] uppercase">
-                  Sua Casa, <br />
+                  {tr("Sua Casa,")} <br />
                   <span className="text-[#FF6B00]">
-                    O Melhor <br /> Restaurante.
+                    {tr("O Melhor")} <br /> {tr("Restaurante.")}
                   </span>
                 </h1>
               ) : language === "en" ? (
                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-950 tracking-tighter leading-[1.05] uppercase">
-                  Your Home, <br />
+                  {tr("Your Home,")} <br />
                   <span className="text-[#FF6B00]">
-                    The Best <br /> Restaurant.
+                    {tr("The Best")} <br /> {tr("Restaurant.")}
                   </span>
                 </h1>
               ) : language === "es" ? (
                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-950 tracking-tighter leading-[1.05] uppercase">
-                  Tu Hogar, <br />
+                  {tr("Tu Hogar,")} <br />
                   <span className="text-[#FF6B00]">
-                    El Mejor <br /> Restaurante.
+                    {tr("El Mejor")} <br /> {tr("Restaurante.")}
                   </span>
                 </h1>
               ) : (
                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-950 tracking-tighter leading-[1.05] uppercase">
-                  Votre Maison, <br />
+                  {tr("Votre Maison,")} <br />
                   <span className="text-[#FF6B00]">
-                    Le Meilleur <br /> Restaurante.
+                    {tr("Le Meilleur")} <br /> {tr("Restaurante.")}
                   </span>
                 </h1>
               )}
@@ -199,7 +200,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
               <img
                 src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1200&auto=format&fit=crop"
                 className="w-full h-full object-cover"
-                alt="Chef Experience"
+                alt={tr("Chef Experience")}
                 referrerPolicy="no-referrer"
               />
             </div>
@@ -238,7 +239,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     {stat.value}
                   </p>
                   <p className="text-[6.5px] md:text-[8px] font-black text-slate-600 uppercase tracking-[0.2em] md:tracking-[0.3em]">
-                    {stat.label}
+                    {tr(stat.label as any) as any}
                   </p>
                 </div>
               </div>
@@ -253,18 +254,18 @@ const LandingPage: React.FC<LandingPageProps> = ({
           <div className="space-y-2">
             {language === "pt" ? (
               <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-[1.1] md:leading-none">
-                O Caminho do <br />
-                <span className="text-orange-500">Extraordinário.</span>
+                {tr("O Caminho do")} <br />
+                <span className="text-orange-500">{tr("Extraordinário.")}</span>
               </h2>
             ) : language === "en" ? (
               <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-[1.1] md:leading-none">
-                The Path to the <br />
-                <span className="text-orange-500">Extraordinary.</span>
+                {tr("The Path to the")} <br />
+                <span className="text-orange-500">{tr("Extraordinary.")}</span>
               </h2>
             ) : (
               <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-[1.1] md:leading-none">
-                Le Chemin de l' <br />
-                <span className="text-orange-500">Extraordinaire.</span>
+                {tr("Le Chemin de l'")} <br />
+                <span className="text-orange-500">{tr("Extraordinaire.")}</span>
               </h2>
             )}
             <p className="text-xs md:text-base font-medium text-slate-400 italic">
@@ -305,10 +306,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
                     {step.id}
                   </span>
                   <h3 className="text-lg md:text-xl font-black text-slate-950 uppercase italic tracking-tighter">
-                    {step.title}
+                    {tr(step.title as any) as any}
                   </h3>
                   <p className="text-xs md:text-sm font-medium text-slate-400 leading-relaxed">
-                    {step.desc}
+                    {tr(step.desc as any) as any}
                   </p>
                 </div>
               </div>
@@ -327,18 +328,18 @@ const LandingPage: React.FC<LandingPageProps> = ({
             <div className="text-left space-y-2">
               {language === "pt" ? (
                 <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-[1.1] md:leading-none">
-                  Sabores de <br />
-                  <span className="text-orange-500">Referência.</span>
+                  {tr("Sabores de")} <br />
+                  <span className="text-orange-500">{tr("Referência.")}</span>
                 </h2>
               ) : language === "en" ? (
                 <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-[1.1] md:leading-none">
-                  World-Class <br />
-                  <span className="text-orange-500">Flavors.</span>
+                  {tr("World-Class")} <br />
+                  <span className="text-orange-500">{tr("Flavors.")}</span>
                 </h2>
               ) : (
                 <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-[1.1] md:leading-none">
-                  Saveurs d' <br />
-                  <span className="text-orange-500">Exception.</span>
+                  {tr("Saveurs d'")} <br />
+                  <span className="text-orange-500">{tr("Exception.")}</span>
                 </h2>
               )}
               <p className="text-xs md:text-sm font-medium text-slate-400 italic">
@@ -398,7 +399,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/20 to-transparent" />
                 <div className="absolute bottom-5 left-5 text-left">
                   <h4 className="text-lg font-black text-white uppercase italic tracking-tighter">
-                    {cat.title}
+                    {tr(cat.title as any) as any}
                   </h4>
                   <p className="text-[8px] font-black text-orange-500 uppercase tracking-widest mt-0.5">
                     {cat.count}
@@ -495,11 +496,11 @@ const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-4xl mx-auto px-6 text-center space-y-3 md:space-y-4">
           <h2 className="text-2xl md:text-3xl font-black text-slate-950 tracking-tighter uppercase leading-[1.1] md:leading-none">
             {language === "pt" ? (
-              <>Pronto para elevar o seu <br /> próximo jantar?</>
+              <>{tr("Pronto para elevar o seu")} <br /> {tr("próximo jantar?")}</>
             ) : language === "en" ? (
-              <>Ready to elevate your <br /> next dinner?</>
+              <>{tr("Ready to elevate your")} <br /> {tr("next dinner?")}</>
             ) : (
-              <>Prêt à sublimer votre <br /> prochain dîner ?</>
+              <>{tr("Prêt à sublimer votre")} <br /> {tr("prochain dîner ?")}</>
             )}
           </h2>
           <div className="flex flex-col sm:flex-row gap-2.5 max-w-lg mx-auto">
@@ -536,13 +537,13 @@ const LandingPage: React.FC<LandingPageProps> = ({
                 onClick={() => onNavigate(typeof link.view === "function" ? "terms" : link.view)}
                 className="text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors"
                >
-                {link.label}
+                {tr(link.label as any) as any}
               </button>
             ))}
           </div>
 
           <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">
-            © 2026 LUXURY GASTRONOMY HUB PORTUGAL
+            {tr("© 2026 LUXURY GASTRONOMY HUB PORTUGAL")}
           </p>
         </div>
       </footer>

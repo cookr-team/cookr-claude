@@ -2,6 +2,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Bell, Check, AlertCircle, Info, X, Sparkles, ChefHat } from "lucide-react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 export interface Toast {
   id: string;
   message: string;
@@ -102,6 +104,7 @@ const getToastMeta = (type: string, message: string) => {
 };
 
 export const PremiumToast: React.FC<PremiumToastProps> = ({ toast, onClose }) => {
+  useLanguage();
   const meta = useMemo(() => getToastMeta(toast.type, toast.message), [toast.type, toast.message]);
   const displayMsg = useMemo(() => formatNotificationMessage(toast.message), [toast.message]);
   const [progress, setProgress] = useState(100);
@@ -156,7 +159,7 @@ export const PremiumToast: React.FC<PremiumToastProps> = ({ toast, onClose }) =>
       <div className="flex-1 text-left select-none pr-4">
         <div className="flex items-center gap-1.5 leading-none">
           <span className="text-[9px] font-black tracking-widest text-slate-200 uppercase">
-            {meta.title}
+            {tr(meta.title as any) as any}
           </span>
           <span className="w-1 h-1 rounded-full bg-slate-600"></span>
           <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider">
@@ -173,7 +176,7 @@ export const PremiumToast: React.FC<PremiumToastProps> = ({ toast, onClose }) =>
         type="button"
         onClick={() => onClose(toast.id)}
         className="absolute top-3 right-3 w-5 h-5 rounded-md bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer"
-        aria-label="Dismiss notification"
+        aria-label={tr("Dismiss notification")}
       >
         <X size={10} />
       </button>

@@ -21,6 +21,7 @@ import { addOfflineAction, isNetworkError } from './bookingQueue';
 import { mockUsers, mockMenus, mockRecipes, mockBookings } from './mockData.ts.tsx';
 import { emailService } from './emailService';
 
+import { tr } from "../lib/tr";
 // Injeta variáveis no ambiente de execução se necessário
 if (typeof window !== 'undefined') {
   (window as any).isSupabaseActive = true;
@@ -1048,7 +1049,7 @@ export const supabaseService = {
 
       // Nunca criar contas com uma password por defeito conhecida.
       if (configured && !data.password) {
-        throw new Error('Defina uma palavra-passe para criar a conta.');
+        throw new Error(tr("Defina uma palavra-passe para criar a conta."));
       }
       const password = data.password || 'TemporaryPassword123!'; // só em modo demonstração
 
@@ -1068,7 +1069,7 @@ export const supabaseService = {
         hasSession = !!authResult?.session;
         // Email já registado: o Supabase devolve um utilizador "falso" sem identidades.
         if (configured && authResult?.user && Array.isArray(authResult.user.identities) && authResult.user.identities.length === 0) {
-          throw new Error('Este email já tem conta. Entre com a sua palavra-passe ou use "Esqueci-me da palavra-passe".');
+          throw new Error(tr("Este email já tem conta. Entre com a sua palavra-passe ou use \"Esqueci-me da palavra-passe\"."));
         }
       } catch (authErr: any) {
         if (configured) {
@@ -1076,16 +1077,16 @@ export const supabaseService = {
           const m = String(authErr?.message || '').toLowerCase();
           if (m.includes('já tem conta')) throw authErr;
           if (m.includes('already') || m.includes('registered')) {
-            throw new Error('Este email já tem conta. Entre com a sua palavra-passe.');
+            throw new Error(tr("Este email já tem conta. Entre com a sua palavra-passe."));
           }
           if (m.includes('password')) {
-            throw new Error('A palavra-passe é demasiado fraca. Use pelo menos 8 caracteres, com letras e números.');
+            throw new Error(tr("A palavra-passe é demasiado fraca. Use pelo menos 8 caracteres, com letras e números."));
           }
           if (m.includes('rate') || m.includes('too many') || m.includes('seconds')) {
-            throw new Error('Demasiadas tentativas. Aguarde um minuto e tente de novo.');
+            throw new Error(tr("Demasiadas tentativas. Aguarde um minuto e tente de novo."));
           }
           if (m.includes('invalid') && m.includes('email')) {
-            throw new Error('O email indicado não é válido.');
+            throw new Error(tr("O email indicado não é válido."));
           }
           throw new Error(authErr?.message || 'Não foi possível criar a conta. Tente novamente.');
         }
@@ -1842,7 +1843,7 @@ export const supabaseService = {
       return { id: bookingId };
     } catch (err: any) {
       if (err?.code === '23505' || String(err?.message || '').includes('uq_bookings_active_slot')) {
-        throw new Error('Este horário acabou de ser reservado por outra pessoa. Escolha outro horário.');
+        throw new Error(tr("Este horário acabou de ser reservado por outra pessoa. Escolha outro horário."));
       }
       // Só falhas de rede vão para a fila. Erros de permissão (RLS) são reais e têm de chegar ao utilizador;
       // antes eram re-enfileirados para sempre e a app dizia "guardada com sucesso".
@@ -2042,7 +2043,7 @@ export const supabaseService = {
   handleCancellation: async (bookingId: string, userId: string, reason?: string) => {
     if (!bookingId || !isValidUUID(bookingId)) return { success: false };
     const { data: booking } = await supabase.from('bookings').select('*').eq('id', bookingId).maybeSingle();
-    if (!booking) throw new Error('Reserva não encontrada');
+    if (!booking) throw new Error(tr("Reserva não encontrada"));
 
     const isClient = booking.client_id === userId;
     const cancelledBy = isClient ? 'client' : 'cook';
@@ -2720,7 +2721,7 @@ export const supabaseService = {
       .eq('status', 'active')
       .maybeSingle();
 
-    if (!card) throw new Error('Código de cartão presente inválido ou já resgatado.');
+    if (!card) throw new Error(tr("Código de cartão presente inválido ou já resgatado."));
 
     await supabase
       .from('gift_cards')
@@ -2982,10 +2983,10 @@ export const supabaseService = {
   uploadFile: async (bucket: string, path: string, file: File, maxDimension = 1280): Promise<string> => {
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
     if (!file || (file.type && !allowed.includes(file.type.toLowerCase()))) {
-      throw new Error('Formato de imagem não suportado. Use JPG, PNG ou WebP.');
+      throw new Error(tr("Formato de imagem não suportado. Use JPG, PNG ou WebP."));
     }
     if (file.size > 20 * 1024 * 1024) {
-      throw new Error('A imagem é demasiado grande (máximo 20 MB).');
+      throw new Error(tr("A imagem é demasiado grande (máximo 20 MB)."));
     }
 
     const toBlob = (canvas: HTMLCanvasElement, quality: number) =>
@@ -2996,7 +2997,7 @@ export const supabaseService = {
       try {
         bitmap = await createImageBitmap(file);
       } catch (_) {
-        throw new Error('Não foi possível ler a imagem. Tente outro ficheiro (JPG ou PNG).');
+        throw new Error(tr("Não foi possível ler a imagem. Tente outro ficheiro (JPG ou PNG)."));
       }
       const w = (bitmap as ImageBitmap).width;
       const h = (bitmap as ImageBitmap).height;
@@ -3005,13 +3006,13 @@ export const supabaseService = {
       canvas.width = Math.max(1, Math.round(w * scale));
       canvas.height = Math.max(1, Math.round(h * scale));
       const ctx = canvas.getContext('2d');
-      if (!ctx) throw new Error('Não foi possível processar a imagem.');
+      if (!ctx) throw new Error(tr("Não foi possível processar a imagem."));
       ctx.fillStyle = '#ffffff'; // PNG com transparência fica sobre fundo branco
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(bitmap as ImageBitmap, 0, 0, canvas.width, canvas.height);
       (bitmap as ImageBitmap).close?.();
       const blob = await toBlob(canvas, quality);
-      if (!blob) throw new Error('Não foi possível comprimir a imagem.');
+      if (!blob) throw new Error(tr("Não foi possível comprimir a imagem."));
       return blob;
     };
 

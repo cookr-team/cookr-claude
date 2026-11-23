@@ -11,6 +11,8 @@ import {
 import { Booking, BookingStatus } from "../types";
 import { supabaseService } from "../services/supabaseService";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface CancellationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -26,6 +28,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
   userId,
   onSuccess,
 }) => {
+  useLanguage();
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [isRescheduling, setIsRescheduling] = useState(false);
@@ -166,7 +169,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
       }
     } catch (error) {
       console.error("Erro na ação:", error);
-      alert("Ocorreu um erro ao processar o seu pedido.");
+      alert(tr("Ocorreu um erro ao processar o seu pedido."));
     } finally {
       setLoading(false);
     }
@@ -191,7 +194,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                         <AlertTriangle size={24} />
                       </div>
                       <h2 className="text-2xl font-black uppercase italic tracking-tighter text-slate-950">
-                        {isRescheduling ? "Confirmar Reagendamento" : "Confirmar Cancelamento"}
+                        {isRescheduling ? tr("Confirmar Reagendamento") : tr("Confirmar Cancelamento")}
                       </h2>
                     </div>
                     <button
@@ -205,41 +208,41 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                   <div className="space-y-4 my-6">
                     <p className="text-sm text-slate-600 leading-relaxed font-semibold">
                       {isRescheduling
-                        ? "Tem a certeza que deseja propor este novo horário ao cliente?"
-                        : "Tem a certeza que deseja proceder com o cancelamento desta reserva?"}
+                        ? tr("Tem a certeza que deseja propor este novo horário ao cliente?")
+                        : tr("Tem a certeza que deseja proceder com o cancelamento desta reserva?")}
                     </p>
 
                     <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 text-xs font-bold text-slate-600 space-y-3">
                       <div className="flex justify-between items-center pb-2 border-b border-slate-200/50">
-                        <span className="uppercase text-[9px] tracking-wider text-slate-400">Estado Consequência</span>
+                        <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Estado Consequência")}</span>
                         <span className={`px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider font-extrabold ${
                           consequence.type === "free"
                             ? "bg-blue-100 text-blue-700"
                             : "bg-orange-100 text-orange-700"
                         }`}>
-                          {consequence.type === "free" ? "Sem Custos" : "Retenção de 50%"}
+                          {consequence.type === "free" ? tr("Sem Custos") : tr("Retenção de 50%")}
                         </span>
                       </div>
 
                       <div className="flex justify-between">
-                        <span className="uppercase text-[9px] tracking-wider text-slate-400">Reserva</span>
-                        <span className="text-slate-950">{booking.menuNome || "Menu Especial"}</span>
+                        <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Reserva")}</span>
+                        <span className="text-slate-950">{booking.menuNome || tr("Menu Especial")}</span>
                       </div>
 
                       <div className="flex justify-between">
-                        <span className="uppercase text-[9px] tracking-wider text-slate-400">Data Original</span>
-                        <span className="text-slate-950">{booking.data} às {booking.hora}</span>
+                        <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Data Original")}</span>
+                        <span className="text-slate-950">{booking.data} {tr("às")} {booking.hora}</span>
                       </div>
 
                       {isRescheduling ? (
                         <div className="flex justify-between border-t border-slate-200/50 pt-2.5 mt-2">
-                          <span className="uppercase text-[9px] tracking-wider text-orange-500 font-extrabold">Novo Horário Sugerido</span>
-                          <span className="text-orange-600 font-black">{proposedDate} às {proposedTime}</span>
+                          <span className="uppercase text-[9px] tracking-wider text-orange-500 font-extrabold">{tr("Novo Horário Sugerido")}</span>
+                          <span className="text-orange-600 font-black">{proposedDate} {tr("às")} {proposedTime}</span>
                         </div>
                       ) : (
                         reason && (
                           <div className="flex flex-col border-t border-slate-200/50 pt-2.5 mt-2 gap-1.5">
-                            <span className="uppercase text-[9px] tracking-wider text-slate-400">Motivo Especificado</span>
+                            <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Motivo Especificado")}</span>
                             <span className="text-slate-800 bg-white/90 p-3 rounded-xl border border-slate-100 italic font-medium leading-relaxed">
                               "{reason}"
                             </span>
@@ -250,7 +253,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
 
                     <div className="p-3 bg-red-50 rounded-xl text-[10px] text-red-600 font-extrabold uppercase tracking-tight flex items-center gap-2">
                       <Info size={14} className="shrink-0" />
-                      <span>Esta ação é definitiva e não pode ser revertida.</span>
+                      <span>{tr("Esta ação é definitiva e não pode ser revertida.")}</span>
                     </div>
                   </div>
 
@@ -259,7 +262,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                       onClick={() => setShowConfirmStep(false)}
                       className="flex-1 min-h-[58px] py-4 rounded-full border border-slate-200 text-slate-600 font-black uppercase text-[11px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                     >
-                      Voltar
+                      {tr("Voltar")}
                     </button>
                     <button
                       onClick={handleAction}
@@ -270,7 +273,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                           : "bg-red-500 text-white shadow-red-200 hover:bg-red-400"
                       }`}
                     >
-                      {loading ? "A processar..." : "Sim, Confirmar"}
+                      {loading ? tr("A processar...") : tr("Sim, Confirmar")}
                     </button>
                   </div>
                 </div>
@@ -284,7 +287,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                         <AlertTriangle size={24} />
                       </div>
                       <h2 className="text-2xl font-black uppercase italic tracking-tighter text-slate-950">
-                        {isRescheduling ? "Sugerir Horário" : "Cancelar Reserva"}
+                        {isRescheduling ? tr("Sugerir Horário") : tr("Cancelar Reserva")}
                       </h2>
                     </div>
                     <button
@@ -324,13 +327,13 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                             onClick={() => setIsRescheduling(false)}
                             className={`flex-1 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${!isRescheduling ? "bg-white text-slate-950 shadow-sm" : "text-slate-400"}`}
                           >
-                            Cancelar
+                            {tr("Cancelar")}
                           </button>
                           <button
                             onClick={() => setIsRescheduling(true)}
                             className={`flex-1 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${isRescheduling ? "bg-white text-slate-950 shadow-sm" : "text-slate-400"}`}
                           >
-                            Reagendar
+                            {tr("Reagendar")}
                           </button>
                         </div>
                       )}
@@ -339,7 +342,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                         <div className="grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-2">
                           <div className="space-y-1">
                             <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                              Nova Data
+                              {tr("Nova Data")}
                             </label>
                             <input
                               type="date"
@@ -350,7 +353,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                           </div>
                           <div className="space-y-1">
                             <label className="text-[8px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                              Nova Hora
+                              {tr("Nova Hora")}
                             </label>
                             <input
                               type="time"
@@ -364,16 +367,16 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                         <div>
                           <label className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">
                             {isChef
-                              ? "Explicação para o Cliente"
-                              : "Motivo do Cancelamento (Opcional)"}
+                              ? tr("Explicação para o Cliente")
+                              : tr("Motivo do Cancelamento (Opcional)")}
                           </label>
                           <textarea
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
                             placeholder={
                               isChef
-                                ? "Explique ao cliente o motivo do cancelamento ou sugira falar por chat..."
-                                : "Ex: Mudança de planos, imprevisto..."
+                                ? tr("Explique ao cliente o motivo do cancelamento ou sugira falar por chat...")
+                                : tr("Ex: Mudança de planos, imprevisto...")
                             }
                             className="w-full px-5 py-4 rounded-2xl bg-slate-50 border border-transparent focus:border-orange-500 outline-none transition-all resize-none h-28 text-xs font-bold"
                           />
@@ -383,7 +386,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                       <div className="flex items-center gap-3 text-[9px] font-black text-slate-400 bg-slate-50/50 p-4 rounded-2xl uppercase tracking-widest">
                         <Clock size={16} className="text-orange-500" />
                         <span>
-                          Reserva original: {booking.data} às {booking.hora}
+                          {tr("Reserva original:")} {booking.data} {tr("às")} {booking.hora}
                         </span>
                       </div>
                     </div>
@@ -394,7 +397,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                       onClick={onClose}
                       className="flex-1 min-h-[58px] py-4 rounded-full border border-slate-200 text-slate-600 font-black uppercase text-[11px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                     >
-                      Voltar
+                      {tr("Voltar")}
                     </button>
                     {consequence.canCancel && (
                       <button
@@ -405,7 +408,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                             : "bg-red-500 text-white shadow-red-200 hover:bg-red-400"
                         }`}
                       >
-                        Confirmar
+                        {tr("Confirmar")}
                       </button>
                     )}
                   </div>
@@ -417,7 +420,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
                       }
                       className="w-full mt-4 min-h-[58px] py-4 rounded-full bg-slate-950 text-white font-black uppercase text-[11px] tracking-widest hover:bg-orange-500 transition-all shadow-xl cursor-pointer"
                     >
-                      Contactar Suporte
+                      {tr("Contactar Suporte")}
                     </button>
                   )}
                 </>

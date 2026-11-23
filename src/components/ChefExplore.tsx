@@ -2,6 +2,8 @@ import React, { useState, useMemo } from "react";
 import { ICONS } from "../constants";
 import { User, MenuItem } from "../types";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface ChefExploreProps {
   cooks: User[];
   allMenus: MenuItem[];
@@ -48,6 +50,7 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
   onSelectChef,
   onViewAllChefs,
 }) => {
+  useLanguage();
   const [showArticle, setShowArticle] = useState(false);
   const [showBillingModal, setShowBillingModal] = useState(false);
   const [showHygieneModal, setShowHygieneModal] = useState(false);
@@ -364,10 +367,10 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
               className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-white transition-colors group cursor-pointer"
             >
               <ICONS.ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform text-orange-500" />
-              Voltar ao Mercado
+              {tr("Voltar ao Mercado")}
             </button>
             <span className="text-[10px] font-mono tracking-wider text-slate-500 uppercase">
-              Leitura de 4 Min
+              {tr("Leitura de 4 Min")}
             </span>
           </div>
 
@@ -376,16 +379,16 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="text-orange-500 font-extrabold tracking-widest text-[10px] sm:text-xs uppercase">
-                  DICA DO MÊS
+                  {tr("DICA DO MÊS")}
                 </span>
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-                <span className="text-slate-500 text-[10px] sm:text-xs font-medium">Verão 2026</span>
+                <span className="text-slate-500 text-[10px] sm:text-xs font-medium">{tr("Verão 2026")}</span>
               </div>
               <h1 className="text-2xl md:text-4xl font-black text-white tracking-tight leading-tight">
-                Como Otimizar o seu Menu para o Verão
+                {tr("Como Otimizar o seu Menu para o Verão")}
               </h1>
               <p className="text-sm md:text-lg font-medium text-slate-450 italic leading-relaxed">
-                Descubra quais os ingredientes que os clientes mais procuram nesta estação e aumente as suas margens de lucro.
+                {tr("Descubra quais os ingredientes que os clientes mais procuram nesta estação e aumente as suas margens de lucro.")}
               </p>
             </div>
 
@@ -394,46 +397,46 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
             {/* Content Paragraphs */}
             <div className="space-y-6 text-slate-300 text-left leading-relaxed text-sm md:text-base font-normal">
               <p className="first-letter:text-4xl first-letter:font-black first-letter:text-orange-500 first-letter:float-left first-letter:mr-2">
-                O verão altera radicalmente o comportamento dos consumidores. Os rituais em casa ganham uma energia mais descontraída, onde as ementas pesadas dão lugar a propostas frescas, leves e vibrantes. Para os chefs residentes na Cookr, esta transição sazonal não é apenas uma mudança estética — é a maior oportunidade do ano para otimizar a estrutura de custos, dinamizar a operação na cozinha e impulsionar a rentabilidade média de cada ritual.
+                {tr("O verão altera radicalmente o comportamento dos consumidores. Os rituais em casa ganham uma energia mais descontraída, onde as ementas pesadas dão lugar a propostas frescas, leves e vibrantes. Para os chefs residentes na Cookr, esta transição sazonal não é apenas uma mudança estética — é a maior oportunidade do ano para otimizar a estrutura de custos, dinamizar a operação na cozinha e impulsionar a rentabilidade média de cada ritual.")}
               </p>
 
               <div className="space-y-3 pt-4">
                 <h2 className="text-base md:text-lg font-bold text-white uppercase tracking-tight flex items-center gap-2">
                   <span className="w-1.5 h-4 bg-orange-500 rounded-sm inline-block" />
-                  1. A Força dos Ingredientes da Estação
+                  {tr("1. A Força dos Ingredientes da Estação")}
                 </h2>
                 <p>
-                  Ingredientes no pico da sua maturação natural são mais abundantes, têm um custo de aquisição substancialmente inferior e oferecem um perfil de sabor incomparável. No verão português, o foco deve estar no <strong>tomate coração-de-boi</strong>, <strong>figos frescos</strong>, <strong>melão de Almeirim</strong>, <strong>pimentos</strong> e ervas aromáticas frescas (coentros, hortelã e manjericão). Introduzir estes elementos nos menus reduz diretamente o custo das mercadorias vendidas (COGS) enquanto eleva a perceção de sofisticação pelo cliente.
+                  {tr("Ingredientes no pico da sua maturação natural são mais abundantes, têm um custo de aquisição substancialmente inferior e oferecem um perfil de sabor incomparável. No verão português, o foco deve estar no")} <strong>{tr("tomate coração-de-boi")}</strong>, <strong>{tr("figos frescos")}</strong>, <strong>{tr("melão de Almeirim")}</strong>, <strong>pimentos</strong> {tr("e ervas aromáticas frescas (coentros, hortelã e manjericão). Introduzir estes elementos nos menus reduz diretamente o custo das mercadorias vendidas (COGS) enquanto eleva a perceção de sofisticação pelo cliente.")}
                 </p>
               </div>
 
               <div className="space-y-3 pt-4">
                 <h2 className="text-base md:text-lg font-bold text-white uppercase tracking-tight flex items-center gap-2">
                   <span className="w-1.5 h-4 bg-orange-500 rounded-sm inline-block" />
-                  2. Pratos Frios e Agilidade na Cozinha
+                  {tr("2. Pratos Frios e Agilidade na Cozinha")}
                 </h2>
                 <p>
-                  A rotação eficiente de mesas e a rapidez na execução do mise-en-place são segredos críticos de rentabilidade. Menus focados em criações frias como ceviches macerados em citrinos com batata-doce, gaspachos fumados com telha de presunto alentejano e saladas contemporâneas com queijo de cabra artesanal e frutos secos reduzem drasticamente o consumo de energia (gás/eletricidade) e o tempo de fogão, minimizando também o desconforto térmico na cozinha.
+                  {tr("A rotação eficiente de mesas e a rapidez na execução do mise-en-place são segredos críticos de rentabilidade. Menus focados em criações frias como ceviches macerados em citrinos com batata-doce, gaspachos fumados com telha de presunto alentejano e saladas contemporâneas com queijo de cabra artesanal e frutos secos reduzem drasticamente o consumo de energia (gás/eletricidade) e o tempo de fogão, minimizando também o desconforto térmico na cozinha.")}
                 </p>
               </div>
 
               <div className="space-y-3 pt-4">
                 <h2 className="text-base md:text-lg font-bold text-white uppercase tracking-tight flex items-center gap-2">
                   <span className="w-1.5 h-4 bg-orange-500 rounded-sm inline-block" />
-                  3. Upselling Refrescante
+                  {tr("3. Upselling Refrescante")}
                 </h2>
                 <p>
-                  O verão convida ao consumo de bebidas premium. Propor águas aromatizadas de autor (hortelã, pepino e lima) ou mocktails artesanais (como mojito de frutos vermelhos silvestres ou infusão fria de hibisco com gengibre) como "welcome drink" pode ser incluído no menu ou oferecido como um extra com margens brutas que superam os 80%. É uma excelente forma de aumentar o valor médio por reserva com custos operacionais marginais.
+                  {tr("O verão convida ao consumo de bebidas premium. Propor águas aromatizadas de autor (hortelã, pepino e lima) ou mocktails artesanais (como mojito de frutos vermelhos silvestres ou infusão fria de hibisco com gengibre) como \"welcome drink\" pode ser incluído no menu ou oferecido como um extra com margens brutas que superam os 80%. É uma excelente forma de aumentar o valor médio por reserva com custos operacionais marginais.")}
                 </p>
               </div>
 
               <div className="space-y-3 pt-4">
                 <h2 className="text-base md:text-lg font-bold text-white uppercase tracking-tight flex items-center gap-2">
                   <span className="w-1.5 h-4 bg-orange-500 rounded-sm inline-block" />
-                  4. Conservação e Logística no Calor
+                  {tr("4. Conservação e Logística no Calor")}
                 </h2>
                 <p>
-                  Temperaturas elevadas requerem rigor absoluto nas cadeias de frio. Para evitar desperdícios e quebras de stock, organize as suas compras na véspera e transporte todos os ingredientes refrigerados em malas térmicas controladas. Invista em marinadas cítricas e técnicas de vácuo para prolongar a frescura das proteínas animais. Cada grama de alimento salvo do desperdício reflete-se diretamente como lucro líquido na sua faturação final.
+                  {tr("Temperaturas elevadas requerem rigor absoluto nas cadeias de frio. Para evitar desperdícios e quebras de stock, organize as suas compras na véspera e transporte todos os ingredientes refrigerados em malas térmicas controladas. Invista em marinadas cítricas e técnicas de vácuo para prolongar a frescura das proteínas animais. Cada grama de alimento salvo do desperdício reflete-se diretamente como lucro líquido na sua faturação final.")}
                 </p>
               </div>
             </div>
@@ -444,10 +447,10 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
             <div className="space-y-5 text-left text-gray-300">
               <div className="space-y-1">
                 <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
-                  Recursos Essenciais Cookr
+                  {tr("Recursos Essenciais Cookr")}
                 </h3>
                 <p className="text-[10px] text-slate-500">
-                  Aceda rapidamente aos manuais operacionais e guias legais no decorrer da sua atividade na plataforma.
+                  {tr("Aceda rapidamente aos manuais operacionais e guias legais no decorrer da sua atividade na plataforma.")}
                 </p>
               </div>
 
@@ -461,10 +464,10 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                      Guia de Faturação
+                      {tr("Guia de Faturação")}
                     </h4>
                     <p className="text-[9px] text-slate-400 truncate">
-                      Instruções legais, preenchimento e IVA.
+                      {tr("Instruções legais, preenchimento e IVA.")}
                     </p>
                   </div>
                 </button>
@@ -481,7 +484,7 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
                       Higiene & Segurança
                     </h4>
                     <p className="text-[9px] text-slate-400 truncate">
-                      Protocolo HACCP e regras de desinfeção.
+                      {tr("Protocolo HACCP e regras de desinfeção.")}
                     </p>
                   </div>
                 </button>
@@ -505,29 +508,29 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
                   <ICONS.FileText size={16} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-extrabold uppercase tracking-widest text-white">Guia de Faturação Cookr</h3>
-                  <p className="text-[8px] uppercase font-black text-slate-500 tracking-wider">Manual de Conformidade Fiscal</p>
+                  <h3 className="text-sm font-extrabold uppercase tracking-widest text-white">{tr("Guia de Faturação Cookr")}</h3>
+                  <p className="text-[8px] uppercase font-black text-slate-500 tracking-wider">{tr("Manual de Conformidade Fiscal")}</p>
                 </div>
               </div>
               <div className="space-y-4 text-xs text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto pr-2 scrollbar-hide">
                 <p>
-                  Na plataforma Cookr, todos os rituais gastronómicos são transacionados de forma segura. Enquanto prestador de serviços independente, importa garantir a conformidade com as regras fiscais de Portugal:
+                  {tr("Na plataforma Cookr, todos os rituais gastronómicos são transacionados de forma segura. Enquanto prestador de serviços independente, importa garantir a conformidade com as regras fiscais de Portugal:")}
                 </p>
                 <ul className="list-disc pl-4 space-y-2">
-                  <li><strong>Emissão de Fatura:</strong> O Chef é o responsável por emitir o documento fiscal legal (fatura, fatura-recibo ou recibo verde) ao cliente através do Portal das Finanças no prazo máximo de 5 dias após o ritual.</li>
-                  <li><strong>Isenção ao Abrigo do Artigo 53º:</strong> Caso a sua faturação anual acumulada seja inferior a 15.000€, poderá beneficiar da isenção de IVA ao abrigo do Artigo 53º do CIVA.</li>
-                  <li><strong>Retenção na Fonte:</strong> Atente se a sua situação profissional requer retenção de IRS à taxa aplicável (geralmente dispensada para volumes inferiores a 12.500€).</li>
-                  <li><strong>Comissionamento Cookr:</strong> A Cookr emite mensalmente uma fatura eletrónica de prestação de serviços tecnológicos referente à taxa de serviço / comissão retida. Esta fatura serve de registo de despesa profissional para a sua contabilidade.</li>
+                  <li><strong>{tr("Emissão de Fatura:")}</strong> {tr("O Chef é o responsável por emitir o documento fiscal legal (fatura, fatura-recibo ou recibo verde) ao cliente através do Portal das Finanças no prazo máximo de 5 dias após o ritual.")}</li>
+                  <li><strong>{tr("Isenção ao Abrigo do Artigo 53º:")}</strong> {tr("Caso a sua faturação anual acumulada seja inferior a 15.000€, poderá beneficiar da isenção de IVA ao abrigo do Artigo 53º do CIVA.")}</li>
+                  <li><strong>{tr("Retenção na Fonte:")}</strong> {tr("Atente se a sua situação profissional requer retenção de IRS à taxa aplicável (geralmente dispensada para volumes inferiores a 12.500€).")}</li>
+                  <li><strong>{tr("Comissionamento Cookr:")}</strong> {tr("A Cookr emite mensalmente uma fatura eletrónica de prestação de serviços tecnológicos referente à taxa de serviço / comissão retida. Esta fatura serve de registo de despesa profissional para a sua contabilidade.")}</li>
                 </ul>
                 <p className="text-[10px] text-slate-500 italic">
-                  Nota: Este artigo serve de referência rápida informativa e não dispensa a consulta de um contabilista certificado ou da Autoridade Tributária.
+                  {tr("Nota: Este artigo serve de referência rápida informativa e não dispensa a consulta de um contabilista certificado ou da Autoridade Tributária.")}
                 </p>
               </div>
               <button
                 onClick={() => setShowBillingModal(false)}
                 className="w-full py-2 bg-orange-500 hover:bg-orange-600 font-bold uppercase tracking-widest text-[10px] text-white rounded-lg transition-colors cursor-pointer"
               >
-                Fechar Manual
+                {tr("Fechar Manual")}
               </button>
             </div>
           </div>
@@ -548,28 +551,28 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
                 </div>
                 <div>
                   <h3 className="text-sm font-extrabold uppercase tracking-widest text-white">Segurança & HACCP</h3>
-                  <p className="text-[8px] uppercase font-black text-slate-500 tracking-wider">Protocolo Sanitário de Rituais</p>
+                  <p className="text-[8px] uppercase font-black text-slate-500 tracking-wider">{tr("Protocolo Sanitário de Rituais")}</p>
                 </div>
               </div>
               <div className="space-y-4 text-xs text-slate-300 leading-relaxed max-h-[60vh] overflow-y-auto pr-2 scrollbar-hide">
                 <p>
-                  O cumprimento rigoroso dos princípios do Sistema de Análise de Perigos e Pontos Críticos de Controlo (<strong>HACCP</strong>) é basilar para manter o prestígio e a licença operacional no marketplace Cookr:
+                  {tr("O cumprimento rigoroso dos princípios do Sistema de Análise de Perigos e Pontos Críticos de Controlo (")}<strong>{tr("HACCP")}</strong>{tr(") é basilar para manter o prestígio e a licença operacional no marketplace Cookr:")}
                 </p>
                 <ul className="list-disc pl-4 space-y-2">
-                  <li><strong>Cadeia de Frio:</strong> Monitorize o estado das matérias-primas e assegure que o transporte decorre sempre abaixo dos 4°C para frescos e -18°C para ultracongelados.</li>
-                  <li><strong>Higiene Corporal e Vestuário:</strong> É obrigatório a utilização de farda limpa de uso exclusivo, unhas curtas e limpas sem verniz, cabelo totalmente recolhido ou protegido por touca, e desinfeção constante das mãos.</li>
-                  <li><strong>Prevenção da Contaminação Cruzada:</strong> Utilize tábuas e utensílios codificados por cores (por exemplo: verde para hortícolas, vermelho para carne crua, azul para peixe cru) e nunca misture ingredientes prontos a consumir com alimentos crus.</li>
-                  <li><strong>Temperatura de Confeção:</strong> Assegure que as proteínas quentes atingem o ponto térmico de pasteurização no centro (mínimo de 75°C por 15 segundos) para neutralizar agentes patogénicos.</li>
+                  <li><strong>{tr("Cadeia de Frio:")}</strong> {tr("Monitorize o estado das matérias-primas e assegure que o transporte decorre sempre abaixo dos 4°C para frescos e -18°C para ultracongelados.")}</li>
+                  <li><strong>{tr("Higiene Corporal e Vestuário:")}</strong> {tr("É obrigatório a utilização de farda limpa de uso exclusivo, unhas curtas e limpas sem verniz, cabelo totalmente recolhido ou protegido por touca, e desinfeção constante das mãos.")}</li>
+                  <li><strong>{tr("Prevenção da Contaminação Cruzada:")}</strong> {tr("Utilize tábuas e utensílios codificados por cores (por exemplo: verde para hortícolas, vermelho para carne crua, azul para peixe cru) e nunca misture ingredientes prontos a consumir com alimentos crus.")}</li>
+                  <li><strong>{tr("Temperatura de Confeção:")}</strong> {tr("Assegure que as proteínas quentes atingem o ponto térmico de pasteurização no centro (mínimo de 75°C por 15 segundos) para neutralizar agentes patogénicos.")}</li>
                 </ul>
                 <p className="text-[10px] text-slate-500 italic">
-                  A conformidade absoluta com esta norma é o melhor escudo de proteção jurídica do Chef e garantia de integridade da saúde dos comensais.
+                  {tr("A conformidade absoluta com esta norma é o melhor escudo de proteção jurídica do Chef e garantia de integridade da saúde dos comensais.")}
                 </p>
               </div>
               <button
                 onClick={() => setShowHygieneModal(false)}
                 className="w-full py-2 bg-orange-500 hover:bg-orange-600 font-bold uppercase tracking-widest text-[10px] text-white rounded-lg transition-colors cursor-pointer"
               >
-                Fechar Manual
+                {tr("Fechar Manual")}
               </button>
             </div>
           </div>
@@ -583,11 +586,11 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
       <header className="text-left space-y-1">
         <div className="flex items-center gap-1.5">
           <span className="px-2 py-0.5 bg-orange-500 text-white text-[7.5px] font-bold uppercase rounded tracking-wider">
-            Market Insights
+            {tr("Market Insights")}
           </span>
         </div>
         <h1 className="text-xl md:text-2xl font-extrabold text-slate-950 tracking-tight uppercase leading-none">
-          Explorar <span className="text-orange-500">Mercado.</span>
+          {tr("Explorar")} <span className="text-orange-500">{tr("Mercado.")}</span>
         </h1>
         <p className="text-[7.5px] md:text-[8.5px] font-bold text-slate-400 uppercase tracking-widest ml-0.5">
           Tendências & Insights da Comunidade Cookr
@@ -613,21 +616,21 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
                     <span className="text-[10px]">↗</span> {trend.growth}
                   </span>
                   <span className="text-[6.5px] md:text-[7px] font-extrabold text-slate-400 uppercase tracking-widest mt-1">
-                    Em {currentMonthName}
+                    {tr("Em")} {currentMonthName}
                   </span>
                 </div>
               </div>
               <h3 className="text-xs font-bold text-slate-900 uppercase tracking-tight leading-tight">
-                {trend.title}
+                {tr(trend.title as any) as any}
               </h3>
               <p className="text-[7.5px] font-mono font-bold text-slate-400 uppercase tracking-wider mt-0.5">
-                {trend.count} {trend.count === 1 ? "prato ativo" : "pratos ativos"}
+                {trend.count} {trend.count === 1 ? tr("prato ativo") : tr("pratos ativos")}
               </p>
               <div className="h-[1.5px] w-6 bg-orange-500 mt-1.5 rounded-full group-hover:w-10 transition-all duration-300" />
             </div>
             {/* Real-time Dynamic Market Insight description */}
             <p className="text-[8.5px] text-slate-500 leading-normal mt-3 pt-2.5 border-t border-slate-100 italic transition-colors group-hover:text-slate-700">
-              {trend.desc}
+              {tr(trend.desc as any) as any}
             </p>
           </div>
         ))}
@@ -639,13 +642,13 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
         <div className="lg:col-span-2 space-y-3.5">
           <div className="flex items-center justify-between pb-1 border-b border-slate-50">
             <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-950">
-              Destaques da Comunidade
+              {tr("Destaques da Comunidade")}
             </h3>
             <button 
               onClick={() => onViewAllChefs && onViewAllChefs()}
               className="text-[7.5px] md:text-[8px] font-bold uppercase text-orange-500 tracking-wider hover:underline cursor-pointer"
             >
-              Ver Todos
+              {tr("Ver Todos")}
             </button>
           </div>
 
@@ -718,26 +721,26 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
         {/* Resources / Tips */}
         <div className="space-y-3">
           <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-950 pb-1 border-b border-slate-50 text-left">
-            Recursos
+            {tr("Recursos")}
           </h3>
           <div className="bg-slate-950 p-4 rounded-xl text-left space-y-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-full -mr-12 -mt-12 blur-xl" />
             <div className="space-y-1 relative z-10">
               <p className="text-[7px] font-bold text-orange-400 uppercase tracking-wider">
-                Dica do Mês
+                {tr("Dica do Mês")}
               </p>
               <h4 className="text-xs font-bold text-white uppercase tracking-tight">
-                Como otimizar o seu menu para o Verão.
+                {tr("Como otimizar o seu menu para o Verão.")}
               </h4>
               <p className="text-[9px] font-medium text-white/40 leading-relaxed">
-                Descubra quais os ingredientes que os clientes mais procuram nesta estação.
+                {tr("Descubra quais os ingredientes que os clientes mais procuram nesta estação.")}
               </p>
             </div>
             <button 
               onClick={() => setShowArticle(true)}
               className="w-full py-2 bg-white text-slate-950 hover:bg-orange-500 hover:text-white rounded-lg font-bold text-[8px] uppercase tracking-wider transition-all relative z-10 cursor-pointer"
             >
-              Ler Artigo
+              {tr("Ler Artigo")}
             </button>
 
             <div className="pt-3 border-t border-white/10 space-y-2.5 relative z-10">
@@ -749,7 +752,7 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
                   <ICONS.CreditCard size={10} />
                 </div>
                 <span className="text-[8px] font-bold text-white/60 uppercase tracking-wider group-hover:text-white transition-all">
-                  Guia de Faturação
+                  {tr("Guia de Faturação")}
                 </span>
               </div>
               <div 

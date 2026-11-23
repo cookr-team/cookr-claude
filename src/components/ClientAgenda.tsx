@@ -6,6 +6,7 @@ import { CancellationModal } from "./CancellationModal";
 import { Download, RefreshCw } from "lucide-react";
 import { useLanguage, getLangText } from "../contexts/LanguageContext";
 
+import { tr } from "../lib/tr";
 interface UpcomingBookingCardProps {
   b: Booking;
   cooks: User[];
@@ -89,7 +90,7 @@ const UpcomingBookingCard: React.FC<UpcomingBookingCardProps> = React.memo(({
       <div className="flex-1 text-left space-y-2">
         <div className="flex items-center flex-wrap gap-1.5">
           <span className={statusConfig.classes}>
-            {statusConfig.label}
+            {tr(statusConfig.label as any) as any}
           </span>
 
           {isToday && (
@@ -127,7 +128,7 @@ const UpcomingBookingCard: React.FC<UpcomingBookingCardProps> = React.memo(({
                     src={avatarUrl}
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
-                    alt="Chef avatar"
+                    alt={tr("Chef avatar")}
                   />
                 ) : (
                   <span className="text-white font-extrabold text-[8px]">
@@ -137,7 +138,7 @@ const UpcomingBookingCard: React.FC<UpcomingBookingCardProps> = React.memo(({
               })()}
             </div>
             <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">
-              Chef {b.cookName}
+              {tr("Chef")} {b.cookName}
             </p>
             <span className="w-1 h-1 rounded-full bg-slate-300" />
             <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest italic">
@@ -156,7 +157,7 @@ const UpcomingBookingCard: React.FC<UpcomingBookingCardProps> = React.memo(({
 
           {b.service_pin && (b.status === BookingStatus.ACCEPTED || b.status === BookingStatus.IN_PROGRESS) && (
             <div className="flex items-center gap-1 px-2 py-0.5 bg-emerald-500/5 border border-emerald-500/10 rounded-md text-emerald-700">
-              <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600">🔑 PIN:</span>
+              <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600">{tr("🔑 PIN:")}</span>
               <span className="text-[9px] font-mono font-black tracking-widest">{b.service_pin}</span>
             </div>
           )}
@@ -224,7 +225,7 @@ const UpcomingBookingCard: React.FC<UpcomingBookingCardProps> = React.memo(({
 
           {b.is_finalizing && (
             <div className="h-9 px-2.5 bg-orange-500 text-white rounded-xl flex flex-col items-center justify-center shadow-sm animate-pulse shrink-0">
-              <span className="text-[7px] font-black uppercase tracking-wider leading-none">PIN</span>
+              <span className="text-[7px] font-black uppercase tracking-wider leading-none">{tr("PIN")}</span>
               <span className="text-[9px] font-mono font-black leading-none mt-0.5">{b.service_pin}</span>
             </div>
           )}
@@ -253,6 +254,7 @@ const HistoryBookingCard: React.FC<HistoryBookingCardProps> = React.memo(({
   onSelectDetail,
   onReview,
 }) => {
+  useLanguage();
   const isReviewed = reviews.some((r) => r.bookingId === b.id);
   return (
     <div
@@ -284,7 +286,7 @@ const HistoryBookingCard: React.FC<HistoryBookingCardProps> = React.memo(({
                     src={avatarUrl}
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
-                    alt="Cook avatar"
+                    alt={tr("Cook avatar")}
                   />
                 ) : (
                   <span className="text-slate-500 font-extrabold text-[7px]" />
@@ -292,7 +294,7 @@ const HistoryBookingCard: React.FC<HistoryBookingCardProps> = React.memo(({
               })()}
             </div>
             <p className="text-[9px] font-medium text-slate-400 uppercase tracking-wider">
-              Chef {b.cookName}
+              {tr("Chef")} {b.cookName}
             </p>
           </div>
         </div>
@@ -306,20 +308,20 @@ const HistoryBookingCard: React.FC<HistoryBookingCardProps> = React.memo(({
             onClick={() => onSelectDetail(b)}
             className="h-11 px-5 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-950 text-slate-700 rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all shadow-sm"
           >
-            Detalhes
+            {tr("Detalhes")}
           </button>
           {b.status === BookingStatus.COMPLETED ? (
             isReviewed ? (
               <div className="h-11 px-5 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 border border-emerald-100">
                 <ICONS.CheckCircle size={12} />
-                Avaliado
+                {tr("Avaliado")}
               </div>
             ) : (
               <button
                 onClick={() => onReview(b)}
                 className="h-11 px-5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-extrabold uppercase tracking-wider transition-all shadow-md shadow-orange-500/10"
               >
-                Avaliar
+                {tr("Avaliar")}
               </button>
             )
           ) : null}
@@ -352,6 +354,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
   onRefresh,
   isLoading = false,
 }) => {
+  useLanguage();
   const [reviewingBooking, setReviewingBooking] =
     useState<Booking | null>(null);
   const [viewingDetail, setViewingDetail] = useState<Booking | null>(
@@ -373,13 +376,13 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       const success = await supabaseService.importDemoBookingsForNewClient(user.id, user.nome);
       if (success) {
         if (onRefresh) onRefresh();
-        alert("As suas reservas de demonstração foram sincronizadas com sucesso à sua nova conta Cookr!");
+        alert(tr("As suas reservas de demonstração foram sincronizadas com sucesso à sua nova conta Cookr!"));
       } else {
-        alert("Não encontrámos novas reservas de demonstração para sincronizar (ou estas já foram todas associadas).");
+        alert(tr("Não encontrámos novas reservas de demonstração para sincronizar (ou estas já foram todas associadas)."));
       }
     } catch (err) {
       console.error(err);
-      alert("Ocorreu um erro ao sincronizar as reservas.");
+      alert(tr("Ocorreu um erro ao sincronizar as reservas."));
     } finally {
       setIsImporting(false);
     }
@@ -718,7 +721,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       setRating(5);
       onRefresh();
     } catch (e) {
-      alert("Erro ao enviar avaliação.");
+      alert(tr("Erro ao enviar avaliação."));
     } finally {
       setIsSubmitting(false);
     }
@@ -739,10 +742,10 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       );
       if (error) throw error;
       onRefresh();
-      alert("Reagendamento aceite com sucesso!");
+      alert(tr("Reagendamento aceite com sucesso!"));
     } catch (e) {
       console.error("Erro ao aceitar reagendamento:", e);
-      alert("Erro ao aceitar reagendamento.");
+      alert(tr("Erro ao aceitar reagendamento."));
     }
   }, [onRefresh]);
 
@@ -755,13 +758,13 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       );
       if (result.success) {
         onRefresh();
-        alert("Reagendamento rejeitado. A reserva foi cancelada.");
+        alert(tr("Reagendamento rejeitado. A reserva foi cancelada."));
       } else {
         alert(result.message);
       }
     } catch (e) {
       console.error("Erro ao rejeitar reagendamento:", e);
-      alert("Erro ao rejeitar reagendamento.");
+      alert(tr("Erro ao rejeitar reagendamento."));
     }
   }, [user.id, onRefresh]);
 
@@ -787,10 +790,10 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
           <div className="bg-white w-full max-w-lg rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 space-y-6 md:space-y-8 shadow-3xl animate-in zoom-in duration-300">
             <div className="text-center space-y-2">
               <h3 className="text-2xl font-black uppercase italic tracking-tighter">
-                Avaliar Experiência
+                {tr("Avaliar Experiência")}
               </h3>
               <p className="text-xs text-slate-400 font-medium">
-                Como foi o seu ritual com o Chef {reviewingBooking.cookName}?
+                {tr("Como foi o seu ritual com o Chef")} {reviewingBooking.cookName}?
               </p>
             </div>
 
@@ -811,7 +814,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
 
             <textarea
               className="w-full h-32 p-6 bg-slate-50 rounded-3xl border border-slate-100 outline-none focus:border-orange-500 font-bold text-xs transition-all resize-none"
-              placeholder="Partilhe a sua opinião sobre a comida e o serviço..."
+              placeholder={tr("Partilhe a sua opinião sobre a comida e o serviço...")}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
@@ -821,14 +824,14 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                 onClick={() => setReviewingBooking(null)}
                 className="flex-1 py-4 bg-slate-50 text-slate-400 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-100 transition-all"
               >
-                Cancelar
+                {tr("Cancelar")}
               </button>
               <button
                 onClick={handleSubmitReview}
                 disabled={isSubmitting}
                 className="flex-1 py-4 bg-slate-950 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-orange-500 transition-all shadow-xl"
               >
-                {isSubmitting ? "A Enviar..." : "Enviar Avaliação"}
+                {isSubmitting ? tr("A Enviar...") : tr("Enviar Avaliação")}
               </button>
             </div>
           </div>
@@ -838,10 +841,10 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-slate-100 pb-8">
         <div className="text-left space-y-1.5">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 uppercase">
-            Minha <span className="text-orange-500">Agenda</span>
+            {tr("Minha")} <span className="text-orange-500">{tr("Agenda")}</span>
           </h1>
           <p className="text-xs text-slate-400">
-            Gerir e acompanhar as suas ricas experiências gastronómicas.
+            {tr("Gerir e acompanhar as suas ricas experiências gastronómicas.")}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
@@ -850,28 +853,28 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
               onClick={() => setActiveTab("all")}
               className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${activeTab === "all" ? "bg-white text-slate-950 shadow-sm border border-slate-200/10" : "text-slate-500 hover:text-slate-700"}`}
             >
-              Todos
+              {tr("Todos")}
             </button>
             <button
               onClick={() => setActiveTab("experience")}
               className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${activeTab === "experience" ? "bg-white text-slate-950 shadow-sm border border-slate-200/10" : "text-slate-500 hover:text-slate-700"}`}
             >
               <ICONS.Sparkles size={11} className="shrink-0" />
-              Rituais
+              {tr("Rituais")}
             </button>
             <button
               onClick={() => setActiveTab("dish")}
               className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${activeTab === "dish" ? "bg-white text-slate-950 shadow-sm border border-slate-200/10" : "text-slate-500 hover:text-slate-700"}`}
             >
               <ICONS.Utensils size={11} className="shrink-0" />
-              Pratos
+              {tr("Pratos")}
             </button>
             <button
               onClick={() => setActiveTab("daily")}
               className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${activeTab === "daily" ? "bg-white text-slate-950 shadow-sm border border-slate-200/10" : "text-slate-500 hover:text-slate-700"}`}
             >
               <ICONS.Calendar size={11} className="shrink-0" />
-              Daily
+              {tr("Daily")}
             </button>
           </div>
           <div className="bg-slate-50 px-4 py-2 rounded-xl border border-slate-100/80 flex items-center justify-center gap-2 text-slate-700 shrink-0 self-start sm:self-auto">
@@ -879,12 +882,12 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-800">
               {filteredBookings.length}{" "}
               {activeTab === "all"
-                ? "Operações"
+                ? tr("Operações")
                 : activeTab === "experience"
-                  ? "Rituais"
+                  ? tr("Rituais")
                   : activeTab === "dish"
-                    ? "Pratos"
-                    : "Packs Daily"}
+                    ? tr("Pratos")
+                    : tr("Packs Daily")}
             </span>
           </div>
         </div>
@@ -896,14 +899,14 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
           <div className="flex items-center gap-2.5">
             <div className="w-1 h-3.5 bg-orange-500 rounded-full" />
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Próximos{" "}
+              {tr("Próximos")}{" "}
               {activeTab === "experience"
-                ? "Rituais"
+                ? tr("Rituais")
                 : activeTab === "dish"
-                  ? "Pratos"
+                  ? tr("Pratos")
                   : activeTab === "daily"
-                    ? "Packs Daily"
-                    : "Serviços"}
+                    ? tr("Packs Daily")
+                    : tr("Serviços")}
             </h2>
           </div>
 
@@ -971,9 +974,9 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                   <ICONS.Calendar size={20} className="text-slate-400" />
                 </div>
                 <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest">Nenhuma Atividade</h4>
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-widest">{tr("Nenhuma Atividade")}</h4>
                   <p className="text-[11px] text-slate-400 font-medium pb-2">
-                    Não tem agendamentos ativos para esta seleção de rituais.
+                    {tr("Não tem agendamentos ativos para esta seleção de rituais.")}
                   </p>
                   <button
                     onClick={handleImportDemoBookings}
@@ -981,7 +984,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                     className="mt-3 inline-flex items-center gap-2 h-10 px-5 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white rounded-xl font-extrabold text-[10px] uppercase tracking-wider transition-all shadow-md shadow-orange-500/10 active:scale-95 cursor-pointer"
                   >
                     <RefreshCw size={12} className={isImporting ? "animate-spin" : ""} />
-                    {isImporting ? "Sincronizando..." : "Sincronizar reservas demo"}
+                    {isImporting ? tr("Sincronizando...") : tr("Sincronizar reservas demo")}
                   </button>
                 </div>
               </div>
@@ -995,19 +998,19 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
             <div className="flex items-center gap-2.5">
               <div className="w-1 h-3.5 bg-slate-300 rounded-full" />
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Histórico de{" "}
+                {tr("Histórico de")}{" "}
                 {activeTab === "experience"
-                  ? "Rituais"
+                  ? tr("Rituais")
                   : activeTab === "dish"
-                    ? "Pratos"
+                    ? tr("Pratos")
                     : activeTab === "daily"
-                      ? "Packs Daily"
-                      : "Serviços"}
+                      ? tr("Packs Daily")
+                      : tr("Serviços")}
               </h2>
             </div>
             {completedBookings.length > 0 && (
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-100/60 px-2.5 py-1 rounded-full border border-slate-200/50 self-start sm:self-auto">
-                {completedBookings.length} {completedBookings.length === 1 ? "Serviço" : "Serviços"}
+                {completedBookings.length} {completedBookings.length === 1 ? tr("Serviço") : tr("Serviços")}
               </span>
             )}
           </div>
@@ -1023,7 +1026,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                 type="text"
                 value={historySearch}
                 onChange={(e) => setHistorySearch(e.target.value)}
-                placeholder="Pesquisar por prato ou chef..."
+                placeholder={tr("Pesquisar por prato ou chef...")}
                 className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-xl text-xs font-medium placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all shadow-sm text-slate-800"
               />
               {historySearch && (
@@ -1048,11 +1051,11 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                   onChange={(e: any) => setHistoryStatus(e.target.value)}
                   className="w-full sm:w-auto pl-8 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 focus:outline-none focus:border-orange-500 transition-all appearance-none cursor-pointer shadow-sm"
                 >
-                  <option value="all">Todos os Estados</option>
-                  <option value="completed">Concluídos</option>
-                  <option value="cancelled">Cancelados</option>
-                  <option value="pending_pin">Pendentes PIN</option>
-                  <option value="expired_rejected">Expirados / Rejeitados</option>
+                  <option value="all">{tr("Todos os Estados")}</option>
+                  <option value="completed">{tr("Concluídos")}</option>
+                  <option value="cancelled">{tr("Cancelados")}</option>
+                  <option value="pending_pin">{tr("Pendentes PIN")}</option>
+                  <option value="expired_rejected">{tr("Expirados / Rejeitados")}</option>
                 </select>
                 <span className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-slate-400">
                   <ICONS.ChevronDown size={11} />
@@ -1066,7 +1069,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                 </span>
                 <div className="w-full sm:w-auto min-w-[150px] pl-8 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 shadow-sm flex items-center justify-between min-h-[38px] max-h-[38px] cursor-pointer">
                   <span className="truncate">
-                    {historyDate ? historyDate.split("-").reverse().join("/") : "Filtrar por data"}
+                    {historyDate ? historyDate.split("-").reverse().join("/") : tr("Filtrar por data")}
                   </span>
                 </div>
                 <input
@@ -1084,7 +1087,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                         setHistoryDate("");
                       }}
                       className="hover:text-slate-600 active:scale-90 transition-all p-1"
-                      title="Limpar Data"
+                      title={tr("Limpar Data")}
                     >
                       <ICONS.X size={10} />
                     </button>
@@ -1104,8 +1107,8 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                   onChange={(e: any) => setHistorySort(e.target.value)}
                   className="w-full sm:w-auto pl-8 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 focus:outline-none focus:border-orange-500 transition-all appearance-none cursor-pointer shadow-sm"
                 >
-                  <option value="newest">Mais Recentes Primeiro</option>
-                  <option value="oldest">Mais Antigos Primeiro</option>
+                  <option value="newest">{tr("Mais Recentes Primeiro")}</option>
+                  <option value="oldest">{tr("Mais Antigos Primeiro")}</option>
                 </select>
                 <span className="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-slate-400">
                   <ICONS.ChevronDown size={11} />
@@ -1157,11 +1160,11 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
               ))
             ) : (
               <div className="bg-slate-50/20 p-8 rounded-2xl border border-dashed border-slate-200 text-center space-y-2">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Nenhum serviço encontrado</p>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{tr("Nenhum serviço encontrado")}</p>
                 <p className="text-[10px] text-slate-400 font-medium">
                   {historySearch || historyStatus !== "all" || historyDate
-                    ? "Tente ajustar os seus filtros de pesquisa para encontrar o que procura."
-                    : "Ainda não completou nenhuma experiência nesta categoria."}
+                    ? tr("Tente ajustar os seus filtros de pesquisa para encontrar o que procura.")
+                    : tr("Ainda não completou nenhuma experiência nesta categoria.")}
                 </p>
                 {(historySearch || historyStatus !== "all" || historyDate) && (
                   <button
@@ -1172,7 +1175,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                     }}
                     className="mt-3 h-9 px-4 bg-slate-100 hover:bg-slate-200/80 text-slate-700 rounded-xl font-bold text-[10px] uppercase tracking-wider transition-all"
                   >
-                    Limpar Filtros
+                    {tr("Limpar Filtros")}
                   </button>
                 )}
               </div>
@@ -1193,14 +1196,14 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
             return (
               <div className="flex flex-col sm:flex-row items-center justify-between border-t border-slate-100 pt-6 gap-4">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  A mostrar {Math.min(completedBookings.length, (historyPage - 1) * itemsPerPage + 1)}-{Math.min(completedBookings.length, historyPage * itemsPerPage)} de {completedBookings.length}
+                  {tr("A mostrar")} {Math.min(completedBookings.length, (historyPage - 1) * itemsPerPage + 1)}-{Math.min(completedBookings.length, historyPage * itemsPerPage)} de {completedBookings.length}
                 </div>
                 <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 sm:pb-0 scrollbar-hide">
                   <button
                     disabled={historyPage === 1}
                     onClick={() => setHistoryPage((p) => Math.max(1, p - 1))}
                     className="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:text-slate-800 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed hover:bg-slate-50 active:scale-95 transition-all shrink-0"
-                    title="Página Anterior"
+                    title={tr("Página Anterior")}
                   >
                     <ICONS.ChevronLeft size={14} />
                   </button>
@@ -1251,7 +1254,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                     disabled={historyPage === totalPages}
                     onClick={() => setHistoryPage((p) => Math.min(totalPages, p + 1))}
                     className="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:text-slate-800 disabled:opacity-40 disabled:hover:bg-white disabled:cursor-not-allowed hover:bg-slate-50 active:scale-95 transition-all shrink-0"
-                    title="Próxima Página"
+                    title={tr("Próxima Página")}
                   >
                     <ICONS.ChevronRight size={14} />
                   </button>
@@ -1297,12 +1300,12 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                     </span>
                     {viewingDetail.is_meal_prep && (
                       <span className="px-3 py-1 bg-blue-500 text-white rounded-lg text-[8px] font-black uppercase tracking-widest italic">
-                        Meal Prep
+                        {tr("Meal Prep")}
                       </span>
                     )}
                   </div>
                   <h3 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter text-slate-950 leading-none">
-                    Detalhes do <span className="text-orange-500">Ritual.</span>
+                    {tr("Detalhes do")} <span className="text-orange-500">{tr("Ritual.")}</span>
                   </h3>
                 </div>
                 <button
@@ -1339,7 +1342,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                     </div>
                     <div className="text-left">
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">
-                        Chef
+                        {tr("Chef")}
                       </p>
                       <p className="text-sm font-black text-slate-950 uppercase italic">
                         {viewingDetail.cookName}
@@ -1348,7 +1351,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                         onClick={() => onOpenChat(viewingDetail.cookId)}
                         className="text-[8px] font-black text-orange-500 uppercase tracking-widest hover:underline mt-1"
                       >
-                        Enviar Mensagem
+                        {tr("Enviar Mensagem")}
                       </button>
                     </div>
                   </div>
@@ -1361,10 +1364,10 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                       </div>
                       <div className="text-left">
                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">
-                          Data e Hora
+                          {tr("Data e Hora")}
                         </p>
                         <p className="text-xs font-bold text-slate-950 leading-none">
-                          {viewingDetail.data} às{" "}
+                          {viewingDetail.data} {tr("às")}{" "}
                           {viewingDetail.hora || "--:--"}
                         </p>
                       </div>
@@ -1376,7 +1379,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                       </div>
                       <div className="text-left">
                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">
-                          Morada de Entrega/Serviço
+                          {tr("Morada de Entrega/Serviço")}
                         </p>
                         <p className="text-xs font-bold text-slate-700 leading-normal">
                           {viewingDetail.morada}
@@ -1390,10 +1393,10 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                       </div>
                       <div className="text-left">
                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 italic">
-                          Número de Pessoas
+                          {tr("Número de Pessoas")}
                         </p>
                         <p className="text-xs font-bold text-slate-950 leading-none">
-                          {viewingDetail.numPessoas || 1} Pessoas (PAX)
+                          {viewingDetail.numPessoas || 1} {tr("Pessoas (PAX)")}
                         </p>
                       </div>
                     </div>
@@ -1407,7 +1410,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                     <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full -mr-16 -mt-16 blur-3xl" />
                     <div className="relative z-10">
                       <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2 italic">
-                        Ritual Selecionado
+                        {tr("Ritual Selecionado")}
                       </p>
                       <h4 className="text-xl font-black uppercase italic tracking-tight leading-tight">
                         {viewingDetail.menu_selected}
@@ -1415,7 +1418,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                       <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-end">
                         <div className="space-y-1">
                           <p className="text-[8px] font-black text-white/30 uppercase tracking-widest italic">
-                            Valor Total
+                            {tr("Valor Total")}
                           </p>
                           <p className="text-lg font-black text-white italic">
                             {formatPrice(viewingDetail.valorTotal)}
@@ -1430,7 +1433,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                     <div className="flex items-center gap-2">
                       <ICONS.Utensils size={14} className="text-orange-500" />
                       <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">
-                        Pratos do Ritual
+                        {tr("Pratos do Ritual")}
                       </p>
                     </div>
                     {isLoadingMenu ? (
@@ -1466,7 +1469,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                       <div className="p-5 bg-slate-50 border border-slate-100 rounded-3xl">
                         <p className="text-xs font-medium text-slate-400 italic">
                           {selectedMenu?.descricao ||
-                            "Informação detalhada dos pratos não disponível."}
+                            tr("Informação detalhada dos pratos não disponível.")}
                         </p>
                       </div>
                     )}
@@ -1481,7 +1484,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                           className="text-orange-500"
                         />
                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest italic">
-                          As tuas notas para o Chef
+                          {tr("As tuas notas para o Chef")}
                         </p>
                       </div>
                       <div className="p-5 bg-orange-50/50 border border-orange-100 rounded-3xl">
@@ -1501,15 +1504,15 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                           <div className="flex items-center gap-1.5 text-emerald-600">
                             <ICONS.ShieldCheck size={14} />
                             <span className="text-[8px] font-black uppercase tracking-widest italic leading-none">
-                              PIN de Serviço Secreto
+                              {tr("PIN de Serviço Secreto")}
                             </span>
                           </div>
                           <div className="space-y-1">
                             <h4 className="text-[11px] font-black text-slate-900 uppercase">
-                              Confirmação de Conclusão
+                              {tr("Confirmação de Conclusão")}
                             </h4>
                             <p className="text-[9.5px] font-medium text-slate-500 leading-normal max-w-sm">
-                              Forneça este código de 4 dígitos ao Chef apenas no final do serviço, para certificar que a experiência foi concluída com sucesso.
+                              {tr("Forneça este código de 4 dígitos ao Chef apenas no final do serviço, para certificar que a experiência foi concluída com sucesso.")}
                             </p>
                           </div>
                           <div className="pt-1 flex items-center gap-2">
@@ -1530,7 +1533,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                   className="flex-1 min-h-[58px] py-4 px-6 bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200 rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all active:scale-97 flex items-center justify-center gap-2 shrink-0 shadow-sm cursor-pointer"
                 >
                   <Download size={14} />
-                  Adicionar ao Calendário
+                  {tr("Adicionar ao Calendário")}
                 </button>
                 {viewingDetail.status !== BookingStatus.COMPLETED &&
                   viewingDetail.status !== BookingStatus.CANCELLED &&
@@ -1545,14 +1548,14 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                       }}
                       className="flex-1 min-h-[58px] py-4 px-6 bg-red-50 hover:bg-red-100 text-red-600 rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all active:scale-97 border border-red-200/80 flex items-center justify-center shrink-0 cursor-pointer"
                     >
-                      Cancelar Pedido
+                      {tr("Cancelar Pedido")}
                     </button>
                   )}
                 <button
                   onClick={() => setViewingDetail(null)}
                   className="flex-1 min-h-[58px] py-4 px-6 bg-slate-950 hover:bg-orange-500 text-white rounded-full font-black text-xs md:text-sm uppercase tracking-widest transition-all active:scale-97 shadow-lg flex items-center justify-center shrink-0 border border-white/15 cursor-pointer"
                 >
-                  Fechar Detalhes
+                  {tr("Fechar Detalhes")}
                 </button>
               </div>
             </div>

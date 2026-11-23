@@ -1,11 +1,14 @@
 import React from "react";
 import { ICONS } from "../constants";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface PasswordStrengthProps {
   password?: string;
 }
 
 const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password = "" }) => {
+  useLanguage();
   const currentPassword = password || "";
 
   const rules = [
@@ -66,7 +69,7 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password = "" }) =>
               size={13}
               className={passedRulesCount === 5 ? "text-emerald-500 animate-bounce" : "text-slate-400"}
             />
-            Regras da Palavra-passe
+            {tr("Regras da Palavra-passe")}
           </span>
           <span
             className={`text-[8px] font-black uppercase tracking-widest transition-all px-2 py-0.5 rounded-full ${
@@ -78,9 +81,9 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password = "" }) =>
             }`}
           >
             {currentPassword.length === 0
-              ? "POR PREENCHER (0/5)"
+              ? tr("POR PREENCHER (0/5)")
               : passedRulesCount === 5
-              ? "VÁLIDA & CONCLUÍDA (5/5)"
+              ? tr("VÁLIDA & CONCLUÍDA (5/5)")
               : `INCOMPLETA (${passedRulesCount}/5)`}
           </span>
         </div>
@@ -134,12 +137,12 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password = "" }) =>
                     isMet ? "text-emerald-950 font-black" : "text-slate-400 font-bold"
                   }`}
                 >
-                  {rule.label}
+                  {tr(rule.label as any) as any}
                 </span>
               </div>
               {isMet && (
                 <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600 bg-emerald-100/90 px-1.5 py-0.5 rounded-md shrink-0 ml-1">
-                  Concluída
+                  {tr("Concluída")}
                 </span>
               )}
             </div>
@@ -150,7 +153,7 @@ const PasswordStrength: React.FC<PasswordStrengthProps> = ({ password = "" }) =>
       {passedRulesCount < 5 && currentPassword.length > 0 && (
         <p className="text-[9px] font-bold text-amber-600/90 px-1 flex items-center gap-1">
           <ICONS.Info size={11} className="shrink-0" />
-          Conclua todas as 5 regras para desbloquear o próximo passo.
+          {tr("Conclua todas as 5 regras para desbloquear o próximo passo.")}
         </p>
       )}
     </div>

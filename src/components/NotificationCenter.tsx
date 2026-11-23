@@ -14,6 +14,8 @@ import {
   Trash2 
 } from "lucide-react";
 
+import { tr, trLocale } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface Notification {
   id: string;
   user_id: string;
@@ -36,6 +38,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
   onClose,
   onNotify
 }) => {
+  useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [activeFilter, setActiveFilter] = useState<"all" | "unread" | "info" | "warning" | "success">("all");
   const [isLoading, setIsLoading] = useState(true);
@@ -134,7 +137,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     try {
       await supabaseService.deleteNotification(id);
       setNotifications((prev) => prev.filter((n) => n.id !== id));
-      if (onNotify) onNotify("Notificação eliminada.", "info");
+      if (onNotify) onNotify(tr("Notificação eliminada."), "info");
     } catch (err) {
       console.warn(err);
     }
@@ -145,7 +148,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     try {
       await supabaseService.markAllNotificationsAsRead(user.id);
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-      if (onNotify) onNotify("Todas as notificações marcadas como lidas.", "success");
+      if (onNotify) onNotify(tr("Todas as notificações marcadas como lidas."), "success");
     } catch (err) {
       console.warn(err);
     }
@@ -153,11 +156,11 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
 
   const handleClearAll = async () => {
     if (notifications.length === 0) return;
-    if (window.confirm("Tem a certeza que deseja eliminar todo o histórico de alertas?")) {
+    if (window.confirm(tr("Tem a certeza que deseja eliminar todo o histórico de alertas?"))) {
       try {
         await supabaseService.clearAllNotifications(user.id);
         setNotifications([]);
-        if (onNotify) onNotify("Histórico de alertas limpo.", "success");
+        if (onNotify) onNotify(tr("Histórico de alertas limpo."), "success");
       } catch (err) {
         console.warn(err);
       }
@@ -211,7 +214,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     if (diffHours < 24) return `Há ${diffHours} h`;
     if (diffDays === 1) return "Ontem";
     if (diffDays < 7) return `Há ${diffDays} dias`;
-    return d.toLocaleDateString("pt-PT", { day: "2-digit", month: "short" });
+    return d.toLocaleDateString(trLocale(), { day: "2-digit", month: "short" });
   };
 
   if (!isOpen) return null;
@@ -245,10 +248,10 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
               </div>
               <div>
                 <h3 className="text-sm font-black uppercase tracking-wider text-slate-900">
-                  Alertas do Sistema
+                  {tr("Alertas do Sistema")}
                 </h3>
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  Centro de Notificações
+                  {tr("Centro de Notificações")}
                 </p>
               </div>
             </div>
@@ -263,7 +266,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
           {/* Controls bar */}
           {notifications.length > 0 && (
             <div className="px-6 py-2.5 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-              <span>{notifications.length} Alertas no total</span>
+              <span>{notifications.length} {tr("Alertas no total")}</span>
               <div className="flex items-center gap-4">
                 {unreadCount > 0 && (
                   <button
@@ -271,7 +274,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                     className="text-orange-500 hover:text-orange-600 transition-colors cursor-pointer flex items-center gap-1"
                   >
                     <Check size={12} strokeWidth={3} />
-                    Ler tudo
+                    {tr("Ler tudo")}
                   </button>
                 )}
                 <button
@@ -279,7 +282,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                   className="text-slate-400 hover:text-red-500 transition-colors cursor-pointer flex items-center gap-1"
                 >
                   <Trash2 size={12} />
-                  Limpar histórico
+                  {tr("Limpar histórico")}
                 </button>
               </div>
             </div>
@@ -303,7 +306,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                     : "bg-slate-50 border-slate-100 text-slate-500 hover:bg-slate-100"
                   }`}
               >
-                {f.label}
+                {tr(f.label as any) as any}
               </button>
             ))}
           </div>
@@ -313,7 +316,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
             {isLoading ? (
               <div className="h-48 flex flex-col items-center justify-center text-slate-400 space-y-2">
                 <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">A carregar alertas...</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider">{tr("A carregar alertas...")}</span>
               </div>
             ) : filteredNotifs.length === 0 ? (
               <div className="h-64 flex flex-col items-center justify-center text-center space-y-4">
@@ -322,10 +325,10 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 </div>
                 <div>
                   <h4 className="text-xs font-black uppercase text-slate-900 tracking-wider">
-                    Nenhum alerta encontrado
+                    {tr("Nenhum alerta encontrado")}
                   </h4>
                   <p className="text-[10px] font-medium text-slate-400 mt-1 max-w-[200px] mx-auto leading-relaxed">
-                    Não existem notificações correspondentes a este filtro no seu histórico.
+                    {tr("Não existem notificações correspondentes a este filtro no seu histórico.")}
                   </p>
                 </div>
               </div>
@@ -365,14 +368,14 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                             onClick={() => handleMarkAsRead(notif.id)}
                             className="text-[9px] font-black text-orange-500 uppercase tracking-widest hover:text-orange-600 cursor-pointer"
                           >
-                            Marcar como lida
+                            {tr("Marcar como lida")}
                           </button>
                         )}
                         <button
                           onClick={() => handleDelete(notif.id)}
                           className="text-[9px] font-black text-slate-400 hover:text-red-500 uppercase tracking-widest cursor-pointer ml-auto"
                         >
-                          Eliminar
+                          {tr("Eliminar")}
                         </button>
                       </div>
                     </div>

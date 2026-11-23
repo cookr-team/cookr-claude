@@ -1,7 +1,10 @@
 import React from "react";
 import { ICONS } from "../constants";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+  useLanguage();
   return (
     <div className="min-h-dvh bg-[#fdfdfb] text-[#1a1a1a] font-serif selection:bg-orange-100 animate-in fade-in duration-1000">
       {/* Header */}
@@ -15,12 +18,12 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               <ICONS.ArrowLeft size={18} />
             </div>
             <span className="text-[10px] font-black uppercase tracking-[0.2em] font-sans">
-              Voltar
+              {tr("Voltar")}
             </span>
           </button>
           <div className="flex flex-col items-center text-center">
             <h1 className="text-xs font-black uppercase tracking-[0.4em] font-sans text-slate-950">
-              Privacidade
+              {tr("Privacidade")}
             </h1>
             <div className="h-px w-8 bg-orange-500 mt-2" />
           </div>
@@ -33,15 +36,15 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           {/* Hero Section */}
           <div className="text-center mb-24 space-y-6">
             <h2 className="text-5xl md:text-7xl font-light tracking-tight leading-none text-slate-950">
-              Política de <br />
-              <span className="italic font-normal">Privacidade.</span>
+              {tr("Política de")} <br />
+              <span className="italic font-normal">{tr("Privacidade.")}</span>
             </h2>
             <div className="flex flex-col items-center gap-4">
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-600 font-sans">
-                Cookr · Elite Gastronómica
+                {tr("Cookr · Elite Gastronómica")}
               </p>
               <p className="text-xs text-slate-400 font-sans uppercase tracking-widest">
-                Última atualização: 19 de Março de 2026
+                {tr("Última atualização: 19 de Março de 2026")}
               </p>
             </div>
           </div>
@@ -50,10 +53,7 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <div className="space-y-20">
             <div className="prose prose-slate max-w-none">
               <p className="text-xl md:text-2xl leading-relaxed text-slate-700 font-light italic text-center mb-20">
-                "Na Cookr, a privacidade não é apenas uma obrigação legal; é um
-                pilar da nossa relação de exclusividade consigo. Estamos
-                empenhados em proteger a integridade e a confidencialidade dos
-                dados dos nossos Membros e Chefs da Elite Gastronómica."
+                {tr("\"Na Cookr, a privacidade não é apenas uma obrigação legal; é um pilar da nossa relação de exclusividade consigo. Estamos empenhados em proteger a integridade e a confidencialidade dos dados dos nossos Membros e Chefs da Elite Gastronómica.\"")}
               </p>
 
               <div className="space-y-16">
@@ -64,14 +64,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </span>
                     <div className="space-y-4 pt-2">
                       <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950">
-                        Compromisso de Exclusividade
+                        {tr("Compromisso de Exclusividade")}
                       </h3>
                       <p className="text-lg leading-relaxed text-slate-600 font-light">
-                        Ao utilizar a plataforma Cookr, confia-nos informações
-                        pessoais. Em troca, comprometemo-nos a utilizar
-                        tecnologias de segurança de última geração e processos
-                        rigorosos para garantir que a sua identidade e
-                        preferências permanecem privadas.
+                        {tr("Ao utilizar a plataforma Cookr, confia-nos informações pessoais. Em troca, comprometemo-nos a utilizar tecnologias de segurança de última geração e processos rigorosos para garantir que a sua identidade e preferências permanecem privadas.")}
                       </p>
                     </div>
                   </div>
@@ -84,23 +80,20 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </span>
                     <div className="space-y-4 pt-2">
                       <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950">
-                        Dados que Recolhemos
+                        {tr("Dados que Recolhemos")}
                       </h3>
                       <p className="text-lg leading-relaxed text-slate-600 font-light">
-                        Para proporcionar uma experiência gastronómica
-                        personalizada, recolhemos os seguintes dados:
+                        {tr("Para proporcionar uma experiência gastronómica personalizada, recolhemos os seguintes dados:")}
                       </p>
                       <ul className="space-y-6 mt-6">
                         <li className="flex gap-4">
                           <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2.5 shrink-0" />
                           <div>
                             <strong className="block text-slate-950 font-sans uppercase text-xs tracking-widest mb-1">
-                              Identidade e Contacto
+                              {tr("Identidade e Contacto")}
                             </strong>
                             <span className="text-slate-600 font-light">
-                              Nome completo, endereço de email e número de
-                              telefone (através do sistema seguro Supabase
-                              Auth).
+                              {tr("Nome completo, endereço de email e número de telefone (através do sistema seguro Supabase Auth).")}
                             </span>
                           </div>
                         </li>
@@ -108,12 +101,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2.5 shrink-0" />
                           <div>
                             <strong className="block text-slate-950 font-sans uppercase text-xs tracking-widest mb-1">
-                              Perfil de Utilizador
+                              {tr("Perfil de Utilizador")}
                             </strong>
                             <span className="text-slate-600 font-light">
-                              Preferências culinárias, restrições alimentares,
-                              moradas de prestação de serviço e histórico de
-                              reservas.
+                              {tr("Preferências culinárias, restrições alimentares, moradas de prestação de serviço e histórico de reservas.")}
                             </span>
                           </div>
                         </li>
@@ -121,11 +112,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2.5 shrink-0" />
                           <div>
                             <strong className="block text-slate-950 font-sans uppercase text-xs tracking-widest mb-1">
-                              Dados de Chef
+                              {tr("Dados de Chef")}
                             </strong>
                             <span className="text-slate-600 font-light">
-                              Portefólio de pratos, certificações de higiene e
-                              segurança alimentar, e avaliações da comunidade.
+                              {tr("Portefólio de pratos, certificações de higiene e segurança alimentar, e avaliações da comunidade.")}
                             </span>
                           </div>
                         </li>
@@ -133,13 +123,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2.5 shrink-0" />
                           <div>
                             <strong className="block text-slate-950 font-sans uppercase text-xs tracking-widest mb-1">
-                              Informação de Pagamento
+                              {tr("Informação de Pagamento")}
                             </strong>
                             <span className="text-slate-600 font-light">
-                              Todos os dados financeiros são processados por
-                              parceiros de pagamento certificados (PCI-DSS),
-                              garantindo que a Cookr nunca armazena os seus
-                              dados de cartão de crédito.
+                              {tr("Todos os dados financeiros são processados por parceiros de pagamento certificados (PCI-DSS), garantindo que a Cookr nunca armazena os seus dados de cartão de crédito.")}
                             </span>
                           </div>
                         </li>
@@ -155,30 +142,28 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </span>
                     <div className="space-y-4 pt-2">
                       <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950">
-                        Finalidade do Tratamento
+                        {tr("Finalidade do Tratamento")}
                       </h3>
                       <p className="text-lg leading-relaxed text-slate-600 font-light">
-                        Os seus dados são utilizados exclusivamente para:
+                        {tr("Os seus dados são utilizados exclusivamente para:")}
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
                         <div className="p-8 bg-white border border-slate-100 rounded-3xl space-y-3">
                           <ICONS.Link size={20} className="text-orange-500" />
                           <h4 className="font-sans uppercase text-[10px] font-black tracking-widest">
-                            Conectividade
+                            {tr("Conectividade")}
                           </h4>
                           <p className="text-sm text-slate-500 font-light">
-                            Facilitar o agendamento e a comunicação direta entre
-                            Clientes e Chefs.
+                            {tr("Facilitar o agendamento e a comunicação direta entre Clientes e Chefs.")}
                           </p>
                         </div>
                         <div className="p-8 bg-white border border-slate-100 rounded-3xl space-y-3">
                           <ICONS.Star size={20} className="text-orange-500" />
                           <h4 className="font-sans uppercase text-[10px] font-black tracking-widest">
-                            Personalização
+                            {tr("Personalização")}
                           </h4>
                           <p className="text-sm text-slate-500 font-light">
-                            Recomendar menus e experiências baseadas no seu
-                            paladar único.
+                            {tr("Recomendar menus e experiências baseadas no seu paladar único.")}
                           </p>
                         </div>
                         <div className="p-8 bg-white border border-slate-100 rounded-3xl space-y-3">
@@ -187,11 +172,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                             className="text-orange-500"
                           />
                           <h4 className="font-sans uppercase text-[10px] font-black tracking-widest">
-                            Segurança
+                            {tr("Segurança")}
                           </h4>
                           <p className="text-sm text-slate-500 font-light">
-                            Validar a identidade dos membros e prevenir
-                            atividades fraudulentas.
+                            {tr("Validar a identidade dos membros e prevenir atividades fraudulentas.")}
                           </p>
                         </div>
                         <div className="p-8 bg-white border border-slate-100 rounded-3xl space-y-3">
@@ -200,11 +184,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                             className="text-orange-500"
                           />
                           <h4 className="font-sans uppercase text-[10px] font-black tracking-widest">
-                            Melhoria Contínua
+                            {tr("Melhoria Contínua")}
                           </h4>
                           <p className="text-sm text-slate-500 font-light">
-                            Analisar tendências de alta gastronomia para evoluir
-                            os nossos serviços.
+                            {tr("Analisar tendências de alta gastronomia para evoluir os nossos serviços.")}
                           </p>
                         </div>
                       </div>
@@ -219,11 +202,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </span>
                     <div className="space-y-4 pt-2">
                       <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950">
-                        Partilha de Informação
+                        {tr("Partilha de Informação")}
                       </h3>
                       <p className="text-lg leading-relaxed text-slate-600 font-light">
-                        A Cookr nunca vende os seus dados a terceiros. A
-                        partilha de informação ocorre apenas:
+                        {tr("A Cookr nunca vende os seus dados a terceiros. A partilha de informação ocorre apenas:")}
                       </p>
                       <div className="space-y-4 mt-4">
                         <div className="flex gap-4 p-6 bg-slate-50 rounded-2xl">
@@ -233,11 +215,9 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           />
                           <p className="text-sm text-slate-600 font-light">
                             <strong className="text-slate-950">
-                              Entre as Partes:
+                              {tr("Entre as Partes:")}
                             </strong>{" "}
-                            Partilhamos os dados necessários (como morada e
-                            restrições alimentares) com o Chef escolhido para a
-                            execução do serviço.
+                            {tr("Partilhamos os dados necessários (como morada e restrições alimentares) com o Chef escolhido para a execução do serviço.")}
                           </p>
                         </div>
                         <div className="flex gap-4 p-6 bg-slate-50 rounded-2xl">
@@ -247,11 +227,9 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                           />
                           <p className="text-sm text-slate-600 font-light">
                             <strong className="text-slate-950">
-                              Obrigações Legais:
+                              {tr("Obrigações Legais:")}
                             </strong>{" "}
-                            Quando exigido pelas autoridades competentes sob
-                            estrita conformidade com a lei portuguesa e europeia
-                            (RGPD).
+                            {tr("Quando exigido pelas autoridades competentes sob estrita conformidade com a lei portuguesa e europeia (RGPD).")}
                           </p>
                         </div>
                       </div>
@@ -266,14 +244,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </span>
                     <div className="space-y-4 pt-2">
                       <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950">
-                        Segurança e Retenção
+                        {tr("Segurança e Retenção")}
                       </h3>
                       <p className="text-lg leading-relaxed text-slate-600 font-light">
-                        A nossa infraestrutura utiliza base de dados encriptada
-                        e protocolos de comunicação seguros (SSL/TLS). Os dados
-                        são mantidos apenas enquanto a sua conta estiver ativa
-                        ou conforme necessário para cumprir obrigações fiscais e
-                        legais.
+                        {tr("A nossa infraestrutura utiliza base de dados encriptada e protocolos de comunicação seguros (SSL/TLS). Os dados são mantidos apenas enquanto a sua conta estiver ativa ou conforme necessário para cumprir obrigações fiscais e legais.")}
                       </p>
                     </div>
                   </div>
@@ -286,10 +260,10 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </span>
                     <div className="space-y-4 pt-2">
                       <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950">
-                        Os Seus Direitos
+                        {tr("Os Seus Direitos")}
                       </h3>
                       <p className="text-lg leading-relaxed text-slate-600 font-light">
-                        Como membro da Cookr, tem o direito soberano de:
+                        {tr("Como membro da Cookr, tem o direito soberano de:")}
                       </p>
                       <div className="grid grid-cols-1 gap-4 mt-6">
                         {[
@@ -321,18 +295,16 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                     </span>
                     <div className="space-y-4 pt-2">
                       <h3 className="text-xl font-bold uppercase tracking-widest font-sans text-slate-950">
-                        Contacto
+                        {tr("Contacto")}
                       </h3>
                       <p className="text-lg leading-relaxed text-slate-600 font-light">
-                        Para qualquer questão relacionada com a sua privacidade,
-                        a nossa equipa de Concierge está disponível através do
-                        email:
+                        {tr("Para qualquer questão relacionada com a sua privacidade, a nossa equipa de Concierge está disponível através do email:")}
                       </p>
                       <a
                         href="mailto:privacy@cookr.app"
                         className="inline-block text-2xl text-orange-500 hover:text-orange-600 transition-colors border-b border-orange-200 pb-1"
                       >
-                        privacy@cookr.app
+                        {tr("privacy@cookr.app")}
                       </a>
                     </div>
                   </div>
@@ -348,14 +320,14 @@ const PrivacyPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <ICONS.ChefHat size={24} />
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-950">
-                Luxury Cookr
+                {tr("Luxury Cookr")}
               </p>
               <p className="text-xs text-slate-400 uppercase tracking-widest">
-                Experiências Gastronómicas de Elite
+                {tr("Experiências Gastronómicas de Elite")}
               </p>
             </div>
             <p className="text-[10px] text-slate-300 uppercase tracking-widest">
-              © 2026 LUXURY COOKR · Todos os direitos reservados
+              {tr("© 2026 LUXURY COOKR · Todos os direitos reservados")}
             </p>
           </footer>
         </div>

@@ -6,6 +6,8 @@ import PasswordStrength from "./PasswordStrength";
 import { FileText, Check, ShieldCheck } from "lucide-react";
 import { formatPostalCode } from "../utils/formatters";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface CookOnboardingProps {
   onComplete: (data: any) => void;
   onBack: () => void;
@@ -20,6 +22,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
   onLogin,
   onJoin,
 }) => {
+  useLanguage();
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -115,7 +118,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
       }
     } else {
       alert(
-        "Por favor, preencha todos os campos obrigatórios e garanta uma palavra-passe segura.",
+        tr("Por favor, preencha todos os campos obrigatórios e garanta uma palavra-passe segura."),
       );
     }
   };
@@ -182,11 +185,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
               className="space-y-4"
             >
               <h2 className="text-4xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                Estamos a criar a sua <br />
-                conta de <span className="text-orange-500">Chef Premium.</span>
+                {tr("Estamos a criar a sua")} <br />
+                {tr("conta de")} <span className="text-orange-500">{tr("Chef Premium.")}</span>
               </h2>
               <p className="text-xs font-medium text-slate-400 italic tracking-widest uppercase">
-                A preparar o seu perfil profissional exclusivo...
+                {tr("A preparar o seu perfil profissional exclusivo...")}
               </p>
             </motion.div>
 
@@ -217,7 +220,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
         >
           <Logo size="sm" />
           <span className="hidden sm:inline-block text-[9px] font-black uppercase tracking-widest text-slate-400 bg-slate-50 px-3 py-1 rounded-full">
-            Passo {step} de 5
+            {tr("Passo")} {step} {tr("de 5")}
           </span>
         </button>
         <div className="flex items-center gap-6">
@@ -225,13 +228,13 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
             onClick={onLogin}
             className="text-[10px] font-black uppercase tracking-widest text-slate-950 hover:text-orange-500 transition-colors"
           >
-            Entrar
+            {tr("Entrar")}
           </button>
           <button
             onClick={onJoin}
             className="px-6 py-2.5 bg-slate-950 text-white rounded-full font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-orange-500 transition-all"
           >
-            Aderir
+            {tr("Aderir")}
           </button>
         </div>
       </nav>
@@ -267,7 +270,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
               <div
                 className={`absolute -bottom-5 text-[7px] font-black uppercase tracking-widest transition-opacity duration-300 whitespace-nowrap ${step === s.id ? "opacity-100 text-orange-500 font-black" : "opacity-0 text-slate-300"}`}
               >
-                {s.label}
+                {tr(s.label as any) as any}
               </div>
             </button>
           ))}
@@ -304,10 +307,10 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
 
                   <div className="space-y-2">
                     <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                      Identidade <span className="text-orange-500">Chef.</span>
+                      {tr("Identidade")} <span className="text-orange-500">{tr("Chef.")}</span>
                     </h2>
                     <p className="text-[11px] font-medium text-slate-400 italic">
-                      Como os clientes verão a sua marca.
+                      {tr("Como os clientes verão a sua marca.")}
                     </p>
                   </div>
 
@@ -315,11 +318,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="group relative text-left space-y-1.5">
                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                          Nome Profissional
+                          {tr("Nome Profissional")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder="Ex: Chef Silva"
+                          placeholder={tr("Ex: Chef Silva")}
                           value={formData.nome}
                           onChange={(e) =>
                             setFormData({ ...formData, nome: e.target.value })
@@ -328,11 +331,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       </div>
                       <div className="group relative text-left space-y-1.5">
                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                          Telemóvel
+                          {tr("Telemóvel")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder="Telemóvel"
+                          placeholder={tr("Telemóvel")}
                           value={formData.telefone}
                           onChange={(e) =>
                             setFormData({
@@ -345,11 +348,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                     </div>
                     <div className="text-left space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Email
+                        {tr("Email")}
                       </label>
                       <input
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                        placeholder="Email"
+                        placeholder={tr("Email")}
                         value={formData.email}
                         onChange={(e) =>
                           setFormData({ ...formData, email: e.target.value })
@@ -358,12 +361,12 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                     </div>
                     <div className="relative text-left space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Password de Acesso
+                        {tr("Password de Acesso")}
                       </label>
                       <input
                         type={showPassword ? "text" : "password"}
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                        placeholder="Mínimo 8 caracteres"
+                        placeholder={tr("Mínimo 8 caracteres")}
                         value={formData.password}
                         onChange={(e) =>
                           setFormData({ ...formData, password: e.target.value })
@@ -396,7 +399,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                     disabled={!isStepValid(1)}
                     className="w-full h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none transition-all active:scale-[0.98] cursor-pointer"
                   >
-                    Seguinte: Métricas
+                    {tr("Seguinte: Métricas")}
                   </button>
                 </motion.div>
               )}
@@ -411,11 +414,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                 >
                   <div className="space-y-2">
                     <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                      Métricas de{" "}
-                      <span className="text-orange-500">Serviço.</span>
+                      {tr("Métricas de")}{" "}
+                      <span className="text-orange-500">{tr("Serviço.")}</span>
                     </h2>
                     <p className="text-[11px] font-medium text-slate-400 italic">
-                      O seu rigor operacional e capacidade logística.
+                      {tr("O seu rigor operacional e capacidade logística.")}
                     </p>
                   </div>
 
@@ -423,7 +426,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                          Anos de Experiência
+                          {tr("Anos de Experiência")}
                         </label>
                         <input
                           type="number"
@@ -440,11 +443,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                          NIF (Fiscal)
+                          {tr("NIF (Fiscal)")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder="NIF"
+                          placeholder={tr("NIF")}
                           value={formData.nif}
                           onChange={(e) =>
                             setFormData({ ...formData, nif: e.target.value })
@@ -453,11 +456,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                          Nome Fiscal
+                          {tr("Nome Fiscal")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder="Nome para faturas"
+                          placeholder={tr("Nome para faturas")}
                           value={formData.fiscal_name}
                           onChange={(e) =>
                             setFormData({
@@ -471,16 +474,16 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
 
                     <div className="space-y-3 pt-3 border-t border-slate-100">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Morada de Faturação Premium
+                        {tr("Morada de Faturação Premium")}
                       </label>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div className="md:col-span-2 space-y-1.5">
                           <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                            Rua / Avenida
+                            {tr("Rua / Avenida")}
                           </label>
                           <input
                             className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                            placeholder="Nome da rua"
+                            placeholder={tr("Nome da rua")}
                             value={formData.billing_street}
                             onChange={(e) =>
                               setFormData({
@@ -492,11 +495,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                            Nº / Porta
+                            {tr("Nº / Porta")}
                           </label>
                           <input
                             className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                            placeholder="Ex: 12A"
+                            placeholder={tr("Ex: 12A")}
                             value={formData.billing_number}
                             onChange={(e) =>
                               setFormData({
@@ -511,11 +514,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div className="space-y-1.5">
                           <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                            Andar / Apart.
+                            {tr("Andar / Apart.")}
                           </label>
                           <input
                             className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                            placeholder="Opcional"
+                            placeholder={tr("Opcional")}
                             value={formData.billing_floor}
                             onChange={(e) =>
                               setFormData({
@@ -527,7 +530,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                            Cód. Postal
+                            {tr("Cód. Postal")}
                           </label>
                           <input
                             className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
@@ -544,7 +547,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                         </div>
                         <div className="space-y-1.5">
                           <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                            Cidade
+                            {tr("Cidade")}
                           </label>
                           <div className="relative">
                             <select
@@ -557,7 +560,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                                 })
                               }
                             >
-                              <option value="">Selecionar</option>
+                              <option value="">{tr("Selecionar")}</option>
                               {PORTUGAL_CITIES.map((city) => (
                                 <option key={city} value={city}>
                                   {city}
@@ -573,11 +576,11 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
 
                       <div className="space-y-1.5">
                         <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
-                          País
+                          {tr("País")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                          placeholder="Portugal"
+                          placeholder={tr("Portugal")}
                           value={formData.billing_country}
                           onChange={(e) =>
                             setFormData({
@@ -600,7 +603,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                                 Morada de Serviço & Faturação
                               </p>
                               <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
-                                Deseja que os dados de faturação sejam os mesmos da sua morada de cozinha/serviço?
+                                {tr("Deseja que os dados de faturação sejam os mesmos da sua morada de cozinha/serviço?")}
                               </p>
                             </div>
                           </div>
@@ -642,8 +645,8 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                             </div>
                             <span>
                               {formData.use_as_main_address
-                                ? "Sim, Usar Mesmos Dados"
-                                : "Definir Separadamente"}
+                                ? tr("Sim, Usar Mesmos Dados")
+                                : tr("Definir Separadamente")}
                             </span>
                           </button>
                         </div>
@@ -652,7 +655,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
 
                     <div className="space-y-1.5 pt-2">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Cidade Base
+                        {tr("Cidade Base")}
                       </label>
                       <div className="relative">
                         <select
@@ -676,7 +679,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
 
                     <div className="space-y-2 pt-2">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Diferenciais Operativos
+                        {tr("Diferenciais Operativos")}
                       </label>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {[
@@ -720,7 +723,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                               }`}
                             >
                               {item.icon}
-                              {item.label}
+                              {tr(item.label as any) as any}
                             </button>
                           );
                         })}
@@ -733,7 +736,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       onClick={() => setStep(1)}
                       className="h-13 px-8 bg-white border border-slate-100 text-slate-400 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                     >
-                      Voltar
+                      {tr("Voltar")}
                     </button>
                     <button
                       onClick={() => {
@@ -750,7 +753,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       disabled={!isStepValid(2)}
                       className="flex-1 h-13 bg-orange-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-slate-950 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none transition-all cursor-pointer"
                     >
-                      Equipamento Profissional
+                      {tr("Equipamento Profissional")}
                     </button>
                   </div>
                 </motion.div>
@@ -766,10 +769,10 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                 >
                   <div className="space-y-2">
                     <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                      Equipamento <span className="text-orange-500">Profissional.</span>
+                      {tr("Equipamento")} <span className="text-orange-500">{tr("Profissional.")}</span>
                     </h2>
                     <p className="text-[11px] font-medium text-slate-400 italic">
-                      O que traz consigo para garantir a excelência.
+                      {tr("O que traz consigo para garantir a excelência.")}
                     </p>
                   </div>
 
@@ -835,7 +838,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                             >
                               {item.icon}
                             </div>
-                            <span className="truncate">{item.label}</span>
+                            <span className="truncate">{tr(item.label as any) as any}</span>
                           </button>
                         );
                       })}
@@ -847,13 +850,13 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       onClick={() => setStep(2)}
                       className="h-13 px-8 bg-white border border-slate-100 text-slate-400 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                     >
-                      Voltar
+                      {tr("Voltar")}
                     </button>
                     <button
                       onClick={() => setStep(4)}
                       className="flex-1 h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 transition-all cursor-pointer"
                     >
-                      Identidade e Percurso
+                      {tr("Identidade e Percurso")}
                     </button>
                   </div>
                 </motion.div>
@@ -869,21 +872,21 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                 >
                   <div className="space-y-2">
                     <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                      História & <span className="text-orange-500">Percurso.</span>
+                      História & <span className="text-orange-500">{tr("Percurso.")}</span>
                     </h2>
                     <p className="text-[11px] font-medium text-slate-400 italic">
-                      Apresente-se à comunidade Cookr.
+                      {tr("Apresente-se à comunidade Cookr.")}
                     </p>
                   </div>
 
                   <div className="space-y-4 text-left">
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Biografia Curta
+                        {tr("Biografia Curta")}
                       </label>
                       <textarea
                         className="w-full h-28 p-4 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all resize-none placeholder:text-slate-300"
-                        placeholder="Conte o seu percurso, as suas influências..."
+                        placeholder={tr("Conte o seu percurso, as suas influências...")}
                         value={formData.biografia}
                         onChange={(e) =>
                           setFormData({
@@ -896,7 +899,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
 
                     <div className="space-y-2">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Especialidades (Até 4)
+                        {tr("Especialidades (Até 4)")}
                       </label>
                       <div className="flex flex-wrap gap-1.5">
                         {[
@@ -942,7 +945,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
 
                     <div className="space-y-2">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                        Idiomas de Serviço
+                        {tr("Idiomas de Serviço")}
                       </label>
                       <div className="flex flex-wrap gap-1.5">
                         {[
@@ -969,7 +972,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                                   : "bg-white text-slate-400 border-slate-100 hover:border-slate-200 hover:bg-slate-50"
                               }`}
                             >
-                              {lang.label}
+                              {tr(lang.label as any) as any}
                             </button>
                           );
                         })}
@@ -982,7 +985,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       onClick={() => setStep(3)}
                       className="h-13 px-8 bg-white border border-slate-100 text-slate-400 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                     >
-                      Voltar
+                      {tr("Voltar")}
                     </button>
                     <button
                       onClick={() => setStep(5)}
@@ -1009,10 +1012,10 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                     </div>
                     <div className="space-y-1">
                       <h2 className="text-3xl font-black text-slate-950 uppercase italic tracking-tighter leading-none">
-                        Validação & <span className="text-orange-500">Cozinha Base.</span>
+                        Validação & <span className="text-orange-500">{tr("Cozinha Base.")}</span>
                       </h2>
                       <p className="text-[11px] font-medium text-slate-400 italic">
-                        O rigor administrativo obrigatório da Cookr.
+                        {tr("O rigor administrativo obrigatório da Cookr.")}
                       </p>
                     </div>
                   </div>
@@ -1028,10 +1031,10 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                           </div>
                           <div>
                             <p className="text-[10px] font-black uppercase tracking-wider text-slate-900">
-                              Dados de Faturação
+                              {tr("Dados de Faturação")}
                             </p>
                             <p className="text-[9px] text-slate-500 font-medium leading-relaxed">
-                              Deseja que os dados de faturação sejam os mesmos desta morada?
+                              {tr("Deseja que os dados de faturação sejam os mesmos desta morada?")}
                             </p>
                           </div>
                         </div>
@@ -1072,19 +1075,19 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                           <Check size={12} strokeWidth={formData.use_as_main_address ? 3 : 2} />
                           <span>
                             {formData.use_as_main_address
-                              ? "Mesmos Dados de Faturação"
-                              : "Copiar Dados de Faturação"}
+                              ? tr("Mesmos Dados de Faturação")
+                              : tr("Copiar Dados de Faturação")}
                           </span>
                         </button>
                       </div>
 
                       <div className="space-y-1">
                         <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
-                          Morada Principal da Cozinha
+                          {tr("Morada Principal da Cozinha")}
                         </label>
                         <input
                           className="w-full h-12 px-5 bg-white rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300 shadow-sm"
-                          placeholder="Rua e Número"
+                          placeholder={tr("Rua e Número")}
                           value={formData.morada}
                           onChange={(e) =>
                             setFormData({ ...formData, morada: e.target.value })
@@ -1094,7 +1097,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <input
                           className="w-full h-12 px-5 bg-white rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300 shadow-sm"
-                          placeholder="Cód. Postal"
+                          placeholder={tr("Cód. Postal")}
                           value={formData.zip_code}
                           maxLength={8}
                           onChange={(e) =>
@@ -1132,15 +1135,15 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                     <div className="p-4 bg-slate-50/50 border border-slate-100/50 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 group hover:bg-slate-100/50 transition-colors">
                       <div className="space-y-0.5">
                         <h4 className="text-[10px] font-black text-slate-950 uppercase tracking-widest">
-                          Certificação HACCP
+                          {tr("Certificação HACCP")}
                         </h4>
                         <p className="text-[9px] text-slate-400 italic">
-                          Upload do certificado de higiene e segurança.
+                          {tr("Upload do certificado de higiene e segurança.")}
                         </p>
                       </div>
                       <button className="px-5 py-2.5 bg-white rounded-lg border border-slate-100 flex items-center gap-2 font-black text-[9px] uppercase tracking-widest text-slate-950 hover:border-orange-500 hover:text-orange-500 transition-all shadow-sm cursor-pointer">
                         <ICONS.Camera size={14} />
-                        Upload
+                        {tr("Upload")}
                       </button>
                     </div>
 
@@ -1170,7 +1173,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                         )}
                       </div>
                       <span className="text-[10px] font-black text-slate-950 uppercase tracking-widest">
-                        Aceito os Termos de Curadoria Profissional Cookr
+                        {tr("Aceito os Termos de Curadoria Profissional Cookr")}
                       </span>
                     </button>
                   </div>
@@ -1180,7 +1183,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       onClick={() => setStep(4)}
                       className="h-13 px-8 bg-white border border-slate-100 text-slate-400 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                     >
-                      Voltar
+                      {tr("Voltar")}
                     </button>
                     <button
                       onClick={() => setShowConfirmModal(true)}
@@ -1194,10 +1197,10 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                       {isSubmitting ? (
                         <>
                           <ICONS.RefreshCw size={14} className="animate-spin" />
-                          A Processar...
+                          {tr("A Processar...")}
                         </>
                       ) : (
-                        "Submeter Candidatura"
+                        tr("Submeter Candidatura")
                       )}
                     </button>
                   </div>
@@ -1223,34 +1226,34 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user-check"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
                 </div>
                 <h3 className="text-2xl font-black uppercase italic tracking-tighter text-slate-950">
-                  Submeter Candidatura
+                  {tr("Submeter Candidatura")}
                 </h3>
               </div>
 
               <div className="space-y-4 mb-8">
                 <p className="text-sm text-slate-600 leading-relaxed font-semibold">
-                  Tem a certeza de que deseja submeter a sua candidatura de Chef profissional na Cookr? Por favor, confirme se todos os dados inseridos estão corretos.
+                  {tr("Tem a certeza de que deseja submeter a sua candidatura de Chef profissional na Cookr? Por favor, confirme se todos os dados inseridos estão corretos.")}
                 </p>
 
                 <div className="p-5 rounded-2xl bg-slate-50 border border-slate-100 text-xs font-bold text-slate-600 space-y-2.5">
                   <div className="flex justify-between">
-                    <span className="uppercase text-[9px] tracking-wider text-slate-400">Chef</span>
+                    <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Chef")}</span>
                     <span className="text-slate-950">{formData.nome}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="uppercase text-[9px] tracking-wider text-slate-400">E-mail</span>
+                    <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("E-mail")}</span>
                     <span className="text-slate-950 text-right break-all">{formData.email}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="uppercase text-[9px] tracking-wider text-slate-400">Telefone</span>
+                    <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Telefone")}</span>
                     <span className="text-slate-950">{formData.telefone}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="uppercase text-[9px] tracking-wider text-slate-400">Experiência</span>
-                    <span className="text-slate-950">{formData.experiencia} Anos</span>
+                    <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Experiência")}</span>
+                    <span className="text-slate-950">{formData.experiencia} {tr("Anos")}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="uppercase text-[9px] tracking-wider text-slate-400">Cidade</span>
+                    <span className="uppercase text-[9px] tracking-wider text-slate-400">{tr("Cidade")}</span>
                     <span className="text-slate-950">{formData.cidade}</span>
                   </div>
                 </div>
@@ -1261,7 +1264,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                   onClick={() => setShowConfirmModal(false)}
                   className="flex-1 h-14 rounded-2xl border border-slate-100 text-slate-400 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all cursor-pointer"
                 >
-                  Rever Dados
+                  {tr("Rever Dados")}
                 </button>
                 <button
                   onClick={async () => {
@@ -1270,7 +1273,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
                   }}
                   className="flex-1 h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black uppercase text-[10px] tracking-widest transition-all shadow-xl shadow-orange-100 active:scale-95 cursor-pointer"
                 >
-                  Confirmar e Submeter
+                  {tr("Confirmar e Submeter")}
                 </button>
               </div>
             </motion.div>

@@ -2,6 +2,7 @@ import React from "react";
 import { ICONS } from "../constants";
 import { useLanguage, getLangText } from "../contexts/LanguageContext";
 
+import { tr } from "../lib/tr";
 const HaccpPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const { language } = useLanguage();
 
@@ -76,7 +77,7 @@ const HaccpPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
           <div className="text-center mb-24 space-y-6">
             <h2 className="text-5xl md:text-7xl font-light tracking-tight leading-none text-slate-950">
               {getLangText(language, { pt: "Normas", es: "Normas", en: "Standards", fr: "Normes" })} <br />
-              <span className="italic font-normal">HACCP.</span>
+              <span className="italic font-normal">{tr("HACCP.")}</span>
             </h2>
             <p className="text-xs text-slate-400 font-sans uppercase tracking-widest">
               {getLangText(language, { pt: "Protocolos de Segurança Cookr", es: "Protocolos de Seguridad Cookr", en: "Cookr Safety Protocols", fr: "Protocole de Sécurité Cookr" })}
@@ -113,7 +114,7 @@ const HaccpPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <div className="flex items-center gap-4">
                   <div className="w-8 h-px bg-orange-500 group-hover:w-12 transition-all duration-500" />
                   <h4 className="text-xs font-black uppercase tracking-[0.3em] font-sans text-slate-950">
-                    {section.title}
+                    {tr(section.title as any) as any}
                   </h4>
                 </div>
                 <p className="text-lg text-slate-500 font-light leading-relaxed">
@@ -130,7 +131,7 @@ const HaccpPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
                 <ICONS.ChefHat size={24} />
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-950">
-                Luxury Cookr
+                {tr("Luxury Cookr")}
               </p>
               <p className="text-xs text-slate-400 uppercase tracking-widest">
                 {getLangText(language, {
@@ -142,7 +143,7 @@ const HaccpPolicy: React.FC<{ onBack: () => void }> = ({ onBack }) => {
               </p>
             </div>
             <p className="text-[10px] text-slate-300 uppercase tracking-widest">
-              © 2026 LUXURY COOKR · {getLangText(language, {
+              {tr("© 2026 LUXURY COOKR ·")} {getLangText(language, {
                 pt: "Todos os direitos reservados",
                 es: "Todos los derechos reservados",
                 en: "All rights reserved",

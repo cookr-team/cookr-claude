@@ -2,6 +2,8 @@ import React from "react";
 import { motion } from "motion/react";
 import { Utensils, Sparkles, Sliders, ArrowRight, Crown, ChevronLeft, CheckCircle2, Star, Flame } from "lucide-react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface SushiDeAutorPageProps {
   onNavigate: (view: string) => void;
   onOpenAuth: (flow?: "login" | "register") => void;
@@ -11,6 +13,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
   onNavigate,
   onOpenAuth,
 }) => {
+  useLanguage();
   return (
     <div className="min-h-dvh bg-[#080C14] text-white font-sans selection:bg-[#FF5500] selection:text-white flex flex-col justify-between overflow-x-hidden relative">
       {/* Background Subtle Ambient Lighting */}
@@ -24,16 +27,16 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
         <button
           onClick={() => onNavigate("landing")}
           className="group inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/[0.08] hover:border-[#FF5500]/60 transition-all duration-300 cursor-pointer shadow-lg shadow-black/40 active:scale-95"
-          title="Voltar"
+          title={tr("Voltar")}
         >
           <ChevronLeft size={18} className="text-[#FF5500] group-hover:-translate-x-0.5 transition-transform" />
-          <span className="tracking-wider uppercase text-[11px]">Voltar atrás</span>
+          <span className="tracking-wider uppercase text-[11px]">{tr("Voltar atrás")}</span>
         </button>
 
         {/* Small subtle brand indicator on the right */}
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 tracking-widest uppercase opacity-70">
           <Crown size={14} className="text-[#FF5500]" />
-          <span className="text-[10px] tracking-[0.2em] font-extrabold text-slate-300">Cookr Omakase</span>
+          <span className="text-[10px] tracking-[0.2em] font-extrabold text-slate-300">{tr("Cookr Omakase")}</span>
         </div>
       </header>
 
@@ -44,7 +47,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
           <div className="absolute inset-0 z-0">
             <img
               src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=1800"
-              alt="Sushi de Autor Omakase"
+              alt={tr("Sushi de Autor Omakase")}
               className="w-full h-full object-cover object-center filter brightness-[0.3] contrast-125 scale-105"
               referrerPolicy="no-referrer"
             />
@@ -62,7 +65,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
               className="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-[#FF5500]/10 border border-[#FF5500]/30 text-[#FF5500] text-[11px] font-black uppercase tracking-[0.25em] backdrop-blur-md shadow-xl shadow-[#FF5500]/10"
             >
               <Flame size={14} className="text-[#FF5500]" />
-              <span>Alta Gastronomia Japonesa</span>
+              <span>{tr("Alta Gastronomia Japonesa")}</span>
             </motion.div>
 
             {/* Main Title */}
@@ -72,7 +75,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
               transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
               className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase italic tracking-tight leading-none drop-shadow-2xl"
             >
-              Sushi de <span className="bg-gradient-to-r from-[#FF5500] via-orange-400 to-amber-500 bg-clip-text text-transparent">Autor</span>
+              {tr("Sushi de")} <span className="bg-gradient-to-r from-[#FF5500] via-orange-400 to-amber-500 bg-clip-text text-transparent">{tr("Autor·")}</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -82,7 +85,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
               transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
               className="text-sm sm:text-base md:text-lg text-slate-300 font-light leading-relaxed max-w-2xl mx-auto drop-shadow-md"
             >
-              A arte do Omakase e da fusão contemporânea, preparada ao momento no balcão da sua cozinha.
+              {tr("A arte do Omakase e da fusão contemporânea, preparada ao momento no balcão da sua cozinha.")}
             </motion.p>
 
             {/* Decorative Orange Line */}
@@ -112,7 +115,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
             </div>
 
             <p className="text-base sm:text-lg md:text-xl text-slate-100 font-light leading-relaxed md:leading-loose max-w-3xl mx-auto italic tracking-wide">
-              "O Sushi de Autor na Cookr vai além do convencional. É uma viagem sensorial baseada na frescura absoluta do peixe de época, combinada com técnicas de corte tradicionais, molhos artesanais e uma apresentação que transforma o seu jantar numa experiência Omakase exclusiva."
+              {tr("\"O Sushi de Autor na Cookr vai além do convencional. É uma viagem sensorial baseada na frescura absoluta do peixe de época, combinada com técnicas de corte tradicionais, molhos artesanais e uma apresentação que transforma o seu jantar numa experiência Omakase exclusiva.\"")}
             </p>
 
             <div className="flex items-center gap-2 pt-2">
@@ -136,7 +139,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
               Mestria & Rigor Nipo-Contemporâneo
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase italic tracking-tight">
-              Os 3 Pilares da Experiência
+              {tr("Os 3 Pilares da Experiência")}
             </h2>
             <div className="w-16 h-1 bg-[#FF5500] rounded-full mx-auto shadow-sm shadow-[#FF5500]" />
           </motion.div>
@@ -164,14 +167,14 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
               <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-white/10">
                 <img
                   src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?q=80&w=600"
-                  alt="Corte e Preparação Ao Vivo"
+                  alt={tr("Corte e Preparação Ao Vivo")}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-90"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17] via-transparent to-transparent" />
                 <div className="absolute bottom-2.5 left-3 inline-flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-bold text-slate-200 uppercase tracking-wider">
                   <CheckCircle2 size={12} className="text-[#FF5500]" />
-                  <span>Sem Viagem • Ao Vivo</span>
+                  <span>{tr("Sem Viagem • Ao Vivo")}</span>
                 </div>
               </div>
 
@@ -181,13 +184,13 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
                   Corte & Preparação Ao Vivo
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                  Ao contrário do take-away, o peixe não viaja. É cortado, preparado e servido imediatamente na sua mesa.
+                  {tr("Ao contrário do take-away, o peixe não viaja. É cortado, preparado e servido imediatamente na sua mesa.")}
                 </p>
               </div>
 
               <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-slate-400 font-medium">
-                <span>Frescura Absoluta</span>
-                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">100% Instantâneo</span>
+                <span>{tr("Frescura Absoluta")}</span>
+                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">{tr("100% Instantâneo")}</span>
               </div>
             </motion.div>
 
@@ -213,30 +216,30 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
               <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-white/10">
                 <img
                   src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=600"
-                  alt="Ritual Omakase"
+                  alt={tr("Ritual Omakase")}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-90"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17] via-transparent to-transparent" />
                 <div className="absolute bottom-2.5 left-3 inline-flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-bold text-slate-200 uppercase tracking-wider">
                   <Crown size={12} className="text-[#FF5500]" />
-                  <span>Sushiman Exclusivo</span>
+                  <span>{tr("Sushiman Exclusivo")}</span>
                 </div>
               </div>
 
               {/* Card Content */}
               <div className="space-y-3">
                 <h3 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider group-hover:text-[#FF5500] transition-colors">
-                  Ritual Omakase
+                  {tr("Ritual Omakase")}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                  Uma experiência interativa onde o Sushiman explica a origem de cada peixe e o conceito dos sabores.
+                  {tr("Uma experiência interativa onde o Sushiman explica a origem de cada peixe e o conceito dos sabores.")}
                 </p>
               </div>
 
               <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-slate-400 font-medium">
                 <span>Histórias & Sabores</span>
-                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">Interativo</span>
+                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">{tr("Interativo")}</span>
               </div>
             </motion.div>
 
@@ -262,30 +265,30 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
               <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-white/10">
                 <img
                   src="https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=600"
-                  alt="Personalização Absoluta"
+                  alt={tr("Personalização Absoluta")}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-90"
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17] via-transparent to-transparent" />
                 <div className="absolute bottom-2.5 left-3 inline-flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-bold text-slate-200 uppercase tracking-wider">
                   <Sliders size={12} className="text-[#FF5500]" />
-                  <span>Sob Medida</span>
+                  <span>{tr("Sob Medida")}</span>
                 </div>
               </div>
 
               {/* Card Content */}
               <div className="space-y-3">
                 <h3 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider group-hover:text-[#FF5500] transition-colors">
-                  Personalização Absoluta
+                  {tr("Personalização Absoluta")}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                  Menus adaptados ao seu gosto: opções sem arroz, restrições a picante ou preferências por peixes específicos.
+                  {tr("Menus adaptados ao seu gosto: opções sem arroz, restrições a picante ou preferências por peixes específicos.")}
                 </p>
               </div>
 
               <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-slate-400 font-medium">
-                <span>Tailor-Made</span>
-                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">Sem Limites</span>
+                <span>{tr("Tailor-Made")}</span>
+                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">{tr("Sem Limites")}</span>
               </div>
             </motion.div>
           </div>
@@ -306,15 +309,15 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
             {/* Backdrop Blur Info Pill */}
             <div className="inline-flex items-center justify-center gap-2.5 px-5 py-2.5 rounded-full bg-white/5 border border-white/15 backdrop-blur-md text-xs sm:text-sm font-bold text-slate-200 shadow-inner">
               <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse shadow-sm shadow-[#FF5500]" />
-              <span>28 Chefs e Menus de Sushi de Autor disponíveis na sua área.</span>
+              <span>{tr("28 Chefs e Menus de Sushi de Autor disponíveis na sua área.")}</span>
             </div>
 
             <div className="space-y-3 max-w-xl mx-auto">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase italic tracking-tight">
-                Pronto para a Experiência Omakase?
+                {tr("Pronto para a Experiência Omakase?")}
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-                Aceda ao catálogo completo dos nossos Sushimans de topo e agende o seu evento privado.
+                {tr("Aceda ao catálogo completo dos nossos Sushimans de topo e agende o seu evento privado.")}
               </p>
             </div>
 
@@ -324,7 +327,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
                 onClick={() => onOpenAuth("register")}
                 className="w-full sm:w-auto px-9 py-4.5 bg-[#FF5500] hover:bg-[#E04B00] text-white font-extrabold text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-2xl shadow-[#FF5500]/30 hover:shadow-[#FF5500]/50 transition-all duration-300 active:scale-95 cursor-pointer inline-flex items-center justify-center gap-3"
               >
-                <span>Criar Conta / Entrar para Explorar Sushi de Autor</span>
+                <span>{tr("Criar Conta / Entrar para Explorar Sushi de Autor")}</span>
                 <ArrowRight size={18} />
               </button>
             </div>
@@ -334,7 +337,7 @@ export const SushiDeAutorPage: React.FC<SushiDeAutorPageProps> = ({
 
       {/* Footer */}
       <footer className="w-full bg-[#05080E] border-t border-white/5 px-6 md:px-16 py-8 text-center text-xs text-slate-500 font-medium z-10">
-        <p>© {new Date().getFullYear()} Cookr. Todos os direitos reservados. Alta Gastronomia Japonesa em Casa.</p>
+        <p>© {new Date().getFullYear()} {tr("Cookr. Todos os direitos reservados. Alta Gastronomia Japonesa em Casa.")}</p>
       </footer>
     </div>
   );

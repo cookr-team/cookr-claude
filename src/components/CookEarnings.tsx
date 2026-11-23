@@ -15,6 +15,7 @@ import {
 import { useLanguage, getLangText } from "../contexts/LanguageContext";
 import { todayLocal } from "../lib/dateUtils";
 
+import { tr, trLocale } from "../lib/tr";
 interface CookEarningsProps {
   bookings: Booking[];
 }
@@ -115,6 +116,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
   }, [bookings]);
 
   const CustomChartTooltip = ({ active, payload, label }: any) => {
+  useLanguage();
     if (active && payload && payload.length) {
       return (
         <div className="bg-slate-950 text-white p-3 rounded-lg border border-white/10 shadow-lg text-left text-[10px] font-sans">
@@ -124,7 +126,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
               <div key={index} className="flex items-center gap-3 justify-between">
                 <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-slate-300">
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.color }} />
-                  {entry.name === "bruto" ? "Bruto" : "Líquido"}:
+                  {entry.name === "bruto" ? tr("Bruto") : tr("Líquido")}:
                 </span>
                 <span className="font-black text-white">{formatPrice(entry.value)}</span>
               </div>
@@ -146,7 +148,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
     doc.setFontSize(11);
     doc.setTextColor(100);
     doc.text(
-      `Data de emissao: ${new Date().toLocaleDateString("pt-PT")} | Filtro: ${timeFilter}`,
+      `Data de emissao: ${new Date().toLocaleDateString(trLocale())} | Filtro: ${timeFilter}`,
       14,
       30,
     );
@@ -254,11 +256,11 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
         <div className="bg-orange-50/30 border border-orange-100/30 p-3.5 rounded-xl text-left space-y-3 animate-in fade-in duration-300">
           <div className="flex items-center gap-2">
             <ICONS.Filter size={12} className="text-orange-500" />
-            <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-700">Intervalo personalizado</span>
+            <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-700">{tr("Intervalo personalizado")}</span>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-1">Data Início</label>
+              <label className="block text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-1">{tr("Data Início")}</label>
               <input
                 type="date"
                 value={startDate}
@@ -267,7 +269,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
               />
             </div>
             <div>
-              <label className="block text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-1">Data Fim</label>
+              <label className="block text-[7px] font-bold text-slate-400 uppercase tracking-widest mb-1">{tr("Data Fim")}</label>
               <input
                 type="date"
                 value={endDate}
@@ -281,13 +283,13 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
               onClick={() => setIsEditingRange(false)}
               className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-[8px] font-extrabold uppercase tracking-wider text-slate-600 rounded-lg transition-colors cursor-pointer"
             >
-              Cancelar
+              {tr("Cancelar")}
             </button>
             <button
               onClick={() => setIsEditingRange(false)}
               className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-[8px] font-extrabold uppercase tracking-wider text-white rounded-lg shadow-sm transition-colors cursor-pointer"
             >
-              Aplicar Intervalo
+              {tr("Aplicar Intervalo")}
             </button>
           </div>
         </div>
@@ -299,7 +301,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
           <div className="absolute top-0 right-0 w-20 md:w-24 h-24 bg-orange-500/10 rounded-full -mr-10 -mt-10 blur-xl group-hover:bg-orange-500/15 transition-all" />
           <div className="p-4 md:p-5 pb-1 space-y-2 relative z-10">
             <p className="text-[7.5px] md:text-[8.5px] font-bold text-orange-500 uppercase tracking-wider">
-              Ganhos Concluídos
+              {tr("Ganhos Concluídos")}
             </p>
             <p className="text-xl md:text-2xl font-extrabold text-white leading-none">
               {formatPrice(stats.net)}
@@ -309,12 +311,12 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
                 size={11}
                 className="text-emerald-500 shrink-0"
               />
-              <span>Serviços já realizados</span>
+              <span>{tr("Serviços já realizados")}</span>
             </div>
           </div>
           <div className="px-4 pb-4 md:px-5 md:pb-5 pt-2 mt-auto border-t border-white/5 relative z-10">
             <p className="text-xs text-gray-400 leading-tight font-medium opacity-90">
-              Comissão Cookr já deduzida
+              {tr("Comissão Cookr já deduzida")}
             </p>
           </div>
         </div>
@@ -322,7 +324,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
         <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-100 shadow-xs text-left min-h-[145px] flex flex-col justify-between">
           <div className="space-y-2">
             <p className="text-[7.5px] md:text-[8.5px] font-bold text-slate-400 uppercase tracking-wider max-w-full">
-              A Receber
+              {tr("A Receber")}
             </p>
             <p className="text-xl md:text-2xl font-extrabold text-slate-950 leading-none">
               {formatPrice(stats.pending)}
@@ -330,14 +332,14 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
           </div>
           <div className="flex items-center gap-1.5 text-[8px] md:text-[8.5px] font-medium text-slate-400 pt-0.5 mt-auto">
             <ICONS.Clock size={11} className="text-orange-500 shrink-0" />
-            <span>Serviços confirmados por realizar</span>
+            <span>{tr("Serviços confirmados por realizar")}</span>
           </div>
         </div>
 
         <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-100 shadow-xs text-left min-h-[145px] flex flex-col justify-between">
           <div className="space-y-2">
             <p className="text-[7.5px] md:text-[8.5px] font-bold text-slate-400 uppercase tracking-wider max-w-full">
-              Total de Rituais
+              {tr("Total de Rituais")}
             </p>
             <p className="text-xl md:text-2xl font-extrabold text-slate-950 leading-none">
               {stats.count}
@@ -345,7 +347,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
           </div>
           <div className="flex items-center gap-1.5 text-[8px] md:text-[8.5px] font-medium text-slate-400 pt-0.5 mt-auto">
             <ICONS.CheckCircle size={11} className="text-orange-500 shrink-0" />
-            <span>No período selecionado</span>
+            <span>{tr("No período selecionado")}</span>
           </div>
         </div>
       </div>
@@ -355,20 +357,20 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="space-y-0.5">
             <h3 className="text-xs md:text-sm font-extrabold text-slate-900 uppercase tracking-tight">
-              Evolução de Ganhos.
+              {tr("Evolução de Ganhos.")}
             </h3>
             <p className="text-[7.5px] md:text-[8.5px] font-bold text-slate-400 uppercase tracking-wider">
-              Análise de faturamento nos últimos 6 meses (líquido vs bruto)
+              {tr("Análise de faturamento nos últimos 6 meses (líquido vs bruto)")}
             </p>
           </div>
           <div className="flex items-center gap-4 text-[7px] md:text-[8px] font-extrabold uppercase tracking-wider text-slate-500 bg-slate-50 p-1.5 px-2.5 rounded-lg border border-slate-100">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-orange-500" />
-              <span>Bruto</span>
+              <span>{tr("Bruto")}</span>
             </div>
             <div className="flex items-center gap-1.5 border-l border-slate-200 pl-4">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>Líquido</span>
+              <span>{tr("Líquido")}</span>
             </div>
           </div>
         </div>
@@ -421,14 +423,14 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4 px-1">
           <h3 className="text-xs md:text-sm font-bold text-slate-900 uppercase tracking-tight">
-            Histórico de Transações.
+            {tr("Histórico de Transações.")}
           </h3>
           <button
             onClick={exportToPDF}
             className="px-3 py-1.5 bg-orange-50/15 hover:bg-orange-50/25 text-[8px] md:text-[9px] font-bold uppercase text-orange-600 tracking-wider hover:text-orange-700 rounded-lg border border-orange-100/30 transition-all active:scale-95 text-center inline-flex items-center gap-1.5 cursor-pointer"
           >
             <ICONS.FileText size={11} />
-            <span>Exportar PDF</span>
+            <span>{tr("Exportar PDF")}</span>
           </button>
         </div>
 
@@ -467,7 +469,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
           ) : (
             <div className="p-12 text-center text-slate-400">
               <ICONS.FileText size={24} className="mx-auto text-slate-300 mb-2" />
-              <p className="text-[8.5px] font-bold uppercase tracking-wider">Ainda não existem transações concluídas neste período.</p>
+              <p className="text-[8.5px] font-bold uppercase tracking-wider">{tr("Ainda não existem transações concluídas neste período.")}</p>
             </div>
           )}
         </div>

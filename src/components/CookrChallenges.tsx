@@ -23,6 +23,8 @@ import {
 import { User } from "../types";
 import { supabase } from "../lib/supabaseClient";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 export interface ChallengeSubmission {
   id: string;
   challengeId: string;
@@ -230,6 +232,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
   currentUser,
   onNotify,
 }) => {
+  useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -319,7 +322,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
     setUserSubmissions(updated);
     if (onNotify) {
       onNotify(
-        "Prato submetido com sucesso ao Desafio Cookr! Boa sorte!",
+        tr("Prato submetido com sucesso ao Desafio Cookr! Boa sorte!"),
         "success"
       );
     }
@@ -340,7 +343,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
             className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-[9px] md:text-[10px] tracking-widest uppercase shadow-sm"
           >
             <Trophy size={13} className="text-slate-950 shrink-0" />
-            <span>{activeChallenge.badge}</span>
+            <span>{tr(activeChallenge.badge as any) as any}</span>
           </div>
 
           <span className="text-[10px] font-bold text-amber-300/90 uppercase tracking-wider hidden sm:inline-flex items-center gap-1">
@@ -357,7 +360,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
             id="challenge-prev-btn"
             type="button"
             onClick={handlePrev}
-            aria-label="Desafio anterior"
+            aria-label={tr("Desafio anterior")}
             className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <ChevronLeft size={14} />
@@ -366,7 +369,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
             id="challenge-next-btn"
             type="button"
             onClick={handleNext}
-            aria-label="Próximo desafio"
+            aria-label={tr("Próximo desafio")}
             className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <ChevronRight size={14} />
@@ -384,7 +387,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
             </span>
             <span className="text-[9px] font-semibold text-slate-500 flex items-center gap-1">
               <Flame size={12} className="text-orange-500" />
-              {activeChallenge.participantsCount} Chefs a concorrer
+              {activeChallenge.participantsCount} {tr("Chefs a concorrer")}
             </span>
           </div>
 
@@ -441,7 +444,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 size={13} className="text-emerald-600" />
                   <span className="text-[10px] font-black uppercase text-emerald-800 tracking-wider">
-                    Candidatura Submetida
+                    {tr("Candidatura Submetida")}
                   </span>
                 </div>
                 <p className="text-xs font-bold text-slate-900 truncate">
@@ -454,7 +457,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
               onClick={() => setIsModalOpen(true)}
               className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider underline hover:text-emerald-950 shrink-0 cursor-pointer"
             >
-              Editar Prato
+              {tr("Editar Prato")}
             </button>
           </div>
         )}
@@ -491,7 +494,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
               <div className="space-y-2">
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1">
                   <Star size={12} className="text-amber-500" />
-                  Critérios de Avaliação do Júri Cookr
+                  {tr("Critérios de Avaliação do Júri Cookr")}
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   {activeChallenge.criteria.map((c, i) => (
@@ -501,7 +504,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold text-slate-800 uppercase">
-                          {c.label}
+                          {tr(c.label as any) as any}
                         </span>
                         <span className="text-[10px] font-black text-orange-600">
                           {c.weight}%
@@ -514,7 +517,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
                         />
                       </div>
                       <p className="text-[9px] text-slate-500 leading-tight">
-                        {c.desc}
+                        {tr(c.desc as any) as any}
                       </p>
                     </div>
                   ))}
@@ -525,7 +528,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
               <div className="space-y-1.5">
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-900 flex items-center gap-1">
                   <Info size={12} className="text-slate-500" />
-                  Regras Gerais de Participação
+                  {tr("Regras Gerais de Participação")}
                 </span>
                 <ul className="space-y-1 text-left text-[11px] text-slate-600">
                   {activeChallenge.rules.map((rule, rIdx) => (
@@ -570,7 +573,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
           >
             <Upload size={14} />
             <span>
-              {activeSubmission ? "Atualizar Submissão" : "Submeter Prato"}
+              {activeSubmission ? tr("Atualizar Submissão") : tr("Submeter Prato")}
             </span>
           </button>
         </div>
@@ -620,6 +623,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
   onClose,
   onSubmitSuccess,
 }) => {
+  useLanguage();
   const [dishTitle, setDishTitle] = useState(
     existingSubmission?.dishTitle || ""
   );
@@ -669,15 +673,15 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!dishTitle.trim()) {
-      setError("Por favor, insere o nome da tua criação gastronómica.");
+      setError(tr("Por favor, insere o nome da tua criação gastronómica."));
       return;
     }
     if (!description.trim()) {
-      setError("Por favor, adiciona uma breve descrição e inspiração do prato.");
+      setError(tr("Por favor, adiciona uma breve descrição e inspiração do prato."));
       return;
     }
     if (!photoUrl.trim()) {
-      setError("Por favor, anexa uma fotografia do empratamento.");
+      setError(tr("Por favor, anexa uma fotografia do empratamento."));
       return;
     }
 
@@ -703,7 +707,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
     };
 
     if (!currentUser?.id) {
-      setError("Inicia sessão como chef para submeter um prato.");
+      setError(tr("Inicia sessão como chef para submeter um prato."));
       setIsSubmitting(false);
       return;
     }
@@ -754,7 +758,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
             </div>
             <div>
               <h2 className="text-sm md:text-base font-black text-slate-950 uppercase tracking-tight">
-                Submeter Prato ao Desafio
+                {tr("Submeter Prato ao Desafio")}
               </h2>
               <p className="text-[10px] text-slate-500 font-medium line-clamp-1">
                 {challenge.themeTitle}
@@ -765,7 +769,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
             id="close-submission-modal-btn"
             type="button"
             onClick={onClose}
-            aria-label="Fechar"
+            aria-label={tr("Fechar")}
             className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
           >
             <X size={18} />
@@ -790,14 +794,14 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
               htmlFor="submission-dish-title"
               className="text-[11px] font-bold text-slate-900 uppercase tracking-wider block"
             >
-              Nome do Prato / Criação Gastronómica *
+              {tr("Nome do Prato / Criação Gastronómica *")}
             </label>
             <input
               id="submission-dish-title"
               type="text"
               value={dishTitle}
               onChange={(e) => setDishTitle(e.target.value)}
-              placeholder="ex: Risotto Cremoso de Castanhas Assadas, Cogumelos Selvagens e Tomilho Limão"
+              placeholder={tr("ex: Risotto Cremoso de Castanhas Assadas, Cogumelos Selvagens e Tomilho Limão")}
               className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-orange-500 text-slate-900 text-xs transition-colors"
               required
             />
@@ -806,7 +810,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
           {/* Photo Upload & Gallery Selection */}
           <div className="space-y-2">
             <label className="text-[11px] font-bold text-slate-900 uppercase tracking-wider block">
-              Fotografia do Empratamento *
+              {tr("Fotografia do Empratamento *")}
             </label>
 
             {/* Photo preview + actions */}
@@ -815,7 +819,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                 {photoUrl ? (
                   <img
                     src={photoUrl}
-                    alt="Pré-visualização do prato"
+                    alt={tr("Pré-visualização do prato")}
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
                   />
@@ -823,7 +827,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                   <div className="w-full h-full flex flex-col items-center justify-center text-slate-400">
                     <ImageIcon size={28} />
                     <span className="text-[10px] mt-1 font-medium">
-                      Sem imagem
+                      {tr("Sem imagem")}
                     </span>
                   </div>
                 )}
@@ -836,7 +840,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                     className="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider cursor-pointer inline-flex items-center gap-1.5 transition-colors"
                   >
                     <Upload size={12} />
-                    <span>Carregar do Dispositivo</span>
+                    <span>{tr("Carregar do Dispositivo")}</span>
                   </label>
                   <input
                     id={fileInputId}
@@ -850,7 +854,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                 {/* Quick Presets for instant testing */}
                 <div>
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block mb-1">
-                    Ou seleciona uma fotografia sugerida:
+                    {tr("Ou seleciona uma fotografia sugerida:")}
                   </span>
                   <div className="grid grid-cols-2 gap-1.5">
                     {PRESET_CULINARY_PHOTOS.map((preset, idx) => (
@@ -867,7 +871,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                         {photoUrl === preset.url && (
                           <Check size={11} className="text-orange-600 shrink-0" />
                         )}
-                        <span className="truncate">{preset.label}</span>
+                        <span className="truncate">{tr(preset.label as any) as any}</span>
                       </button>
                     ))}
                   </div>
@@ -878,7 +882,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                   type="url"
                   value={photoUrl}
                   onChange={(e) => setPhotoUrl(e.target.value)}
-                  placeholder="Ou cola o URL direto da imagem..."
+                  placeholder={tr("Ou cola o URL direto da imagem...")}
                   className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-[10px] text-slate-700 focus:outline-none focus:border-orange-500"
                 />
               </div>
@@ -898,7 +902,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Descreve as técnicas utilizadas, como o ingrediente sazonal foi trabalhado e a experiência sensorial pensada para o cliente..."
+              placeholder={tr("Descreve as técnicas utilizadas, como o ingrediente sazonal foi trabalhado e a experiência sensorial pensada para o cliente...")}
               className="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-orange-500 text-slate-900 text-xs transition-colors"
               required
             />
@@ -911,7 +915,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                 htmlFor="submission-course-type"
                 className="text-[10px] font-bold text-slate-900 uppercase tracking-wider block"
               >
-                Tipo de Prato
+                {tr("Tipo de Prato")}
               </label>
               <select
                 id="submission-course-type"
@@ -919,10 +923,10 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                 onChange={(e) => setCourseType(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:outline-none focus:border-orange-500"
               >
-                <option value="Entrada">Entrada</option>
-                <option value="Prato Principal">Prato Principal</option>
-                <option value="Sobremesa">Sobremesa</option>
-                <option value="Menu Completo">Menu Completo</option>
+                <option value="Entrada">{tr("Entrada")}</option>
+                <option value="Prato Principal">{tr("Prato Principal")}</option>
+                <option value="Sobremesa">{tr("Sobremesa")}</option>
+                <option value="Menu Completo">{tr("Menu Completo")}</option>
               </select>
             </div>
 
@@ -932,14 +936,14 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
                 className="text-[10px] font-bold text-slate-900 uppercase tracking-wider block flex items-center gap-1"
               >
                 <Clock size={11} className="text-slate-400" />
-                Tempo de Confeção em Casa
+                {tr("Tempo de Confeção em Casa")}
               </label>
               <input
                 id="submission-prep-time"
                 type="text"
                 value={prepTime}
                 onChange={(e) => setPrepTime(e.target.value)}
-                placeholder="ex: 45 min"
+                placeholder={tr("ex: 45 min")}
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-orange-500"
               />
             </div>
@@ -977,14 +981,14 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
               htmlFor="submission-pairing"
               className="text-[10px] font-bold text-slate-900 uppercase tracking-wider block"
             >
-              Sugestão de Harmonização / Notas ao Júri (Opcional)
+              {tr("Sugestão de Harmonização / Notas ao Júri (Opcional)")}
             </label>
             <input
               id="submission-pairing"
               type="text"
               value={pairingNotes}
               onChange={(e) => setPairingNotes(e.target.value)}
-              placeholder="ex: Sugestão de pairing com Vinho Tinto Reserva do Dão ou infusão de zimbro"
+              placeholder={tr("ex: Sugestão de pairing com Vinho Tinto Reserva do Dão ou infusão de zimbro")}
               className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-orange-500"
             />
           </div>
@@ -996,7 +1000,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
               onClick={onClose}
               className="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
             >
-              Cancelar
+              {tr("Cancelar")}
             </button>
             <button
               id="confirm-submit-dish-btn"
@@ -1004,7 +1008,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
               disabled={isSubmitting}
               className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-sm transition-all cursor-pointer disabled:opacity-50"
             >
-              {isSubmitting ? "A submeter..." : "Confirmar Submissão"}
+              {isSubmitting ? tr("A submeter...") : tr("Confirmar Submissão")}
             </button>
           </div>
         </form>

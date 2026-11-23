@@ -1,11 +1,14 @@
 import React from "react";
 import { ShieldCheck, Award, Leaf, UtensilsCrossed, Sparkles, CheckCircle2, Crown } from "lucide-react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface CookrExcellenceSectionProps {
   className?: string;
 }
 
 export const CookrExcellenceSection: React.FC<CookrExcellenceSectionProps> = ({ className = "" }) => {
+  useLanguage();
   const cards = [
     {
       id: "certificacao",
@@ -64,12 +67,12 @@ export const CookrExcellenceSection: React.FC<CookrExcellenceSectionProps> = ({ 
 
           {/* Título Principal (H2) */}
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-950 tracking-tight uppercase leading-[1.1]">
-            O PADRÃO DE EXCELÊNCIA <span className="text-orange-500">COOKR</span>
+            {tr("O PADRÃO DE EXCELÊNCIA")} <span className="text-orange-500">{tr("COOKR")}</span>
           </h2>
 
           {/* Subtítulo */}
           <p className="text-base sm:text-lg font-medium text-slate-500 max-w-xl mx-auto">
-            A Cookr seleciona apenas a elite para a sua casa.
+            {tr("A Cookr seleciona apenas a elite para a sua casa.")}
           </p>
         </div>
 
@@ -111,10 +114,10 @@ export const CookrExcellenceSection: React.FC<CookrExcellenceSectionProps> = ({ 
                 <div className="p-6 sm:p-7 flex flex-col flex-1 justify-between gap-6">
                   <div className="space-y-3">
                     <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight group-hover:text-orange-600 transition-colors duration-200">
-                      {card.title}
+                      {tr(card.title as any) as any}
                     </h3>
                     <p className="text-sm text-slate-600 leading-relaxed font-normal">
-                      {card.description}
+                      {tr(card.description as any) as any}
                     </p>
                   </div>
 
@@ -126,7 +129,7 @@ export const CookrExcellenceSection: React.FC<CookrExcellenceSectionProps> = ({ 
                         strokeWidth: 1.5,
                         className: "text-amber-400 shrink-0",
                       })}
-                      {card.badge}
+                      {tr(card.badge as any) as any}
                     </span>
                   </div>
                 </div>

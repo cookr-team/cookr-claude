@@ -1,6 +1,8 @@
 import React from "react";
 import { X, ArrowRight, Sparkles, Flame, CheckCircle2, Crown, ExternalLink } from "lucide-react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 export interface CategoryInfo {
   id: string;
   title: string;
@@ -72,6 +74,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
   onOpenAuth,
   onNavigatePage,
 }) => {
+  useLanguage();
   if (!categoryId) return null;
 
   const data = CATEGORIES_DATA[categoryId] || CATEGORIES_DATA["tradicional-lusa"];
@@ -91,7 +94,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/60 border border-white/15 text-slate-300 hover:text-white hover:bg-black hover:border-[#FF5500] transition-all flex items-center justify-center cursor-pointer shadow-lg active:scale-95"
-          title="Fechar"
+          title={tr("Fechar")}
         >
           <X size={18} />
         </button>
@@ -115,7 +118,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
                 <span>{data.count}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black uppercase italic tracking-tight text-white drop-shadow-md">
-                {data.title}
+                {tr(data.title as any) as any}
               </h3>
             </div>
             <Crown size={22} className="text-[#FF5500] opacity-80 mb-1" />
@@ -125,7 +128,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
         {/* Content Body */}
         <div className="p-6 sm:p-7 space-y-5">
           <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-            {data.description}
+            {tr(data.description as any) as any}
           </p>
 
           {/* Highlights Micro-Pills */}
@@ -150,7 +153,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
               }}
               className="w-full py-4 bg-[#FF5500] hover:bg-[#E04B00] text-white font-extrabold text-xs uppercase tracking-widest rounded-2xl shadow-xl shadow-[#FF5500]/25 transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center gap-2.5"
             >
-              <span>Criar Conta / Entrar para Explorar</span>
+              <span>{tr("Criar Conta / Entrar para Explorar")}</span>
               <ArrowRight size={16} />
             </button>
 
@@ -162,7 +165,7 @@ export const CategoryQuickModal: React.FC<CategoryQuickModalProps> = ({
                 }}
                 className="w-full py-2.5 text-center text-xs text-slate-400 hover:text-white font-bold uppercase tracking-wider transition-colors inline-flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <span>Ver página com detalhes de {data.title}</span>
+                <span>{tr("Ver página com detalhes de")} {tr(data.title as any) as any}</span>
                 <ExternalLink size={13} className="text-[#FF5500]" />
               </button>
             )}

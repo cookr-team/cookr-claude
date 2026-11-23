@@ -2,6 +2,8 @@ import React from "react";
 import { motion } from "motion/react";
 import { Utensils, Leaf, Users, ArrowRight, Crown, ChevronLeft, CheckCircle2, Star, Flame } from "lucide-react";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface TradicionalLusaPageProps {
   onNavigate: (view: string) => void;
   onOpenAuth: (flow?: "login" | "register") => void;
@@ -11,6 +13,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
   onNavigate,
   onOpenAuth,
 }) => {
+  useLanguage();
   return (
     <div className="min-h-dvh bg-[#080C14] text-white font-sans selection:bg-[#FF5500] selection:text-white flex flex-col justify-between overflow-x-hidden relative">
       {/* Background Subtle Ambient Lighting */}
@@ -24,16 +27,16 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
         <button
           onClick={() => onNavigate("landing")}
           className="group inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.04] border border-white/10 text-xs font-bold text-slate-200 hover:text-white hover:bg-white/[0.08] hover:border-[#FF5500]/60 transition-all duration-300 cursor-pointer shadow-lg shadow-black/40 active:scale-95"
-          title="Voltar"
+          title={tr("Voltar")}
         >
           <ChevronLeft size={18} className="text-[#FF5500] group-hover:-translate-x-0.5 transition-transform" />
-          <span className="tracking-wider uppercase text-[11px]">Voltar atrás</span>
+          <span className="tracking-wider uppercase text-[11px]">{tr("Voltar atrás")}</span>
         </button>
 
         {/* Brand Indicator */}
         <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 tracking-widest uppercase opacity-70">
           <Crown size={14} className="text-[#FF5500]" />
-          <span className="text-[10px] tracking-[0.2em] font-extrabold text-slate-300">Cookr Tradição</span>
+          <span className="text-[10px] tracking-[0.2em] font-extrabold text-slate-300">{tr("Cookr Tradição")}</span>
         </div>
       </header>
 
@@ -44,7 +47,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
           <div className="absolute inset-0 z-0">
             <img
               src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=1800"
-              alt="Gastronomia Tradicional Lusa"
+              alt={tr("Gastronomia Tradicional Lusa")}
               className="w-full h-full object-cover object-center filter brightness-[0.3] contrast-125 scale-105"
               referrerPolicy="no-referrer"
               loading="eager"
@@ -76,7 +79,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
               transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
               className="text-4xl sm:text-6xl md:text-7xl font-black text-white uppercase italic tracking-tight leading-none drop-shadow-2xl"
             >
-              Tradicional <span className="bg-gradient-to-r from-[#FF5500] via-orange-400 to-amber-500 bg-clip-text text-transparent">Lusa</span>
+              {tr("Tradicional")} <span className="bg-gradient-to-r from-[#FF5500] via-orange-400 to-amber-500 bg-clip-text text-transparent">{tr("Lusa")}</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -86,7 +89,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
               transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
               className="text-sm sm:text-base md:text-lg text-slate-300 font-light leading-relaxed max-w-2xl mx-auto drop-shadow-md"
             >
-              A riqueza dos sabores portugueses e das nossas origens, reinventados por chefs de excelência.
+              {tr("A riqueza dos sabores portugueses e das nossas origens, reinventados por chefs de excelência.")}
             </motion.p>
 
             {/* Decorative Orange Line */}
@@ -116,7 +119,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
             </div>
 
             <p className="text-base sm:text-lg md:text-xl text-slate-100 font-light leading-relaxed md:leading-loose max-w-3xl mx-auto italic tracking-wide">
-              "A cozinha Tradicional Lusa na Cookr homenageia a herança gastronómica de Portugal com um toque contemporâneo. Dos receituários clássicos de família às reinterpretações dos grandes assados e mariscos da nossa costa, os nossos chefs trazem o conforto e a alma da gastronomia nacional para o coração da sua casa."
+              {tr("\"A cozinha Tradicional Lusa na Cookr homenageia a herança gastronómica de Portugal com um toque contemporâneo. Dos receituários clássicos de família às reinterpretações dos grandes assados e mariscos da nossa costa, os nossos chefs trazem o conforto e a alma da gastronomia nacional para o coração da sua casa.\"")}
             </p>
 
             <div className="flex items-center gap-2 pt-2">
@@ -140,7 +143,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
               Autenticidade & Alma Portuguesa
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase italic tracking-tight">
-              Os 3 Pilares da Experiência
+              {tr("Os 3 Pilares da Experiência")}
             </h2>
             <div className="w-16 h-1 bg-[#FF5500] rounded-full mx-auto shadow-sm shadow-[#FF5500]" />
           </motion.div>
@@ -166,7 +169,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
               <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-white/10">
                 <img
                   src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600"
-                  alt="Receituário & Memória"
+                  alt={tr("Receituário & Memória")}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-90"
                   referrerPolicy="no-referrer"
                   loading="lazy"
@@ -175,7 +178,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17] via-transparent to-transparent" />
                 <div className="absolute bottom-2.5 left-3 inline-flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-bold text-slate-200 uppercase tracking-wider">
                   <CheckCircle2 size={12} className="text-[#FF5500]" />
-                  <span>Tradição Elevada</span>
+                  <span>{tr("Tradição Elevada")}</span>
                 </div>
               </div>
 
@@ -184,13 +187,13 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
                   Receituário & Memória
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                  Pratos icónicos portugueses confecionados com respeito pela tradição e técnicas de alta cozinha.
+                  {tr("Pratos icónicos portugueses confecionados com respeito pela tradição e técnicas de alta cozinha.")}
                 </p>
               </div>
 
               <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-slate-400 font-medium">
-                <span>Herança Lusa</span>
-                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">Alta Cozinha</span>
+                <span>{tr("Herança Lusa")}</span>
+                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">{tr("Alta Cozinha")}</span>
               </div>
             </motion.div>
 
@@ -214,7 +217,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
               <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-white/10">
                 <img
                   src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=600"
-                  alt="Ingredientes de Origem Local"
+                  alt={tr("Ingredientes de Origem Local")}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-90"
                   referrerPolicy="no-referrer"
                   loading="lazy"
@@ -229,16 +232,16 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
 
               <div className="space-y-3">
                 <h3 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider group-hover:text-[#FF5500] transition-colors">
-                  Ingredientes de Origem Local
+                  {tr("Ingredientes de Origem Local")}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                  Produtos frescos das nossas lotas, quintas e produtores locais selecionados manualmente pelo chef.
+                  {tr("Produtos frescos das nossas lotas, quintas e produtores locais selecionados manualmente pelo chef.")}
                 </p>
               </div>
 
               <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-slate-400 font-medium">
-                <span>Frescura Nacional</span>
-                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">Produtores Locais</span>
+                <span>{tr("Frescura Nacional")}</span>
+                <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">{tr("Produtores Locais")}</span>
               </div>
             </motion.div>
 
@@ -262,7 +265,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
               <div className="relative w-full h-36 rounded-2xl overflow-hidden border border-white/10">
                 <img
                   src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600"
-                  alt="O Conforto da Partilha"
+                  alt={tr("O Conforto da Partilha")}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 filter brightness-90"
                   referrerPolicy="no-referrer"
                   loading="lazy"
@@ -271,21 +274,21 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E17] via-transparent to-transparent" />
                 <div className="absolute bottom-2.5 left-3 inline-flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 text-[10px] font-bold text-slate-200 uppercase tracking-wider">
                   <Users size={12} className="text-[#FF5500]" />
-                  <span>Mesa de Família</span>
+                  <span>{tr("Mesa de Família")}</span>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <h3 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider group-hover:text-[#FF5500] transition-colors">
-                  O Conforto da Partilha
+                  {tr("O Conforto da Partilha")}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                  Ideal para almoços de família e jantares de celebração com o sabor e a fartura típicos da nossa mesa.
+                  {tr("Ideal para almoços de família e jantares de celebração com o sabor e a fartura típicos da nossa mesa.")}
                 </p>
               </div>
 
               <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs text-slate-400 font-medium">
-                <span>Confraternização</span>
+                <span>{tr("Confraternização")}</span>
                 <span className="text-[#FF5500] font-bold text-[11px] uppercase tracking-wider">Fartura & Sabor</span>
               </div>
             </motion.div>
@@ -307,15 +310,15 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
             {/* Backdrop Blur Info Pill */}
             <div className="inline-flex items-center justify-center gap-2.5 px-5 py-2.5 rounded-full bg-white/5 border border-white/15 backdrop-blur-md text-xs sm:text-sm font-bold text-slate-200 shadow-inner">
               <span className="w-2.5 h-2.5 rounded-full bg-[#FF5500] animate-pulse shadow-sm shadow-[#FF5500]" />
-              <span>62 Chefs e Menus de Tradicional Lusa disponíveis na sua área.</span>
+              <span>{tr("62 Chefs e Menus de Tradicional Lusa disponíveis na sua área.")}</span>
             </div>
 
             <div className="space-y-3 max-w-xl mx-auto">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase italic tracking-tight">
-                Pronto para Celebrar a Nossa Gastronomia?
+                {tr("Pronto para Celebrar a Nossa Gastronomia?")}
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 font-light leading-relaxed">
-                Aceda ao catálogo completo de menus tradicionais e traga a alma portuguesa à sua mesa.
+                {tr("Aceda ao catálogo completo de menus tradicionais e traga a alma portuguesa à sua mesa.")}
               </p>
             </div>
 
@@ -325,7 +328,7 @@ export const TradicionalLusaPage: React.FC<TradicionalLusaPageProps> = ({
                 onClick={() => onOpenAuth("register")}
                 className="w-full sm:w-auto px-9 py-4.5 bg-[#FF5500] hover:bg-[#E04B00] text-white font-extrabold text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-2xl shadow-[#FF5500]/30 hover:shadow-[#FF5500]/50 transition-all duration-300 active:scale-95 cursor-pointer inline-flex items-center justify-center gap-3"
               >
-                <span>Criar Conta / Entrar para Explorar Tradicional Lusa</span>
+                <span>{tr("Criar Conta / Entrar para Explorar Tradicional Lusa")}</span>
                 <ArrowRight size={18} />
               </button>
             </div>

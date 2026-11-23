@@ -4,6 +4,8 @@ import { ICONS } from "../constants";
 import { supabase, isSupabaseConfigured, isSupabaseReachable } from "../lib/supabaseClient";
 import { supabaseService, toValidUUID, ADMIN_SUPPORT_UUID } from "../services/supabaseService";
 
+import { tr } from "../lib/tr";
+import { useLanguage } from "../contexts/LanguageContext";
 interface ChatViewProps {
   currentUser: User;
   partnerId: string;
@@ -17,6 +19,7 @@ const ChatView: React.FC<ChatViewProps> = ({
   onBack,
   isReadOnly,
 }) => {
+  useLanguage();
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [partner, setPartner] = useState<User | null>(null);
@@ -176,7 +179,7 @@ const ChatView: React.FC<ChatViewProps> = ({
               <div className="flex items-center gap-1 mt-0.5">
                 <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
                 <span className="text-[7px] font-bold text-slate-400 uppercase tracking-wider">
-                  Online
+                  {tr("Online")}
                 </span>
               </div>
             </div>
@@ -222,7 +225,7 @@ const ChatView: React.FC<ChatViewProps> = ({
         {isReadOnly ? (
           <div className="max-w-2xl mx-auto p-3 bg-slate-50 rounded-xl border border-dashed border-slate-200 text-center">
             <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider italic">
-              O Ritual terminou. Esta conversa está em modo de visualização.
+              {tr("O Ritual terminou. Esta conversa está em modo de visualização.")}
             </p>
           </div>
         ) : (
@@ -230,7 +233,7 @@ const ChatView: React.FC<ChatViewProps> = ({
             <div className="flex-1 relative">
               <input
                 className="w-full h-10 px-4 pr-10 bg-slate-50 rounded-xl font-medium text-xs outline-none border border-transparent focus:border-orange-500 transition-all text-slate-800 placeholder-slate-400"
-                placeholder="Escreve a tua mensagem..."
+                placeholder={tr("Escreve a tua mensagem...")}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSend()}

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useTranslation as useI18nTranslation } from "react-i18next";
 import i18nInstance, { translations, Language } from "../i18n";
 import { supabaseService } from "../services/supabaseService";
+import { setTrLanguage } from "../lib/tr";
 
 export type { Language };
 
@@ -80,6 +81,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         // Ignore
       }
     }
+    setTrLanguage(lang);
     i18n.changeLanguage(lang);
     if (typeof document !== "undefined") {
       document.documentElement.lang = lang;
@@ -95,6 +97,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [language, i18n]);
 
+  setTrLanguage(language); // antes de qualquer filho renderizar
   const currentTranslations = translations[language] || translations.pt;
 
   const t = (key: string, variables?: Record<string, string | number>): string => {
