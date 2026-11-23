@@ -66,7 +66,8 @@ export interface User {
     floor?: string;
     zip_code?: string;
     city: string; 
-    isDefault: boolean 
+    isDefault: boolean;
+    notes?: string;
   }[];
   admin_notes?: string;
   rating?: number;

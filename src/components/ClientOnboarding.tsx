@@ -3,6 +3,16 @@ import { motion, AnimatePresence } from "motion/react";
 import { ICONS, PORTUGAL_CITIES } from "../constants";
 import PasswordStrength from "./PasswordStrength";
 import { formatPostalCode } from "../utils/formatters";
+import {
+  isValidEmail,
+  isValidPhone,
+  isValidNIF,
+  isValidPostalCode,
+  isValidName,
+  formatPhoneInput,
+  LEGAL_VERSION,
+} from "../utils/validators";
+import ConsentSection, { ConsentState } from "./ConsentSection";
 
 import { tr } from "../lib/tr";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -42,6 +52,32 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
     cuisine_preferences: [] as string[],
     kitchenNotes: "",
   });
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const touch = (k: string) => setTouched((t) => ({ ...t, [k]: true }));
+  const [consents, setConsents] = useState<ConsentState>({
+    terms_accepted: false,
+    privacy_accepted: false,
+    age_confirmed: false,
+    marketing_opt_in: false,
+  });
+  const consentsOk = consents.terms_accepted && consents.privacy_accepted && consents.age_confirmed;
+  const FieldError: React.FC<{ show: boolean; msg: string }> = ({ show, msg }) =>
+    show ? <p role="alert" className="text-[11px] text-red-500 font-medium ml-2 mt-1">{msg}</p> : null;
+
+  const accountOk =
+    isValidName(formData.nome) &&
+    isValidEmail(formData.email) &&
+    isValidPhone(formData.telefone);
+  // Faturação é opcional; se o NIF for preenchido tem de estar completo e válido.
+  const fiscalFilled = !!formData.nif.trim();
+  const fiscalOk =
+    !fiscalFilled ||
+    (isValidNIF(formData.nif) &&
+      !!formData.billing_street.trim() &&
+      isValidPostalCode(formData.billing_zip) &&
+      !!formData.billing_city);
+  const addressOk =
+    !!formData.cidade && !!formData.morada.trim() && isValidPostalCode(formData.zip_code);
 
   const isPasswordStrong = (p: string) => {
     if (!p) return false;
@@ -60,14 +96,19 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
   };
 
   const handleComplete = async () => {
-    if (
-      formData.nome &&
-      formData.email &&
-      isPasswordStrong(formData.password)
-    ) {
+    if (accountOk && isPasswordStrong(formData.password) && fiscalOk && addressOk && consentsOk) {
       setIsSubmitting(true);
       try {
-        const success = await onComplete(formData);
+        const success = await onComplete({
+          ...formData,
+          email: formData.email.trim().toLowerCase(),
+          nome: formData.nome.trim().replace(/\s+/g, " "),
+          consents: {
+            ...consents,
+            version: LEGAL_VERSION,
+            accepted_at: new Date().toISOString(),
+          },
+        });
         if (success) {
           setIsAccountCreated(true);
           // O ecrã de sucesso fica visível por 3 segundos antes do redirecionamento (que é controlado pelo App.tsx mas aqui garantimos a visualização)
@@ -101,6 +142,10 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
     "Low Carb",
     "Sem Lactose",
     "Sem Frutos Secos",
+    "Sem Marisco",
+    "Sem Peixe",
+    "Sem Ovos",
+    "Sem Soja",
   ];
   const cuisineOptions = [
     "Italiana",
@@ -266,26 +311,35 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                         {tr("Nome Completo")}
                       </label>
                       <input
+                        autoComplete="name"
+                        maxLength={80}
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                         placeholder={tr("Nome")}
                         value={formData.nome}
+                        onBlur={() => touch("nome")}
                         onChange={(e) =>
                           setFormData({ ...formData, nome: e.target.value })
                         }
                       />
+                      <FieldError show={!!touched.nome && !isValidName(formData.nome)} msg={tr("Indique o seu nome.")} />
                     </div>
                     <div className="space-y-1.5 text-left">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
                         {tr("Telemóvel")}
                       </label>
                       <input
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="tel"
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                         placeholder={tr("9xx xxx xxx")}
                         value={formData.telefone}
+                        onBlur={() => touch("telefone")}
                         onChange={(e) =>
-                          setFormData({ ...formData, telefone: e.target.value })
+                          setFormData({ ...formData, telefone: formatPhoneInput(e.target.value) })
                         }
                       />
+                      <FieldError show={!!touched.telefone && !isValidPhone(formData.telefone)} msg={tr("Indique um telemóvel válido (ex.: 912 345 678).")} />
                     </div>
                   </div>
                   <div className="space-y-1.5 text-left">
@@ -293,13 +347,21 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                       {tr("Email")}
                     </label>
                     <input
+                      type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
                       className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                       placeholder={tr("seu@email.com")}
                       value={formData.email}
+                      onBlur={() => touch("email")}
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
                       }
                     />
+                    <FieldError show={!!touched.email && !isValidEmail(formData.email)} msg={tr("Indique um email válido.")} />
                   </div>
                   <div className="space-y-1.5 text-left relative">
                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
@@ -307,6 +369,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     </label>
                     <input
                       type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
                       className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                       placeholder={tr("Mínimo 8 caracteres")}
                       value={formData.password}
@@ -317,6 +380,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? tr("Ocultar palavra-passe") : tr("Mostrar palavra-passe")}
                       className="absolute right-4 bottom-3 text-slate-300 hover:text-slate-950 transition-colors"
                     >
                       {showPassword ? (
@@ -332,11 +396,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
 
                 <button
                   onClick={() => setStep(2)}
-                  disabled={
-                    !formData.nome ||
-                    !formData.email ||
-                    !isPasswordStrong(formData.password)
-                  }
+                  disabled={!accountOk || !isPasswordStrong(formData.password)}
                   className="w-full h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none transition-all active:scale-[0.98]"
                 >
                   {tr("Continuar para Dados Fiscais")}
@@ -362,7 +422,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     {tr("Dados de")} <span className="text-orange-500">{tr("Faturação.")}</span>
                   </h2>
                   <p className="text-[11px] font-medium text-slate-400 italic">
-                    {tr("Necessário para a emissão de faturas legais.")}
+                    {tr("Opcional: só é necessário se quiser fatura com NIF. Pode saltar e adicionar mais tarde no perfil.")}
                   </p>
                 </div>
 
@@ -373,13 +433,17 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                         {tr("NIF")}
                       </label>
                       <input
+                        inputMode="numeric"
+                        maxLength={9}
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                         placeholder={tr("Ex: 123456789")}
                         value={formData.nif}
+                        onBlur={() => touch("nif")}
                         onChange={(e) =>
-                          setFormData({ ...formData, nif: e.target.value })
+                          setFormData({ ...formData, nif: e.target.value.replace(/\D/g, "").slice(0, 9) })
                         }
                       />
+                      <FieldError show={!!touched.nif && fiscalFilled && !isValidNIF(formData.nif)} msg={tr("NIF inválido. Confirme os 9 dígitos.")} />
                     </div>
                     <div className="space-y-1.5">
                       <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-2">
@@ -470,7 +534,9 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                               billing_zip: formatZipCode(e.target.value),
                             })
                           }
+                          onBlur={() => touch("billing_zip")}
                         />
+                        <FieldError show={!!touched.billing_zip && fiscalFilled && !isValidPostalCode(formData.billing_zip)} msg={tr("Formato 0000-000.")} />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[8px] font-black text-slate-300 uppercase tracking-widest ml-2">
@@ -554,7 +620,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   </button>
                   <button
                     onClick={() => {
-                      if (formData.use_as_main_address) {
+                      if (formData.use_as_main_address && fiscalFilled) {
                         setFormData({
                           ...formData,
                           morada: `${formData.billing_street}${formData.billing_number ? ", " + formData.billing_number : ""}${formData.billing_floor ? ", " + formData.billing_floor : ""}`,
@@ -564,9 +630,10 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                       }
                       setStep(3);
                     }}
-                    className="flex-1 h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 transition-all cursor-pointer"
+                    disabled={!fiscalOk}
+                    className="flex-1 h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none transition-all cursor-pointer"
                   >
-                    {tr("Próximo Passo")}
+                    {fiscalFilled ? tr("Próximo Passo") : tr("Saltar por agora")}
                   </button>
                 </div>
               </motion.div>
@@ -625,10 +692,13 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                         {tr("Código Postal")}
                       </label>
                       <input
+                        inputMode="numeric"
+                        autoComplete="postal-code"
                         className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
                         placeholder="0000-000"
                         value={formData.zip_code}
                         maxLength={8}
+                        onBlur={() => touch("zip_code")}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
@@ -636,6 +706,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                           })
                         }
                       />
+                      <FieldError show={!!touched.zip_code && !isValidPostalCode(formData.zip_code)} msg={tr("Formato 0000-000.")} />
                     </div>
                   </div>
                   <div className="space-y-1.5">
@@ -644,7 +715,8 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                     </label>
                     <input
                       className="w-full h-12 px-5 bg-slate-50/50 rounded-xl font-bold text-sm outline-none border border-transparent focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                      placeholder={tr("Onde o Chef deve cozinhar")}
+                      autoComplete="street-address"
+                      placeholder={tr("Rua, número, andar (onde o Chef deve cozinhar)")}
                       value={formData.morada}
                       onChange={(e) =>
                         setFormData({ ...formData, morada: e.target.value })
@@ -662,7 +734,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   </button>
                   <button
                     onClick={() => setStep(4)}
-                    disabled={!formData.cidade || !formData.morada}
+                    disabled={!addressOk}
                     className="flex-1 h-13 bg-slate-950 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-orange-500 disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none transition-all cursor-pointer"
                   >
                     {tr("Personalizar Gostos")}
@@ -718,7 +790,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                               : "bg-white text-slate-400 border-slate-100 hover:border-slate-200 hover:bg-slate-50"
                           }`}
                         >
-                          {opt}
+                          {tr(opt as any) as any}
                         </button>
                       ))}
                     </div>
@@ -748,7 +820,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                               : "bg-white text-slate-400 border-slate-100 hover:border-slate-200 hover:bg-slate-50"
                           }`}
                         >
-                          {opt}
+                          {tr(opt as any) as any}
                         </button>
                       ))}
                     </div>
@@ -772,6 +844,8 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   </div>
                 </div>
 
+                <ConsentSection value={consents} onChange={setConsents} healthData />
+
                 <div className="flex gap-4">
                   <button
                     onClick={() => setStep(3)}
@@ -781,9 +855,9 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
                   </button>
                   <button
                     onClick={() => setShowConfirmModal(true)}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !consentsOk}
                     className={`flex-1 h-13 rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg transition-all flex items-center justify-center gap-2.5 ${
-                      !isSubmitting
+                      !isSubmitting && consentsOk
                         ? "bg-slate-950 text-white hover:bg-orange-500 active:scale-[0.98] cursor-pointer"
                         : "bg-slate-100 text-slate-300 cursor-not-allowed"
                     }`}
