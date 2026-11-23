@@ -15,6 +15,8 @@ Ordem de aplicação (SQL Editor do projeto Supabase da Cookr):
 9. `migrations/20261123050000_challenge_submissions.sql` — candidaturas a desafios do chef.
 10. `migrations/20261123060000_chef_live_agenda.sql` — chef online/offline em tempo real e reservas sem sobreposição (3 h).
 11. `migrations/20261123070000_haccp_favoritos_espera.sql` — tabelas e permissões de HACCP, favoritos e lista de espera.
+12. `migrations/20261123080000_save_my_private.sql` — função segura para guardar NIF/IBAN/faturação.
+13. `migrations/20261123090000_booking_sanity.sql` — validações de sanidade em reservas.
 
 Depois do passo 3, confirme que o administrador existe em `public.profiles` com `role = 'admin'`:
 

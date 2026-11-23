@@ -1718,7 +1718,7 @@ export const supabaseService = {
         status: data.status || BookingStatus.PENDING,
         is_meal_prep: data.is_meal_prep ?? false,
         is_finalizing: data.is_finalizing ?? false,
-        service_pin: data.service_pin || Math.floor(1000 + Math.random() * 9000).toString(),
+        service_pin: data.service_pin || (() => { const a = new Uint32Array(1); crypto.getRandomValues(a); return String(1000 + (a[0] % 9000)); })(),
         kitchen_notes: data.kitchenNotes || '',
         restrictions: data.restrictions || [],
         guests: data.guests || [],

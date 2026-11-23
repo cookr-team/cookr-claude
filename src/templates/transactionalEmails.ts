@@ -14,12 +14,34 @@ const BRAND_BG = '#f8fafc';
 const BRAND_CARD = '#ffffff';
 const BRAND_BORDER = '#e2e8f0';
 
-function getAppUrl(explicitUrl?: string): string {
-  if (explicitUrl) return explicitUrl;
-  if (typeof process !== 'undefined' && process.env?.APP_URL) {
-    return process.env.APP_URL;
-  }
+/** Escapa HTML: todo o texto vindo de utilizadores (nomes, moradas, motivos) é tratado como texto simples. */
+export function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/[\r\n]+/g, ' ')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function baseAppUrl(): string {
+  if (typeof process !== 'undefined' && process.env?.APP_URL) return process.env.APP_URL;
   return 'https://cookr.pt';
+}
+
+/** Só aceita ligações https (ou http em localhost) para o mesmo domínio da app; caso contrário usa o domínio da app. */
+function getAppUrl(explicitUrl?: string): string {
+  const fallback = baseAppUrl();
+  if (!explicitUrl) return fallback;
+  try {
+    const u = new URL(explicitUrl);
+    const base = new URL(fallback);
+    if ((u.protocol === 'https:' || u.protocol === 'http:') && u.host === base.host) return u.toString();
+  } catch {
+    /* ignora */
+  }
+  return fallback;
 }
 
 function renderBaseHtml({
@@ -263,9 +285,13 @@ function renderBookingTable(
 
 export function renderEmail(payload: EmailPayload): RenderedEmail {
   const lang = (payload.language || 'pt') as SupportedLanguage;
-  const data = payload.data || {};
-  const recipientName = payload.recipientName || data.clientName || data.cookName || 'Estimado Utilizador';
-  const appUrl = getAppUrl(data.actionUrl);
+  const rawData = payload.data || {};
+  const appUrl = getAppUrl(rawData.actionUrl);
+  // Escapa todos os campos de texto antes de entrarem nos modelos HTML.
+  const data = Object.fromEntries(
+    Object.entries(rawData).map(([k, v]) => [k, typeof v === 'string' ? escapeHtml(v) : v])
+  ) as typeof rawData;
+  const recipientName = escapeHtml(payload.recipientName || rawData.clientName || rawData.cookName || 'Estimado Utilizador');
 
   switch (payload.emailType) {
     // ==========================================

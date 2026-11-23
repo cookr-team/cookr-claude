@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { persistableUser } from "../lib/persistUser";
 import { User, CertificationOrAward, ChefFAQItem } from "../types";
 import { ICONS, CUISINES, PORTUGAL_CITIES, formatPrice, SUSTAINABILITY_BADGES_LIST, ALLERGEN_CERTIFICATIONS_LIST } from "../constants";
 import { supabaseService } from "../services/supabaseService";
@@ -218,7 +219,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
     const draftKey = `cook_profile_draft_${user.id}`;
     try {
       sessionStorage.setItem(draftKey, JSON.stringify(newUserData));
-      localStorage.setItem("cookr_user", JSON.stringify(newUserData));
+      localStorage.setItem("cookr_user", JSON.stringify(persistableUser(newUserData)));
     } catch (_) {}
 
     onNotify?.(tr("Certificação/Prémio guardado!"), "success");
@@ -242,7 +243,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
     const draftKey = `cook_profile_draft_${user.id}`;
     try {
       sessionStorage.setItem(draftKey, JSON.stringify(newUserData));
-      localStorage.setItem("cookr_user", JSON.stringify(newUserData));
+      localStorage.setItem("cookr_user", JSON.stringify(persistableUser(newUserData)));
     } catch (_) {}
 
     onNotify?.(tr("Certificação removida."), "info");
@@ -339,7 +340,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
     const draftKey = `cook_profile_draft_${user.id}`;
     try {
       sessionStorage.setItem(draftKey, JSON.stringify(newUserData));
-      localStorage.setItem("cookr_user", JSON.stringify(newUserData));
+      localStorage.setItem("cookr_user", JSON.stringify(persistableUser(newUserData)));
     } catch (_) {}
 
     onNotify?.(tr("Pergunta de FAQ guardada no perfil!"), "success");
@@ -362,7 +363,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
     const draftKey = `cook_profile_draft_${user.id}`;
     try {
       sessionStorage.setItem(draftKey, JSON.stringify(newUserData));
-      localStorage.setItem("cookr_user", JSON.stringify(newUserData));
+      localStorage.setItem("cookr_user", JSON.stringify(persistableUser(newUserData)));
     } catch (_) {}
 
     onNotify?.(tr("Pergunta de FAQ removida."), "info");

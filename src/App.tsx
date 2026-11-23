@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, Suspense, useCallback } from "react";
+import { persistableUser } from "./lib/persistUser";
 import Layout from "./components/Layout";
 import LandingPage from "./components/LandingPage";
 import Logo from "./components/Logo";
@@ -216,7 +217,7 @@ const App: React.FC = () => {
            if (currentUser.language !== savedExplicit) {
              const updated = { ...currentUser, language: savedExplicit as any };
              setCurrentUser(updated);
-             localStorage.setItem("cookr_user", safeJSONStringify(updated));
+             localStorage.setItem("cookr_user", safeJSONStringify(persistableUser(updated)));
              supabaseService.updateUserProfile(currentUser.id, { language: savedExplicit as any }).catch(() => {});
            }
          } else if (currentUser.language && currentUser.language !== language) {
@@ -230,7 +231,7 @@ const App: React.FC = () => {
            // Update local user state
            const updatedUser = { ...currentUser, language };
            setCurrentUser(updatedUser);
-           localStorage.setItem("cookr_user", safeJSONStringify(updatedUser));
+           localStorage.setItem("cookr_user", safeJSONStringify(persistableUser(updatedUser)));
            
            // Persist to database asynchronously
            supabaseService.updateUserProfile(currentUser.id, { language })
@@ -285,7 +286,7 @@ const App: React.FC = () => {
       if (cleaned) {
         setCurrentUser(cleaned);
         try {
-          localStorage.setItem("cookr_user", safeJSONStringify(cleaned));
+          localStorage.setItem("cookr_user", safeJSONStringify(persistableUser(cleaned)));
         } catch (e) {
           console.error("Failed to serialize user to localStorage:", e);
         }
@@ -1119,7 +1120,7 @@ const App: React.FC = () => {
           const parsed = JSON.parse(saved);
           if (parsed && parsed.id && !isValidUUID(parsed.id)) {
             parsed.id = toValidUUID(parsed.id);
-            localStorage.setItem("cookr_user", JSON.stringify(parsed));
+            localStorage.setItem("cookr_user", JSON.stringify(persistableUser(parsed)));
           }
         }
       } catch (e) {
