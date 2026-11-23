@@ -4388,6 +4388,15 @@ const AvailabilityManager: React.FC<{
     };
   }, [selectedDate, chef?.id]);
 
+  // Tempo real: se a agenda mudar no servidor (nova reserva, outro dispositivo), atualiza o ecrã.
+  useEffect(() => {
+    if (!chef?.disponibilidade) return;
+    const live = parseDispo(chef.disponibilidade);
+    setAllDispo(live);
+    setSelectedSlots((prev) => (hasPendingChanges ? prev : live[selectedDate] || []));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chef?.disponibilidade]);
+
   const timeSlots = useMemo(() => {
     const slots: string[] = [];
     for (let h = 8; h <= 23; h++) {
@@ -4405,30 +4414,29 @@ const AvailabilityManager: React.FC<{
   const persistSlots = async (newSlots: string[], showFeedbackToast = false) => {
     if (!chef?.id) return;
     setIsSaving(true);
-
-    const updatedDispo = { ...allDispo, [selectedDate]: newSlots };
-    setAllDispo(updatedDispo);
-
     try {
-      const success = await supabaseService.saveChefAvailability(
-        chef.id,
-        selectedDate,
-        newSlots,
-        updatedDispo
-      );
-
-      if (success) {
-        setHasPendingChanges(false);
-        if (showFeedbackToast) {
-          onNotify?.(t("agenda.toast_saved", { date: selectedDate }), "success");
-        }
-        onRefresh?.();
-      } else {
-        onNotify?.(tr("Aviso: Falha ao sincronizar totalmente na base de dados."), "error");
+      const saved = await supabaseService.setChefDaySlots(selectedDate, newSlots);
+      setAllDispo((prev) => ({ ...prev, [selectedDate]: saved }));
+      setSelectedSlots(saved);
+      setHasPendingChanges(false);
+      const removed = newSlots.filter((s) => !saved.includes(s));
+      if (removed.length > 0) {
+        onNotify?.(
+          tr("Alguns horários não ficaram livres porque já tem reservas nesse período (cada reserva ocupa 3 horas)."),
+          "info"
+        );
+      } else if (showFeedbackToast) {
+        onNotify?.(t("agenda.toast_saved", { date: selectedDate }), "success");
       }
-    } catch (e) {
+      onRefresh?.();
+    } catch (e: any) {
       console.warn("Aviso ao persistir disponibilidade:", e);
-      onNotify?.(tr("Erro ao sincronizar disponibilidade na base de dados."), "error");
+      onNotify?.(e?.message || tr("Erro ao sincronizar disponibilidade na base de dados."), "error");
+      // volta ao que está guardado no servidor
+      supabaseService.getChefAvailability(chef.id, selectedDate).then((res) => {
+        setAllDispo(res.disponibilidade || {});
+        setSelectedSlots(res.slots || []);
+      }).catch(() => {});
     } finally {
       setIsSaving(false);
     }
@@ -4710,7 +4718,7 @@ const CookDashboard: React.FC<CookDashboardProps> = ({
                   } catch (e) {
                     // Revert state if failed
                     setLocalIsAvailable(chefUser.isAvailable);
-                    onNotify?.(tr("Erro ao atualizar estado de disponibilidade."), "error");
+                    onNotify?.((e as any)?.message || tr("Erro ao atualizar estado de disponibilidade."), "error");
                   } finally {
                     setIsUpdatingAvailability(false);
                   }

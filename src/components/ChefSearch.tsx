@@ -17,7 +17,7 @@ import { DietaryBadges } from "./DietaryBadges";
 import { useLanguage } from "../contexts/LanguageContext";
 import { todayLocal, toLocalDateStr } from "../lib/dateUtils";
 
-import { tr } from "../lib/tr";
+import { tr, getTrLanguage } from "../lib/tr";
 const CuisineImage = ({ src, alt }: { src: string; alt: string }) => {
   const [hasError, setHasError] = useState(false);
 
@@ -257,83 +257,8 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
     const getLocalFallbackRecommendations = () => {
       console.log("[Recommendations Fallback] Generating premium local matches for", cuisinesToUse, restrictionsToUse);
       
-      if (availableMenus.length === 0) {
-        // Generate high-end synthetic fallback luxury menus
-        console.log("[Recommendations Fallback] No available menus found. Generating elite curated chef recommendations.");
-        
-        // Find any chef in system to route booking to, or fallback to mock
-        const actualChef = cooks && cooks.length > 0 ? cooks[0] : null;
-        const defaultCookId = actualChef ? actualChef.id : "mock_chef_default";
-        
-        return [
-          {
-            menuId: "synthetic_menu_alexandre",
-            matchScore: 97,
-            explanation: "Um tributo requintado à frescura do mar português e aos sabores rústicos da brasa, confecionado pelo nosso chef privado de elite para satisfazer os paladares mais exigentes.",
-            highlight: "Assinatura do Chef",
-            winePairingSuggestion: "Espumante Murganheira Vintage Bruto",
-            menu: {
-              id: "synthetic_menu_alexandre",
-              nome: "Menu Degustação Atlântico & Fogo",
-              descricao: "Menu premium de 4 pratos focado em peixe e marisco frescos da costa portuguesa grelhados na brasa, servido com legumes orgânicos e acompanhamentos tradicionais reinventados.",
-              preco: 145,
-              cuisine_type: "Portuguesa",
-              tags: ["Marisco", "Grelhado", "Peixe"],
-              dietary_tags: ["Glúten-Free"],
-              cookId: defaultCookId
-            },
-            chef: actualChef || {
-              id: defaultCookId,
-              nome: "Chef Alexandre Silva",
-              avatar_url: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=200&auto=format&fit=crop"
-            }
-          },
-          {
-            menuId: "synthetic_menu_vasco",
-            matchScore: 92,
-            explanation: "A reinterpretação sofisticada das receitas clássicas portuguesas sob o olhar vanguardista de um chef premiado. Um banquete de excelência absoluta no conforto do seu lar.",
-            highlight: "Herança Luxo",
-            winePairingSuggestion: "Barca Velha Douro Tinto",
-            menu: {
-              id: "synthetic_menu_vasco",
-              nome: "Menu Herança Contemporânea",
-              descricao: "Uma viagem gastronómica de 5 pratos pelas memórias das tabernas portuguesas, elevada pelas técnicas modernas de empratamento e alta gastronomia de autor.",
-              preco: 160,
-              cuisine_type: "Portuguesa",
-              tags: ["Autor", "Carne", "Tradicional"],
-              dietary_tags: [],
-              cookId: defaultCookId
-            },
-            chef: actualChef || {
-              id: defaultCookId,
-              nome: "Chef Vasco Coelho",
-              avatar_url: "https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=200&auto=format&fit=crop"
-            }
-          },
-          {
-            menuId: "synthetic_menu_joana",
-            matchScore: 89,
-            explanation: "Um hino à frescura biológica da terra. Uma coreografia sublime de texturas e cores puramente vegetais, criada para surpreender e encantar o seu paladar.",
-            highlight: "Alta Cozinha Botânica",
-            winePairingSuggestion: "Anselmo Mendes Alvarinho Curtimenta",
-            menu: {
-              id: "synthetic_menu_joana",
-              nome: "Menu Essência Botânica",
-              descricao: "Um banquete vegetariano requintado de 4 pratos focado em vegetais da época, fermentações caseiras e emulsões aromáticas ricas em sabor e requinte.",
-              preco: 115,
-              cuisine_type: "Vegetariana",
-              tags: ["Orgânico", "Vegetariano", "Sazonal"],
-              dietary_tags: ["Vegano", "Vegetariano"],
-              cookId: defaultCookId
-            },
-            chef: actualChef || {
-              id: defaultCookId,
-              nome: "Chef Joana Bárrios",
-              avatar_url: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop"
-            }
-          }
-        ];
-      }
+      // Sem menus reais disponíveis não há recomendações (nunca inventamos menus nem chefs).
+      if (availableMenus.length === 0) return [];
 
       const scored = availableMenus.map(menu => {
         let score = 55; // base score
@@ -452,7 +377,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
       const response = await apiFetch("/api/gemini/recommendations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cuisinesToUse, restrictionsToUse, lightweightMenus })
+        body: JSON.stringify({ cuisinesToUse, restrictionsToUse, lightweightMenus, language: getTrLanguage() })
       });
 
       if (!response.ok) {

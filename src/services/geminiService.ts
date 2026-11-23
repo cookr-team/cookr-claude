@@ -1,4 +1,5 @@
 import { apiFetch } from "../lib/apiClient";
+import { tr, getTrLanguage } from "../lib/tr";
 
 export class GeminiService {
   async chatConcierge(
@@ -11,16 +12,16 @@ export class GeminiService {
       const response = await apiFetch("/api/gemini/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userName, userRole, message, history }),
+        body: JSON.stringify({ userName, userRole, message, history, language: getTrLanguage() }),
       });
       if (!response.ok) {
         throw new Error("Failed to call chat api");
       }
       const data = await response.json();
-      return data.text || "Como posso elevar a sua experiência gastronómica hoje?";
+      return data.text || tr("Como posso elevar a sua experiência gastronómica hoje?");
     } catch (error) {
       console.error("Concierge Error:", error);
-      return "Lamento imenso, tive um pequeno contratempo técnico. Como posso ajudar de outra forma?";
+      return tr("Lamento imenso, tive um pequeno contratempo técnico. Como posso ajudar de outra forma?");
     }
   }
 
@@ -62,15 +63,15 @@ export class GeminiService {
       const response = await apiFetch("/api/gemini/suggest-bio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, specialties }),
+        body: JSON.stringify({ name, specialties, language: getTrLanguage() }),
       });
       if (!response.ok) {
         throw new Error("Failed to call suggest-bio api");
       }
       const data = await response.json();
-      return data.bio || "Cozinheiro profissional dedicado à excelência culinária em ambientes privados.";
+      return data.bio || "";
     } catch {
-      return "Chef dedicado à criação de memórias gastronómicas exclusivas.";
+      return "";
     }
   }
 }
