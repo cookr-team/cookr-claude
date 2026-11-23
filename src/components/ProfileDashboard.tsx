@@ -428,12 +428,9 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = ""; // permite escolher outra vez o mesmo ficheiro
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        onNotify?.(tr("A imagem é demasiado grande. Máximo 2MB."), "error");
-        return;
-      }
-
+      // As fotos são comprimidas antes do envio (limite de 20 MB no serviço), por isso fotos de telemóvel são aceites.
       setUploading(true);
       try {
         const url = await supabaseService.uploadAvatar(user.id, file);

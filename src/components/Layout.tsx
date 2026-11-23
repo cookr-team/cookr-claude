@@ -82,6 +82,7 @@ const Layout: React.FC<LayoutProps> = ({
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [brokenAvatar, setBrokenAvatar] = useState<string | null>(null);
   const [isNotifCenterOpen, setIsNotifCenterOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -336,9 +337,10 @@ const Layout: React.FC<LayoutProps> = ({
                 className="flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-colors cursor-pointer"
               >
                 <div className="w-8 h-8 rounded-lg bg-slate-900 overflow-hidden border border-white/10 shrink-0 flex items-center justify-center">
-                  {user.avatar_url && user.avatar_url !== "" ? (
+                  {user.avatar_url && user.avatar_url !== "" && user.avatar_url !== brokenAvatar ? (
                     <img
                       src={user.avatar_url}
+                      onError={() => setBrokenAvatar(user.avatar_url || null)}
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                       alt={user.nome}
@@ -380,7 +382,7 @@ const Layout: React.FC<LayoutProps> = ({
         {/* Mobile Header */}
         {user && (
           <>
-            <header className="md:hidden fixed top-0 left-0 right-0 h-[calc(4rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] bg-white/95 border-b border-slate-100 flex items-center justify-between px-3 sm:px-5 z-40 backdrop-blur-xl">
+            <header className="md:hidden fixed top-0 left-0 right-0 h-[calc(4rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] bg-white/95 border-b border-slate-100 flex items-center justify-between px-3 sm:px-5 z-[55] backdrop-blur-xl">
               <Logo size="sm" onClick={() => onNavigate("search")} />
               <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                 {/* Notification Bell Mobile */}
@@ -401,9 +403,10 @@ const Layout: React.FC<LayoutProps> = ({
                   onClick={() => onNavigate("profile")}
                   className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-50 overflow-hidden border border-slate-150 shrink-0 cursor-pointer flex items-center justify-center"
                 >
-                  {user.avatar_url && user.avatar_url !== "" ? (
+                  {user.avatar_url && user.avatar_url !== "" && user.avatar_url !== brokenAvatar ? (
                     <img
                       src={user.avatar_url}
+                      onError={() => setBrokenAvatar(user.avatar_url || null)}
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                       alt={user.nome}
@@ -439,9 +442,10 @@ const Layout: React.FC<LayoutProps> = ({
               {/* User Header in Menu */}
               <div className="flex items-center gap-3.5 pb-4 border-b border-white/10">
                 <div className="w-12 h-12 rounded-xl bg-slate-900 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
-                  {user.avatar_url && user.avatar_url !== "" ? (
+                  {user.avatar_url && user.avatar_url !== "" && user.avatar_url !== brokenAvatar ? (
                     <img
                       src={user.avatar_url}
+                      onError={() => setBrokenAvatar(user.avatar_url || null)}
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                       alt={user.nome}

@@ -203,7 +203,7 @@ export const PremiumToastContainer: React.FC<PremiumToastContainerProps> = ({ to
   };
 
   return (
-    <div aria-live="polite" role="status" className="fixed top-[calc(env(safe-area-inset-top,0px)+1rem)] left-1/2 -translate-x-1/2 z-[20000] flex flex-col gap-2.5 pointer-events-none w-full max-w-[340px] px-4">
+    <div aria-live="polite" role="status" className="fixed top-[calc(env(safe-area-inset-top,0px)+4.75rem)] md:top-[calc(env(safe-area-inset-top,0px)+1rem)] left-1/2 -translate-x-1/2 z-[20000] flex flex-col gap-2.5 pointer-events-none w-full max-w-[340px] px-4">
       <AnimatePresence mode="popLayout">
         {toasts.map((toast) => (
           <PremiumToast key={toast.id} toast={toast} onClose={handleClose} />

@@ -1721,5 +1721,6 @@
 "Alguns horários não ficaram livres porque já tem reservas nesse período (cada reserva ocupa 3 horas).": "Certains horaires n'ont pas été ouverts car vous avez déjà des réservations sur cette période (chaque réservation occupe 3 heures).",
 "Como posso elevar a sua experiência gastronómica hoje?": "Comment puis-je sublimer votre expérience gastronomique aujourd'hui ?",
 "Lamento imenso, tive um pequeno contratempo técnico. Como posso ajudar de outra forma?": "Je suis vraiment désolé, j'ai eu un petit contretemps technique. Comment puis-je vous aider autrement ?",
-"Desculpe, tive um pequeno precalço na cozinha. Pode repetir?": "Désolé, petit contretemps en cuisine. Pouvez-vous répéter ?"
+"Desculpe, tive um pequeno precalço na cozinha. Pode repetir?": "Désolé, petit contretemps en cuisine. Pouvez-vous répéter ?",
+"Não foi possível guardar as alterações no servidor. Termine a sessão, entre de novo e tente outra vez.": "Les modifications n'ont pas pu être enregistrées sur le serveur. Déconnectez-vous, reconnectez-vous et réessayez."
 }
