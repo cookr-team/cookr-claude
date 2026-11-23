@@ -59,7 +59,7 @@ import {
   BookingStatus,
   Review,
 } from "./types";
-import { supabaseService, sanitizeUserUrls, waitForAuthInit, isValidUUID, toValidUUID } from "./services/supabaseService";
+import { supabaseService, sanitizeUserUrls, waitForAuthInit, getVerifiedSessionUserId, isValidUUID, toValidUUID } from "./services/supabaseService";
 import { supabase, isSupabaseConfigured, isSupabaseReachable } from "./lib/supabaseClient";
 import { pushNotificationService } from "./services/pushNotificationService";
 import { syncOfflineBookings } from "./services/bookingQueue";
@@ -1096,6 +1096,21 @@ const App: React.FC = () => {
 
       try {
         await waitForAuthInit().catch(() => {}); // Ensure Supabase Auth session is ready
+
+        // Segurança: o utilizador guardado no browser só é aceite se existir uma sessão
+        // Supabase válida para o mesmo id. Evita "entrar" editando o localStorage.
+        const verifiedId = await getVerifiedSessionUserId();
+        if (verifiedId !== undefined) {
+          try {
+            const rawSaved = localStorage.getItem("cookr_user");
+            const savedUser = rawSaved ? JSON.parse(rawSaved) : null;
+            if (savedUser && (!verifiedId || savedUser.id !== verifiedId)) {
+              localStorage.removeItem("cookr_user");
+            }
+          } catch (_) {
+            localStorage.removeItem("cookr_user");
+          }
+        }
 
         const saved = localStorage.getItem("cookr_user");
         if (saved) {
