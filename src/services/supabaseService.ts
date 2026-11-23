@@ -588,6 +588,29 @@ export const saveReviewToLocalCache = (review: Review): void => {
 // SERVIÇO PRINCIPAL: supabaseService
 // =============================================================================
 
+/**
+ * Termina a sessão no Supabase e apaga do dispositivo os dados pessoais em cache
+ * (perfis de outros utilizadores, credenciais de demonstração).
+ * Mantém caches públicas (chefs/menus) e a fila offline, que é filtrada por utilizador.
+ */
+export const signOutAndClearLocalData = async (): Promise<void> => {
+  try {
+    await supabase.auth.signOut();
+  } catch (e) {
+    console.warn('[Supabase] signOut note:', e);
+  }
+  try {
+    localStorage.removeItem('cookr_user');
+    localStorage.removeItem(LOCAL_USERS_KEY);
+    localStorage.removeItem(LOCAL_CREDENTIALS_KEY);
+    localStorage.removeItem(LOCAL_REVIEWS_KEY);
+    localStorage.removeItem('cookr_admin_custom_tasks');
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('cookr_push_enabled_'))
+      .forEach(k => localStorage.removeItem(k));
+  } catch (_) {}
+};
+
 export const supabaseService = {
   // Autenticação delegada
   ...supabaseAuthService,

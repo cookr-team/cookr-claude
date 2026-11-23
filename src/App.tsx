@@ -59,7 +59,7 @@ import {
   BookingStatus,
   Review,
 } from "./types";
-import { supabaseService, sanitizeUserUrls, waitForAuthInit, getVerifiedSessionUserId, isValidUUID, toValidUUID } from "./services/supabaseService";
+import { supabaseService, signOutAndClearLocalData, sanitizeUserUrls, waitForAuthInit, getVerifiedSessionUserId, isValidUUID, toValidUUID } from "./services/supabaseService";
 import { supabase, isSupabaseConfigured, isSupabaseReachable } from "./lib/supabaseClient";
 import { pushNotificationService } from "./services/pushNotificationService";
 import { syncOfflineBookings } from "./services/bookingQueue";
@@ -1050,10 +1050,13 @@ const App: React.FC = () => {
     }
     localStorage.removeItem("cookr_user");
     setCurrentUser(null);
+    setRealAdminUser(null);
     setBookings([]);
     setUsers([]);
     setReviews([]);
     navigateTo("landing");
+    // Termina a sessão no Supabase e limpa dados pessoais guardados no dispositivo.
+    signOutAndClearLocalData().catch(() => {});
   };
 
   const handleUpdateUser = async (data: Partial<User>) => {
