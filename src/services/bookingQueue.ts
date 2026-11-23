@@ -64,7 +64,29 @@ export function initOfflineDB(): Promise<IDBDatabase> {
   });
 }
 
+/** Verdadeiro enquanto a fila está a ser reenviada: nessa altura uma falha de rede NUNCA pode voltar a enfileirar a ação. */
+let replaying = false;
+
+const MAX_ATTEMPTS = 5;
+const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const ATTEMPTS_KEY = 'offline_attempts_v1';
+const MIN_SYNC_INTERVAL_MS = 10_000;
+const ERROR_TOAST_INTERVAL_MS = 60_000;
+let lastSyncAt = 0;
+let lastErrorToastAt = 0;
+
+function readAttempts(): Record<string, number> {
+  try { return JSON.parse(localStorage.getItem(ATTEMPTS_KEY) || '{}'); } catch (_) { return {}; }
+}
+function writeAttempts(a: Record<string, number>) {
+  try { localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(a)); } catch (_) {}
+}
+
 export async function addOfflineAction(type: 'create' | 'update_status' | 'delete_booking', data: any): Promise<number> {
+  if (replaying) {
+    // Reenvio em curso: assinala falha de rede para a ação original ficar na fila (sem criar cópias).
+    throw new Error('network error: replay in progress');
+  }
   const userId = await getCurrentUserId();
   try {
     const db = await initOfflineDB();
@@ -135,10 +157,15 @@ export async function syncOfflineBookings(
 ): Promise<void> {
   // Evita sincronizações em paralelo (arranque + evento 'online' + Service Worker) que duplicariam reservas.
   if (syncInFlight) return;
+  // Limita a frequência: vários gatilhos seguidos (online, SW, arranque) não podem gerar rajadas.
+  if (Date.now() - lastSyncAt < MIN_SYNC_INTERVAL_MS) return;
   syncInFlight = true;
+  lastSyncAt = Date.now();
+  replaying = true;
   try {
     await runSync(onProgress);
   } finally {
+    replaying = false;
     syncInFlight = false;
   }
 }
@@ -159,12 +186,25 @@ async function runSync(
     .sort((a, b) => a.createdAt - b.createdAt);
   if (actions.length === 0) return;
 
-  if (onProgress) {
-    onProgress(`A sincronizar ${actions.length} ações offline pendentes...`, 'info');
-  }
-
   const service = await getService();
+  const attempts = readAttempts();
+  let applied = 0;
+  const errorToast = (msg: string) => {
+    if (!onProgress) return;
+    if (Date.now() - lastErrorToastAt < ERROR_TOAST_INTERVAL_MS) return;
+    lastErrorToastAt = Date.now();
+    onProgress(msg, 'error');
+  };
+
   for (const action of actions) {
+    const key = String(action.id);
+    // Ações demasiado antigas ou que já falharam várias vezes são descartadas (nunca ficam em ciclo).
+    if (Date.now() - action.createdAt > MAX_AGE_MS || (attempts[key] || 0) >= MAX_ATTEMPTS) {
+      if (action.id !== undefined) await removeOfflineAction(action.id);
+      delete attempts[key];
+      errorToast('Uma ação offline pendente expirou e foi descartada. Verifique as suas reservas.');
+      continue;
+    }
     try {
       if (action.type === 'create') {
         await service.createBooking(action.data);
@@ -179,25 +219,28 @@ async function runSync(
       if (action.id !== undefined) {
         await removeOfflineAction(action.id);
       }
+      delete attempts[key];
+      applied++;
     } catch (err: any) {
       console.warn('Error syncing offline action:', action, err);
       if (isNetworkError(err)) {
-        if (onProgress) {
-          onProgress('Falha na sincronização devido a erro de rede. Tentará novamente mais tarde.', 'error');
-        }
+        attempts[key] = (attempts[key] || 0) + 1;
+        writeAttempts(attempts);
+        errorToast('Falha na sincronização devido a erro de rede. Tentará novamente mais tarde.');
         return;
       } else {
         if (action.id !== undefined) {
           await removeOfflineAction(action.id);
         }
-        if (onProgress) {
-          onProgress(`Não foi possível aplicar ação offline: ${err.message || 'Erro desconhecido'}`, 'error');
-        }
+        delete attempts[key];
+        errorToast(`Não foi possível aplicar ação offline: ${err.message || 'Erro desconhecido'}`);
       }
     }
   }
+  writeAttempts(attempts);
 
-  if (onProgress) {
-    onProgress('Todas as ações de reserva offline foram sincronizadas com sucesso!', 'success');
+  // Só se anuncia sucesso quando algo foi realmente sincronizado.
+  if (onProgress && applied > 0) {
+    onProgress(`${applied} ${applied === 1 ? 'ação offline sincronizada' : 'ações offline sincronizadas'} com sucesso.`, 'success');
   }
 }
