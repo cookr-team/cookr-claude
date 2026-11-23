@@ -18,6 +18,7 @@ Ordem de aplicação (SQL Editor do projeto Supabase da Cookr):
 12. `migrations/20261123080000_save_my_private.sql` — função segura para guardar NIF/IBAN/faturação.
 13. `migrations/20261123090000_booking_sanity.sql` — validações de sanidade em reservas.
 14. `migrations/20261123100000_stripe_payments.sql` — pagamentos Stripe (estado dos pagamentos e contas Connect dos chefs).
+15. `migrations/20261123110000_chef_security_agenda_lock.sql` — agenda à prova de corridas, só chefs ativos/datas válidas, chefs por aprovar deixam de ser públicos.
 
 Depois do passo 3, confirme que o administrador existe em `public.profiles` com `role = 'admin'`:
 

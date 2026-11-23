@@ -827,6 +827,35 @@ const App: React.FC = () => {
     return activeRefresh.current;
   }, [currentUser, saveAndSetUser]);
 
+  // Tempo real: contador que força nova subscrição depois de falhas de rede, e estado da ligação.
+  const [rtEpoch, setRtEpoch] = useState(0);
+  const rtRetryRef = useRef(0);
+  const rtJoinedRef = useRef(false);
+
+  // Ao voltar a ter rede ou ao regressar ao separador: religa o tempo real (se caiu) e volta a
+  // ler reservas, chefs e agenda, para nada ficar desatualizado depois de um período offline.
+  useEffect(() => {
+    let last = 0;
+    const resync = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+      if (!rtJoinedRef.current) {
+        rtRetryRef.current = 0;
+        setRtEpoch((e) => e + 1);
+      }
+      if (Date.now() - last < 15000) return;
+      last = Date.now();
+      const u = currentUserRef.current;
+      if (u) refreshData(u).catch(() => {});
+    };
+    window.addEventListener("online", resync);
+    document.addEventListener("visibilitychange", resync);
+    return () => {
+      window.removeEventListener("online", resync);
+      document.removeEventListener("visibilitychange", resync);
+    };
+  }, [refreshData]);
+
   // SUBSCRIPÇÃO REALTIME ULTRA-RESILIENTE (SUPABASE)
   useEffect(() => {
     if (!isSupabaseConfigured() || !isSupabaseReachable()) {
@@ -1057,23 +1086,39 @@ const App: React.FC = () => {
     );
 
     channel.subscribe((status) => {
+      if (!isSubscribed) return;
       if (status === "SUBSCRIBED") {
         console.log(`[Supabase Realtime] Conectado com sucesso (${channelName})`);
-      } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-        console.warn(`[Supabase Realtime] Canal ${channelName} indisponível (${status}).`);
+        rtJoinedRef.current = true;
+        // Voltou depois de uma falha: lê tudo outra vez para recuperar o que se perdeu entretanto.
+        if (rtRetryRef.current > 0) {
+          rtRetryRef.current = 0;
+          const u = currentUserRef.current;
+          if (u) refreshData(u).catch(() => {});
+        }
+      } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+        console.warn(`[Supabase Realtime] Canal ${channelName} indisponível (${status}). A religar...`);
+        rtJoinedRef.current = false;
         try {
           supabase.removeChannel(channel);
         } catch {
           // ignore cleanup
         }
+        // Religa com espera crescente (1s, 2s, 4s... até 30s) em vez de ficar sem tempo real até recarregar.
+        const delay = Math.min(30000, 1000 * 2 ** Math.min(rtRetryRef.current, 5));
+        rtRetryRef.current += 1;
+        setTimeout(() => {
+          if (isSubscribed) setRtEpoch((e) => e + 1);
+        }, delay);
       }
     });
 
     return () => {
       isSubscribed = false;
+      rtJoinedRef.current = false;
       supabase.removeChannel(channel);
     };
-  }, [currentUser?.id, currentUser?.role]);
+  }, [currentUser?.id, currentUser?.role, rtEpoch]);
 
   const handleLogout = () => {
     if (currentUser?.id) {
