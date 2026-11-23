@@ -354,8 +354,14 @@ const App: React.FC = () => {
     console.log("[App.tsx] Cookr app initialized with Supabase backend.");
   }, []);
 
+  // Sempre o utilizador mais recente (evita closures antigas que reativavam a sessão depois do logout).
+  const currentUserRef = useRef<User | null>(null);
+  currentUserRef.current = currentUser;
+
   // Monitor offline actions, service worker registrations, and connection restoration
   useEffect(() => {
+    // Sem sessão não há nada para sincronizar nem para registar.
+    if (!currentUser?.id) return;
     // 1. Service Worker & Background Sync Registration
     try {
       if (typeof window !== "undefined" && typeof navigator !== "undefined" && "serviceWorker" in navigator && navigator.serviceWorker) {
@@ -418,7 +424,7 @@ const App: React.FC = () => {
       syncOfflineBookings((msg, type) => {
         addToast(msg, type);
         if (type === "success") {
-          refreshData(currentUser);
+          (currentUserRef.current ? refreshData(currentUserRef.current) : undefined);
         }
       }).catch((err) => {
         console.warn("Erro na sincronização automática offline:", err);
@@ -462,7 +468,7 @@ const App: React.FC = () => {
       syncOfflineBookings((msg, type) => {
         addToast(msg, type);
         if (type === "success") {
-          refreshData(currentUser);
+          (currentUserRef.current ? refreshData(currentUserRef.current) : undefined);
         }
       }).catch(err => {
         console.warn("Erro na sincronização de rituais:", err);
@@ -497,7 +503,7 @@ const App: React.FC = () => {
     if (typeof navigator !== "undefined" && navigator.onLine) {
       syncOfflineBookings((msg, type) => {
         if (type === "success") {
-          refreshData(currentUser);
+          (currentUserRef.current ? refreshData(currentUserRef.current) : undefined);
         }
       }).catch(err => {
         console.warn("Erro na sincronização inicial:", err);
@@ -513,7 +519,7 @@ const App: React.FC = () => {
         navigator.serviceWorker.removeEventListener("message", handleServiceWorkerMessage);
       }
     };
-  }, [currentUser]);
+  }, [currentUser?.id]);
 
   const ADMIN_EMAIL = "cookr.team@gmail.com";
 
@@ -1075,6 +1081,7 @@ const App: React.FC = () => {
       sessionStorage.removeItem(`cook_profile_draft_${currentUser.id}`);
     }
     localStorage.removeItem("cookr_user");
+    currentUserRef.current = null;
     setCurrentUser(null);
     setRealAdminUser(null);
     setBookings([]);

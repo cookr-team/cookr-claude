@@ -607,11 +607,24 @@ export const saveReviewToLocalCache = (review: Review): void => {
  * Mantém caches públicas (chefs/menus) e a fila offline, que é filtrada por utilizador.
  */
 export const signOutAndClearLocalData = async (): Promise<void> => {
+  // Terminar sessão global (com limite de tempo) e, aconteça o que acontecer, localmente:
+  // sem isto, uma falha de rede deixava a sessão no dispositivo e a app voltava a entrar sozinha.
   try {
-    await supabase.auth.signOut();
+    await Promise.race([
+      supabase.auth.signOut(),
+      new Promise((resolve) => setTimeout(resolve, 4000)),
+    ]);
   } catch (e) {
     console.warn('[Supabase] signOut note:', e);
   }
+  try {
+    await supabase.auth.signOut({ scope: 'local' });
+  } catch (_) {}
+  try {
+    Object.keys(localStorage)
+      .filter(k => /^sb-.*-auth-token/.test(k))
+      .forEach(k => localStorage.removeItem(k));
+  } catch (_) {}
   try {
     localStorage.removeItem('cookr_user');
     localStorage.removeItem(LOCAL_USERS_KEY);
