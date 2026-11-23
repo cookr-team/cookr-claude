@@ -1,3 +1,4 @@
+import { todayLocal } from "../lib/dateUtils";
 export { supabase } from '../lib/supabaseClient';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
 import { supabaseAuthService } from './supabaseAuthService';
@@ -1560,11 +1561,13 @@ export const supabaseService = {
     // Verificação de modo offline
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
       console.warn('[Offline Mode] Offline detected, queuing createBooking action');
-      await addOfflineAction('create', data);
+      // Id fixo desde já: se a sincronização repetir, não cria reservas duplicadas.
+      const stableId = data.id && isValidUUID(data.id) ? data.id : crypto.randomUUID();
+      await addOfflineAction('create', { ...data, id: stableId });
       window.dispatchEvent(new CustomEvent('offline-action-queued', { 
         detail: { type: 'create', message: 'Ligação offline. Reserva guardada na fila local e será sincronizada automaticamente!' } 
       }));
-      return { id: data.id || crypto.randomUUID(), offline: true };
+      return { id: stableId, offline: true };
     }
 
     try {
@@ -1646,13 +1649,19 @@ export const supabaseService = {
 
       return { id: bookingId };
     } catch (err: any) {
-      if (isNetworkError(err) || err?.code === '42501' || err?.message?.includes('row-level security')) {
-        console.warn('[Offline Mode] Network or RLS error, queuing createBooking action', err?.message || err);
-        await addOfflineAction('create', data);
+      if (err?.code === '23505' || String(err?.message || '').includes('uq_bookings_active_slot')) {
+        throw new Error('Este horário acabou de ser reservado por outra pessoa. Escolha outro horário.');
+      }
+      // Só falhas de rede vão para a fila. Erros de permissão (RLS) são reais e têm de chegar ao utilizador;
+      // antes eram re-enfileirados para sempre e a app dizia "guardada com sucesso".
+      if (isNetworkError(err)) {
+        console.warn('[Offline Mode] Network error, queuing createBooking action', err?.message || err);
+        const stableId = data.id && isValidUUID(data.id) ? data.id : crypto.randomUUID();
+        await addOfflineAction('create', { ...data, id: stableId });
         window.dispatchEvent(new CustomEvent('offline-action-queued', { 
-          detail: { type: 'create', message: 'Reserva guardada com sucesso localmente para sincronização!' } 
+          detail: { type: 'create', message: 'Sem ligação. Reserva guardada e será enviada automaticamente.' } 
         }));
-        return { id: data.id || crypto.randomUUID(), offline: true };
+        return { id: stableId, offline: true };
       }
       throw err;
     }
@@ -1818,7 +1827,7 @@ export const supabaseService = {
    */
   autoExpirePastBookings: async (userId?: string, role?: UserRole): Promise<void> => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = todayLocal();
       let query = supabase
         .from('bookings')
         .update({ status: BookingStatus.EXPIRED })

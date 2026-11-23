@@ -15,6 +15,7 @@ import ChefAvailabilityCalendar from "./ChefAvailabilityCalendar";
 import { DietaryBadges } from "./DietaryBadges";
 import { GoogleAddressAutocomplete, AddressData } from "./GoogleAddressAutocomplete";
 import { formatPostalCode } from "../utils/formatters";
+import { toLocalDateStr } from "../lib/dateUtils";
 
 export interface WineOption {
   id: string;
@@ -554,7 +555,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     }
 
     const now = new Date();
-    const todayStr = now.toISOString().split("T")[0];
+    const todayStr = toLocalDateStr(now);
 
     const dates = new Set(
       Object.keys(dispo).filter((date) => {
@@ -584,7 +585,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     }
 
     const now = new Date();
-    const todayStr = now.toISOString().split("T")[0];
+    const todayStr = toLocalDateStr(now);
     const isToday = selectedDate === todayStr;
 
     const scheduledToday = dispo[todayStr] || [];

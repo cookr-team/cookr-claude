@@ -5,6 +5,7 @@ import { User, BookingStatus, Booking, MenuItem } from "../types";
 import { supabaseService } from "../services/supabaseService";
 import { GoogleAddressAutocomplete } from "./GoogleAddressAutocomplete";
 import { formatPostalCode } from "../utils/formatters";
+import { todayLocal } from "../lib/dateUtils";
 
 interface QuoteRequestOnboardingProps {
   chef: User;
@@ -125,7 +126,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
         clientId: currentUser.id,
         clientName: currentUser.nome,
         cookName: chef.nome,
-        data: preferredDate || new Date().toISOString().split("T")[0],
+        data: preferredDate || todayLocal(),
         hora: preferredTime || "12:00",
         status: BookingStatus.QUOTE_REQUESTED,
         menu_selected:
@@ -472,7 +473,7 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
                   <div className="relative">
                     <input
                       type="date"
-                      min={new Date().toISOString().split("T")[0]}
+                      min={todayLocal()}
                       className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-6 text-white font-bold text-xs outline-none focus:border-orange-500 transition-all"
                       value={preferredDate}
                       onChange={(e) => setPreferredDate(e.target.value)}
