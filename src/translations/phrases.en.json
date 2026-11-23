@@ -1722,5 +1722,15 @@
 "Como posso elevar a sua experiência gastronómica hoje?": "How can I elevate your dining experience today?",
 "Lamento imenso, tive um pequeno contratempo técnico. Como posso ajudar de outra forma?": "I'm so sorry, I had a small technical hiccup. How else can I help?",
 "Desculpe, tive um pequeno precalço na cozinha. Pode repetir?": "Sorry, I hit a small snag in the kitchen. Could you repeat that?",
-"Não foi possível guardar as alterações no servidor. Termine a sessão, entre de novo e tente outra vez.": "Your changes could not be saved on the server. Sign out, sign in again and try once more."
+"Não foi possível guardar as alterações no servidor. Termine a sessão, entre de novo e tente outra vez.": "Your changes could not be saved on the server. Sign out, sign in again and try once more.",
+"Não foi possível atualizar os favoritos.": "Could not update your favourites.",
+"Não foi possível entrar na lista de espera.": "Could not join the waitlist.",
+"Não foi possível guardar a checklist HACCP.": "Could not save the HACCP checklist.",
+"Não foi possível guardar o registo HACCP.": "Could not save the HACCP record.",
+"Só pode avaliar reservas concluídas e uma única vez por reserva.": "You can only review completed bookings, once per booking.",
+"Sem ligação ao servidor. A avaliação não foi enviada, tente novamente.": "No connection to the server. Your review was not sent, please try again.",
+"Adicionado à lista de espera! Notificaremos se houver desistências para o dia {date}": "Added to the waitlist! We will notify you if there are cancellations for {date}.",
+"O chef já tem outra reserva perto dessa hora. Escolha um horário com pelo menos 3 horas de diferença.": "The chef already has another booking close to that time. Choose a time at least 3 hours apart.",
+"Alertas do dispositivo ativos enquanto a Cookr estiver aberta, para respostas de Chefs e confirmações.": "Device alerts are on while Cookr is open, for Chef replies and confirmations.",
+"Receba alertas no ecrã quando os Chefs aceitarem ou confirmarem serviços (com a Cookr aberta).": "Get on-screen alerts when Chefs accept or confirm services (while Cookr is open)."
 }

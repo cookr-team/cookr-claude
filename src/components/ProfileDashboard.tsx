@@ -17,6 +17,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 
+import { GIFT_CARDS_ENABLED } from "../config/features";
 import { tr, trLocale } from "../lib/tr";
 import { useLanguage } from "../contexts/LanguageContext";
 interface ProfileDashboardProps {
@@ -500,7 +501,9 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       setFavorites((prev) =>
         isFav ? [...prev, cookId] : prev.filter((id) => id !== cookId),
       );
-    } catch (e) {}
+    } catch (e: any) {
+      onNotify?.(e?.message || tr("Não foi possível atualizar os favoritos."), "error");
+    }
   };
 
   const handleQuickUpdateDietary = async (restriction: string) => {
@@ -792,12 +795,14 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
             >
               {tr("Pontos")}
             </button>
+{GIFT_CARDS_ENABLED && (
             <button
               onClick={() => setActiveTab("giftcards")}
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "giftcards" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
             >
               {tr("Vouchers")}
             </button>
+)}
             <button
               onClick={() => setActiveTab("settings")}
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "settings" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}

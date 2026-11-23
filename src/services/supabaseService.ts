@@ -612,6 +612,17 @@ export const signOutAndClearLocalData = async (): Promise<void> => {
   } catch (_) {}
 };
 
+/** O cliente Supabase devolve { error } em vez de lançar: sem esta verificação uma gravação recusada parecia bem-sucedida. */
+const assertWrite = (res: { error?: any } | null | undefined, friendly: string) => {
+  const err = res?.error;
+  if (!err) return;
+  if (isNetworkError(err) || err.code === 'SUPABASE_UNAVAILABLE') {
+    throw new Error(tr("Sem ligação ao servidor. Tente novamente."));
+  }
+  console.warn('[Supabase] gravação recusada:', err.message || err);
+  throw new Error(friendly);
+};
+
 export const supabaseService = {
   // Autenticação delegada
   ...supabaseAuthService,
@@ -1805,10 +1816,7 @@ export const supabaseService = {
           
           await emailService.sendBookingCreated(fullBooking, clientUser, cookUser);
 
-          // Se tiver valor liquidado na criação, confirma o pagamento
-          if (payload.valor_total && Number(payload.valor_total) > 0) {
-            await emailService.sendPaymentConfirmed(fullBooking, clientUser, cookUser);
-          }
+          // Sem pagamentos online não se envia "pagamento confirmado": ainda não foi cobrado nada.
         } catch (emailErr) {
           console.warn('[Email Booking Created Note]', emailErr);
         }
@@ -1929,6 +1937,10 @@ export const supabaseService = {
           detail: { type: 'update_status', message: 'Erro de rede. Mudança de estado agendada offline!' } 
         }));
         return { success: true, offline: true, error: null, message: 'Erro de rede. Ação agendada offline.' };
+      }
+      if (err?.code === '23P01' || String(err?.message || '').includes('slot_conflict')) {
+        const friendly = tr("O chef já tem outra reserva perto dessa hora. Escolha um horário com pelo menos 3 horas de diferença.");
+        return { success: false, error: new Error(friendly), message: friendly };
       }
       return { success: false, error: err, message: err?.message || 'Erro ao atualizar estado.' };
     }
@@ -2422,23 +2434,21 @@ export const supabaseService = {
     };
 
     const localReview = mapReviewRowToReview({ ...payload, created_at: new Date().toISOString() });
-    saveReviewToLocalCache(localReview);
     supabaseService.invalidateReviewsCache();
 
     try {
       const { error } = await supabase.from('reviews').insert(payload);
       if (error) {
-        if (
-          error.code === 'SUPABASE_UNAVAILABLE' ||
-          error.code === '42501' ||
-          error.message?.includes('row-level security') ||
-          isNetworkError(error)
-        ) {
-          console.warn('[Supabase] createReview saved locally:', error.message || error);
-          return { id: reviewId, local: true };
+        if (error.code === 'SUPABASE_UNAVAILABLE' || isNetworkError(error)) {
+          throw error; // tratado abaixo: sem ligação
+        }
+        if (error.code === '42501' || error.code === '23505' || error.message?.includes('row-level security')) {
+          // Recusado pelo servidor: só se avalia uma reserva concluída, uma vez por reserva.
+          throw new Error(tr("Só pode avaliar reservas concluídas e uma única vez por reserva."));
         }
         throw error;
       }
+      saveReviewToLocalCache(localReview);
 
       // Recalcular rating do Chef
       if (cookId) {
@@ -2463,13 +2473,8 @@ export const supabaseService = {
 
       return { id: reviewId };
     } catch (err: any) {
-      if (
-        err?.code === 'SUPABASE_UNAVAILABLE' ||
-        err?.code === '42501' ||
-        isNetworkError(err)
-      ) {
-        console.warn('[Supabase] createReview fallback note:', err?.message || err);
-        return { id: reviewId, local: true };
+      if (err?.code === 'SUPABASE_UNAVAILABLE' || isNetworkError(err)) {
+        throw new Error(tr("Sem ligação ao servidor. A avaliação não foi enviada, tente novamente."));
       }
       console.warn('[Supabase] createReview error:', err);
       throw err;
@@ -2718,13 +2723,13 @@ export const supabaseService = {
       .maybeSingle();
 
     if (existing) {
-      await supabase.from('favorites').delete().eq('id', existing.id);
+      assertWrite(await supabase.from('favorites').delete().eq('id', existing.id), tr("Não foi possível atualizar os favoritos."));
     } else {
-      await supabase.from('favorites').insert({
+      assertWrite(await supabase.from('favorites').insert({
         id: crypto.randomUUID(),
         client_id: clientId,
         cook_id: cookId,
-      });
+      }), tr("Não foi possível atualizar os favoritos."));
     }
 
     // Atualizar no array de favoritos do perfil
@@ -2752,17 +2757,13 @@ export const supabaseService = {
     const clientId = entry.client_id || entry.clientId;
     if (!cookId || !isValidUUID(cookId)) return { id };
 
-    try {
-      await supabase.from('waitlist').insert({
-        id,
-        cook_id: cookId,
-        client_id: (clientId && isValidUUID(clientId)) ? clientId : null,
-        preferred_date: entry.preferred_date || entry.preferredDate,
-        notes: entry.notes || '',
-      });
-    } catch (err) {
-      console.warn('[Supabase] joinWaitlist note:', err);
-    }
+    assertWrite(await supabase.from('waitlist').insert({
+      id,
+      cook_id: cookId,
+      client_id: (clientId && isValidUUID(clientId)) ? clientId : null,
+      preferred_date: entry.preferred_date || entry.preferredDate,
+      notes: entry.notes || '',
+    }), tr("Não foi possível entrar na lista de espera."));
     return { id };
   },
 
@@ -2855,7 +2856,7 @@ export const supabaseService = {
       observations: payload.observations || '',
       signature_checked: payload.signatureChecked,
     };
-    await supabase.from('haccp_checklists').insert(row);
+    assertWrite(await supabase.from('haccp_checklists').insert(row), tr("Não foi possível guardar a checklist HACCP."));
     return { ...payload, id, createdAt: new Date().toISOString() };
   },
 
@@ -2909,11 +2910,7 @@ export const supabaseService = {
       raw_ready_separation: payload.rawReadySeparation,
       observations: payload.observations || '',
     };
-    try {
-      await supabase.from('haccp_logs').insert(row);
-    } catch (err) {
-      console.warn('[Supabase] createHaccpLog note:', err);
-    }
+    assertWrite(await supabase.from('haccp_logs').insert(row), tr("Não foi possível guardar o registo HACCP."));
     return { ...payload, id, createdAt: new Date().toISOString() };
   },
 

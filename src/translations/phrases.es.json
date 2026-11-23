@@ -1722,5 +1722,15 @@
 "Como posso elevar a sua experiência gastronómica hoje?": "¿Cómo puedo elevar tu experiencia gastronómica hoy?",
 "Lamento imenso, tive um pequeno contratempo técnico. Como posso ajudar de outra forma?": "Lo siento mucho, tuve un pequeño contratiempo técnico. ¿En qué más puedo ayudarte?",
 "Desculpe, tive um pequeno precalço na cozinha. Pode repetir?": "Perdona, tuve un pequeño contratiempo en la cocina. ¿Puedes repetirlo?",
-"Não foi possível guardar as alterações no servidor. Termine a sessão, entre de novo e tente outra vez.": "No se pudieron guardar los cambios en el servidor. Cierra sesión, vuelve a entrar e inténtalo de nuevo."
+"Não foi possível guardar as alterações no servidor. Termine a sessão, entre de novo e tente outra vez.": "No se pudieron guardar los cambios en el servidor. Cierra sesión, vuelve a entrar e inténtalo de nuevo.",
+"Não foi possível atualizar os favoritos.": "No se pudieron actualizar los favoritos.",
+"Não foi possível entrar na lista de espera.": "No se pudo entrar en la lista de espera.",
+"Não foi possível guardar a checklist HACCP.": "No se pudo guardar la checklist HACCP.",
+"Não foi possível guardar o registo HACCP.": "No se pudo guardar el registro HACCP.",
+"Só pode avaliar reservas concluídas e uma única vez por reserva.": "Solo puedes valorar reservas completadas, una vez por reserva.",
+"Sem ligação ao servidor. A avaliação não foi enviada, tente novamente.": "Sin conexión con el servidor. La valoración no se envió, inténtalo de nuevo.",
+"Adicionado à lista de espera! Notificaremos se houver desistências para o dia {date}": "¡Añadido a la lista de espera! Te avisaremos si hay cancelaciones para el día {date}.",
+"O chef já tem outra reserva perto dessa hora. Escolha um horário com pelo menos 3 horas de diferença.": "El chef ya tiene otra reserva cerca de esa hora. Elige un horario con al menos 3 horas de diferencia.",
+"Alertas do dispositivo ativos enquanto a Cookr estiver aberta, para respostas de Chefs e confirmações.": "Alertas del dispositivo activas mientras Cookr esté abierta, para respuestas de chefs y confirmaciones.",
+"Receba alertas no ecrã quando os Chefs aceitarem ou confirmarem serviços (com a Cookr aberta).": "Recibe alertas en pantalla cuando los chefs acepten o confirmen servicios (con Cookr abierta)."
 }

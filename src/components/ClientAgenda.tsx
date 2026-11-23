@@ -720,8 +720,8 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       setComment("");
       setRating(5);
       onRefresh();
-    } catch (e) {
-      alert(tr("Erro ao enviar avaliação."));
+    } catch (e: any) {
+      alert(e?.message || tr("Erro ao enviar avaliação."));
     } finally {
       setIsSubmitting(false);
     }

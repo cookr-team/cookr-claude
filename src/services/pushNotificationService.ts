@@ -55,7 +55,7 @@ export const pushNotificationService = {
             localStorage.setItem(`cookr_push_enabled_${userId}`, 'true');
             await supabaseService.createNotification(
               userId,
-              'Notificações Push ativadas com sucesso! Receberá alertas em tempo real no seu dispositivo.',
+              'Alertas do dispositivo ativados. Receberá avisos no ecrã enquanto a Cookr estiver aberta.',
               'info'
             );
           }
