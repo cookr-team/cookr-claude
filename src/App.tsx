@@ -629,7 +629,7 @@ const App: React.FC = () => {
           boxShadow:
             "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
         },
-        icon: "🔔",
+        icon: "●",
       });
     }
   }, []);
@@ -2451,7 +2451,7 @@ const App: React.FC = () => {
         <div className="sticky top-[calc(4rem+env(safe-area-inset-top,0px))] md:top-0 z-[45] w-full bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 text-white px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs font-bold shadow-2xl border-b border-white/20 animate-in slide-in-from-top duration-300 gap-2">
           <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
             <span className="bg-white/20 backdrop-blur-sm px-2 sm:px-2.5 py-0.5 rounded-md text-[9px] sm:text-[9.5px] font-black tracking-widest uppercase shadow-2xs">
-              {tr("🚨 MODO SIMULAÇÃO")}
+              {tr("MODO SIMULAÇÃO")}
             </span>
             <span className="text-[10px] sm:text-[11px] font-medium">
               {tr("A visualizar como")} <strong className="underline decoration-amber-300 font-black">{currentUser?.nome}</strong> ({currentUser?.email} — <span className="uppercase font-bold">{currentUser?.role}</span>)

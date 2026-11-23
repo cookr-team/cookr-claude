@@ -136,8 +136,8 @@ export const pushNotificationService = {
     isQuoteRequest: boolean = false
   ): Promise<boolean> => {
     const title = isQuoteRequest
-      ? '🚨 Novo Pedido de Orçamento!'
-      : '👨‍🍳 Novo Pedido de Reserva Cookr!';
+      ? 'Novo Pedido de Orçamento!'
+      : 'Novo Pedido de Reserva Cookr!';
     
     const body = isQuoteRequest
       ? `${clientName || 'Um cliente'} solicitou um orçamento personalizado para dia ${date}. Responda para fechar o evento!`
@@ -183,8 +183,8 @@ export const pushNotificationService = {
     const is24h = reminderType === '24h';
 
     const title = is24h
-      ? '🍷 O seu Evento Cookr é Amanhã!'
-      : '👨‍🍳 Chef a Caminho! (Daqui a 2 horas)';
+      ? 'O seu Evento Cookr é Amanhã!'
+      : 'Chef a Caminho! (Daqui a 2 horas)';
 
     const body = is24h
       ? `Lembrete: O Chef ${cookName || 'Cookr'} estará na sua cozinha amanhã às ${time || 'hora combinada'}. A sua experiência está totalmente confirmada.`

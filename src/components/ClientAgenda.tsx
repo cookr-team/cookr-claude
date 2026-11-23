@@ -157,7 +157,7 @@ const UpcomingBookingCard: React.FC<UpcomingBookingCardProps> = React.memo(({
 
           {b.service_pin && (b.status === BookingStatus.ACCEPTED || b.status === BookingStatus.IN_PROGRESS) && (
             <div className="flex items-center gap-1 px-2 py-0.5 bg-emerald-500/5 border border-emerald-500/10 rounded-md text-emerald-700">
-              <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600">{tr("🔑 PIN:")}</span>
+              <span className="text-[8px] font-black uppercase tracking-wider text-emerald-600">{tr("PIN:")}</span>
               <span className="text-[9px] font-mono font-black tracking-widest">{b.service_pin}</span>
             </div>
           )}

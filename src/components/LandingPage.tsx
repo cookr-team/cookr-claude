@@ -106,10 +106,10 @@ const LandingPage: React.FC<LandingPageProps> = ({
             {isLangOpen && (
               <div className="absolute right-0 mt-1.5 w-32 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.06)] py-1.5 z-50 transform origin-top-right transition-all duration-200">
                 {[
-                  { code: "pt", label: "Português", flag: "🇵🇹" },
-                  { code: "es", label: "Español", flag: "🇪🇸" },
-                  { code: "en", label: "English", flag: "🇬🇧" },
-                  { code: "fr", label: "Français", flag: "🇫🇷" }
+                  { code: "pt", label: "Português", flag: "PT" },
+                  { code: "es", label: "Español", flag: "ES" },
+                  { code: "en", label: "English", flag: "GB" },
+                  { code: "fr", label: "Français", flag: "FR" }
                 ].map((item) => (
                   <button
                     key={item.code}

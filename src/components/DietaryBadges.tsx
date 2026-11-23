@@ -19,7 +19,7 @@ export function getDietaryBadgeConfig(tag: string): DietaryBadgeConfig {
       colorClass: "bg-emerald-50 text-emerald-800 border-emerald-200",
       short: "VG",
       label: "Vegan",
-      icon: "🌱"
+      icon: "●"
     };
   }
   
@@ -29,7 +29,7 @@ export function getDietaryBadgeConfig(tag: string): DietaryBadgeConfig {
       colorClass: "bg-teal-50 text-teal-800 border-teal-200",
       short: "VT",
       label: "Vegetariano",
-      icon: "🥗"
+      icon: "◆"
     };
   }
   
@@ -39,7 +39,7 @@ export function getDietaryBadgeConfig(tag: string): DietaryBadgeConfig {
       colorClass: "bg-amber-50 text-amber-800 border-amber-200",
       short: "GF",
       label: "Sem Glúten",
-      icon: "🌾"
+      icon: "▲"
     };
   }
   
@@ -49,7 +49,7 @@ export function getDietaryBadgeConfig(tag: string): DietaryBadgeConfig {
       colorClass: "bg-sky-50 text-sky-800 border-sky-200",
       short: "DF",
       label: "Sem Lactose",
-      icon: "🥛"
+      icon: "■"
     };
   }
   
@@ -59,7 +59,7 @@ export function getDietaryBadgeConfig(tag: string): DietaryBadgeConfig {
       colorClass: "bg-purple-50 text-purple-800 border-purple-200",
       short: "KT",
       label: "Keto",
-      icon: "🥩"
+      icon: "✦"
     };
   }
   
@@ -69,7 +69,7 @@ export function getDietaryBadgeConfig(tag: string): DietaryBadgeConfig {
       colorClass: "bg-rose-50 text-rose-800 border-rose-200",
       short: "LC",
       label: "Low Carb",
-      icon: "🥑"
+      icon: "◉"
     };
   }
   
@@ -79,7 +79,7 @@ export function getDietaryBadgeConfig(tag: string): DietaryBadgeConfig {
       colorClass: "bg-violet-50 text-violet-800 border-violet-200",
       short: "FIT",
       label: "Saudável / Fit",
-      icon: "💪"
+      icon: "▼"
     };
   }
 
@@ -89,7 +89,7 @@ export function getDietaryBadgeConfig(tag: string): DietaryBadgeConfig {
     colorClass: "bg-slate-50 text-slate-700 border-slate-200",
     short: tag.slice(0, 3).toUpperCase(),
     label: tag,
-    icon: "🍽️"
+    icon: "◈"
   };
 }
 

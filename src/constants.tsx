@@ -342,7 +342,7 @@ export interface SustainabilityBadgeInfo {
 export const SUSTAINABILITY_BADGES_LIST: SustainabilityBadgeInfo[] = [
   {
     id: "farm_to_table",
-    icon: "🌾",
+    icon: "●",
     label: { pt: "Selo Farm-to-Table", es: "Sello Farm-to-Table", en: "Farm-to-Table Seal", fr: "Label Farm-to-Table" },
     shortLabel: { pt: "Farm to Table", es: "Farm to Table", en: "Farm to Table", fr: "Farm to Table" },
     description: {
@@ -355,7 +355,7 @@ export const SUSTAINABILITY_BADGES_LIST: SustainabilityBadgeInfo[] = [
   },
   {
     id: "sustainable_seafood",
-    icon: "🐟",
+    icon: "◆",
     label: { pt: "Peixe Sustentável & Rastreável", es: "Pescado Sostenible y Trazable", en: "Sustainable & Traceable Seafood", fr: "Poisson Durable & Traçable" },
     shortLabel: { pt: "Peixe Sustentável", es: "Pescado Sostenible", en: "Sustainable Fish", fr: "Poisson Durable" },
     description: {
@@ -368,7 +368,7 @@ export const SUSTAINABILITY_BADGES_LIST: SustainabilityBadgeInfo[] = [
   },
   {
     id: "organic_certified",
-    icon: "🥬",
+    icon: "▲",
     label: { pt: "Ingredientes 100% Biológicos", es: "Ingredientes 100% Biológicos", en: "100% Organic Ingredients", fr: "Ingrédients 100% Biologiques" },
     shortLabel: { pt: "100% Bio", es: "100% Orgánico", en: "100% Organic", fr: "100% Bio" },
     description: {
@@ -381,7 +381,7 @@ export const SUSTAINABILITY_BADGES_LIST: SustainabilityBadgeInfo[] = [
   },
   {
     id: "zero_waste",
-    icon: "♻️",
+    icon: "■",
     label: { pt: "Cozinha Zero Waste (Desperdício Zero)", es: "Cocina Zero Waste (Desperdicio Cero)", en: "Zero Waste Kitchen", fr: "Cuisine Zéro Déchet" },
     shortLabel: { pt: "Zero Waste", es: "Zero Waste", en: "Zero Waste", fr: "Zéro Déchet" },
     description: {
@@ -394,7 +394,7 @@ export const SUSTAINABILITY_BADGES_LIST: SustainabilityBadgeInfo[] = [
   },
   {
     id: "local_markets",
-    icon: "🏡",
+    icon: "✦",
     label: { pt: "Produtores Locais & Mercados de Bairro", es: "Productores Locales y Mercados", en: "Local Farmers & Neighborhood Markets", fr: "Producteurs Locaux & Marchés" },
     shortLabel: { pt: "Apoio Local", es: "Apoyo Local", en: "Local Sourced", fr: "Soutien Local" },
     description: {
@@ -407,7 +407,7 @@ export const SUSTAINABILITY_BADGES_LIST: SustainabilityBadgeInfo[] = [
   },
   {
     id: "eco_packaging",
-    icon: "📦",
+    icon: "◉",
     label: { pt: "Embalagens Biodegradáveis & Sem Plástico", es: "Envases Biodegradables y Sin Plástico", en: "Biodegradable & Plastic-Free Packaging", fr: "Emballages Biodégradables Sans Plastique" },
     shortLabel: { pt: "Eco Packaging", es: "Eco Packaging", en: "Eco Packaging", fr: "Eco Emballage" },
     description: {
@@ -432,7 +432,7 @@ export interface AllergenCertificationInfo {
 export const ALLERGEN_CERTIFICATIONS_LIST: AllergenCertificationInfo[] = [
   {
     id: "gluten_free_safe",
-    icon: "🌾",
+    icon: "▼",
     label: { pt: "Sem Glúten Certificado (Celíacos Safe)", es: "Sin Gluten Certificado (Apto Celíacos)", en: "Certified Gluten-Free (Celiac Safe)", fr: "Certifié Sans Gluten (Cœliaques)" },
     shortLabel: { pt: "Sem Glúten", es: "Sin Gluten", en: "Gluten-Free", fr: "Sans Gluten" },
     description: {
@@ -445,7 +445,7 @@ export const ALLERGEN_CERTIFICATIONS_LIST: AllergenCertificationInfo[] = [
   },
   {
     id: "vegan_dedicated",
-    icon: "🌱",
+    icon: "◈",
     label: { pt: "Cozinha 100% Vegan Dedicada", es: "Cocina 100% Vegana Dedicada", en: "100% Dedicated Vegan Kitchen", fr: "Cuisine 100% Végane Dédiée" },
     shortLabel: { pt: "Vegan Seguro", es: "Vegano Seguro", en: "Vegan Safe", fr: "Végan Sécurisé" },
     description: {
@@ -458,7 +458,7 @@ export const ALLERGEN_CERTIFICATIONS_LIST: AllergenCertificationInfo[] = [
   },
   {
     id: "lactose_free_safe",
-    icon: "🥛",
+    icon: "✚",
     label: { pt: "Sem Lactose (Dairy-Free Safe)", es: "Sin Lactosa (Dairy-Free Safe)", en: "Dairy-Free / Lactose-Free Safe", fr: "Sans Lactose Sécurisé" },
     shortLabel: { pt: "Sem Lactose", es: "Sin Lactosa", en: "Dairy-Free", fr: "Sans Lactose" },
     description: {
@@ -471,7 +471,7 @@ export const ALLERGEN_CERTIFICATIONS_LIST: AllergenCertificationInfo[] = [
   },
   {
     id: "kosher_prepared",
-    icon: "✡️",
+    icon: "◐",
     label: { pt: "Preparação Kosher Friendly", es: "Preparación Kosher Friendly", en: "Kosher Friendly Preparation", fr: "Préparation Kosher Friendly" },
     shortLabel: { pt: "Kosher", es: "Kosher", en: "Kosher", fr: "Casher" },
     description: {
@@ -484,7 +484,7 @@ export const ALLERGEN_CERTIFICATIONS_LIST: AllergenCertificationInfo[] = [
   },
   {
     id: "halal_certified",
-    icon: "☪️",
+    icon: "◇",
     label: { pt: "Preparação Halal Certified", es: "Preparación Halal Certificada", en: "Halal Certified Preparation", fr: "Préparation Halal Certifiée" },
     shortLabel: { pt: "Halal", es: "Halal", en: "Halal", fr: "Halal" },
     description: {
@@ -497,7 +497,7 @@ export const ALLERGEN_CERTIFICATIONS_LIST: AllergenCertificationInfo[] = [
   },
   {
     id: "nut_free_protocol",
-    icon: "🥜",
+    icon: "▣",
     label: { pt: "Protocolo Anti-Alergias Frutos Secos", es: "Protocolo Anti-Alergias Frutos Secos", en: "Nut-Free Safety Protocol", fr: "Protocole Anti-Allergies Fruits à Coque" },
     shortLabel: { pt: "Nut-Free Safe", es: "Nut-Free Safe", en: "Nut-Free Safe", fr: "Sans Fruits à Coque" },
     description: {

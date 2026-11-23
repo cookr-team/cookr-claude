@@ -268,7 +268,7 @@ export async function dispatchTransactionalEmail(payload: EmailPayload): Promise
       errorMessage = 'RESEND_API_KEY não configurada no ficheiro .env. Email transacional registado e emulado nos logs do servidor.';
       console.log(`
 ========================================================================
-📧 [COOKR EMAIL TRANSACIONAL EMULADO (RESEND_API_KEY NÃO DEFINIDA)]
+[COOKR EMAIL TRANSACIONAL EMULADO (RESEND_API_KEY NÃO DEFINIDA)]
 ========================================================================
 Tipo: ${emailType}
 Para: ${sanitizedEmail} (${recipientName || 'Sem nome'})

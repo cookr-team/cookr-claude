@@ -1002,11 +1002,11 @@ app.post("/api/email/test-smtp", requireAdmin, async (req, res) => {
     const info = await transporter.sendMail({
       from: fromAddress,
       to: targetEmail,
-      subject: "🧪 Teste de Conexão SMTP - Cookr Email Engine",
+      subject: "Teste de Conexão SMTP - Cookr Email Engine",
       text: "Olá! Este é um email de teste disparado com sucesso a partir das credenciais do ficheiro .env da plataforma Cookr.",
       html: `
         <div style="font-family: sans-serif; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px; max-width: 580px; margin: 0 auto; background-color: #ffffff;">
-          <h2 style="color: #ea580c; margin-top: 0; font-size: 22px;">🚀 Servidor SMTP Conetado com Sucesso!</h2>
+          <h2 style="color: #ea580c; margin-top: 0; font-size: 22px;">Servidor SMTP Conetado com Sucesso!</h2>
           <p style="color: #334155; font-size: 15px; line-height: 1.6;">O serviço de envio de emails da Cookr está 100% operacional e sincronizado com as definições do ficheiro <code>.env</code>.</p>
           <div style="background-color: #f8fafc; border-radius: 8px; padding: 16px; margin: 20px 0;">
             <ul style="margin: 0; padding-left: 20px; color: #475569; font-size: 14px; line-height: 1.8;">
@@ -1065,7 +1065,7 @@ app.post("/api/send-email", requireAdmin, async (req, res) => {
     } else {
       console.log(`
 ========================================================================
-📧 [EMAIL SIMULADO NO SERVIDOR (.env não configurado com credenciais SMTP válidas)]
+[EMAIL SIMULADO NO SERVIDOR (.env não configurado com credenciais SMTP válidas)]
 ========================================================================
 Para: ${to}
 Assunto: ${subject}
@@ -1124,7 +1124,7 @@ app.post("/api/email/booking-status", requireAdmin, async (req, res) => {
     let htmlBody = "";
 
     if (event === "ACCEPTED") {
-      subject = `Reserva Confirmada! Preparação Gourmet com o Chef ${cookName} 🍽️`;
+      subject = `Reserva Confirmada! Preparação Gourmet com o Chef ${cookName}`;
       textBody = `Olá ${clientName}, o seu serviço de Chef Privado foi ACEITO com sucesso!\n\n` +
         `• Experiência: ${experienceName}\n` +
         `• Chef Privado: ${cookName}\n` +
@@ -1134,19 +1134,19 @@ app.post("/api/email/booking-status", requireAdmin, async (req, res) => {
         `Aceda à plataforma Cookr para gerir o agendamento.`;
       htmlBody = getBookingConfirmationTemplate(emailData);
     } else if (event === "REJECTED" || event === "CANCELLED") {
-      subject = `Atualização de Reserva: Cancelamento (${experienceName}) 🍽️`;
+      subject = `Atualização de Reserva: Cancelamento (${experienceName})`;
       textBody = `Olá ${clientName}, a reserva para ${experienceName} no dia ${date} foi cancelada.\n` +
         `Motivo: ${emailData.cancellationReason}`;
       htmlBody = getBookingCancellationTemplate(emailData);
     } else if (event === "REMINDER" || event === "REMINDER_24H" || event === "REMINDER_1H") {
       subject = event === "REMINDER_1H"
-        ? `⏰ O Chef ${cookName} chega em 1 hora! — Cookr`
-        : `⏰ Lembrete: A sua experiência gourmet é amanhã! — Cookr`;
+        ? `O Chef ${cookName} chega em 1 hora! — Cookr`
+        : `Lembrete: A sua experiência gourmet é amanhã! — Cookr`;
       textBody = `Olá ${clientName}, lembrete da sua reserva com o Chef ${cookName} para ${date}.\nPIN de serviço: ${pin}`;
       htmlBody = getBookingReminderTemplate(emailData);
     } else {
       // NEW_BOOKING / PENDING
-      subject = `Novo Pedido de Reserva Registado (${experienceName}) 🍽️`;
+      subject = `Novo Pedido de Reserva Registado (${experienceName})`;
       textBody = `Olá ${clientName}, o seu pedido de reserva com o Chef ${cookName} para o dia ${date} foi registado com sucesso!\nStatus: A aguardar aprovação do Chef.`;
       htmlBody = getBookingConfirmationTemplate(emailData);
     }
@@ -1172,7 +1172,7 @@ app.post("/api/email/booking-status", requireAdmin, async (req, res) => {
     } else {
       console.log(`
 ========================================================================
-📧 [EMAIL DE STATUS DE RESERVA - SIMULAÇÃO]
+[EMAIL DE STATUS DE RESERVA - SIMULAÇÃO]
 ========================================================================
 Evento: ${event} | ID: ${bookingId}
 Cliente: ${targetClientEmail} | Chef: ${targetCookEmail}

@@ -92,7 +92,7 @@ const AdminInsights: React.FC<AdminInsightsProps> = ({
     target: "CLIENT",
     type: "PUSH",
     message:
-      "Descubra os melhores rituais de Sushi em Lisboa este fim de semana! 🍣",
+      "Descubra os melhores rituais de Sushi em Lisboa este fim de semana!",
     incentive: "10% de desconto",
     startDate: todayLocal(),
     duration: "3",
@@ -308,21 +308,21 @@ const AdminInsights: React.FC<AdminInsightsProps> = ({
     } catch (error) {
       console.error("AI Error:", error);
       
-      const localAnalysis = `📊 RELATÓRIO OPERACIONAL AUTOMÁTICO (OFFLINE CONSOLE)
+      const localAnalysis = `RELATÓRIO OPERACIONAL AUTOMÁTICO (OFFLINE CONSOLE)
 ---
 Nota: A ligação à Inteligência Artificial está temporariamente instável devido a congestionamento de rede, mas gerámos este diagnóstico analítico com base nos dados reais estruturados da Cookr:
 
-🎯 1. Oferta e Ativação do Catálogo (Grau de Alerta: Alto ⚠️)
+1. Oferta e Ativação do Catálogo (Grau de Alerta: Alto ⚠️)
 • Atualmente temos ${menuCount} menus cadastrados na plataforma.
 • O Onboarding de Chefs está inativo (${totalChefs} Chefs verificados). Isto cria uma fricção extrema para novos clientes que pesquisem nas regiões de Lisboa ou Porto.
 • Ação Executiva: É prioritário cadastrar e ativar o 1º Chef para simular o fluxo completo de checkout e validação de PIN de serviço.
 
-📈 2. Desempenho do Funil de Conversão (Grau de Alerta: Crítico 🚨)
+2. Desempenho do Funil de Conversão (Grau de Alerta: Crítico)
 • Registámos ${bookingCount} pedidos de reserva com uma taxa de conversão final de ${conversionRate}%.
 • A ausência de bookings ativos nas últimas 48 horas indica que os utilizadores criaram contas de teste mas não concluíram os rituais.
 • Ação Executiva: Implementar a Campanha Inteligente sugerida no painel lateral para reativar utilizadores com descontos exclusivos.
 
-💳 3. Ticket Médio e Comissionamento (Grau de Alerta: Nominal ✅)
+3. Ticket Médio e Comissionamento (Grau de Alerta: Nominal ✓)
 • O Ticket Médio projetado é de ${formatPrice(ticketMedio)} por ritual gastronómico executado.
 • O volume total potencial da base atual é de ${formatPrice(totalVolume)}.
 • O modelo de negócio Cookr garante sustentabilidade de intermediação com 20% de comissão direta por transação.`;

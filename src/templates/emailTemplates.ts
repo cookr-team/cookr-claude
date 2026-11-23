@@ -116,7 +116,7 @@ export function getBookingConfirmationTemplate(data: BookingEmailData): string {
       <!-- PIN de Validação -->
       <div style="background-color: #fff7ed; border: 1.5px dashed #fdba74; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 28px;">
         <span style="display: block; font-size: 11px; text-transform: uppercase; color: #c2410c; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 6px;">
-          🔑 PIN Secreto do Serviço
+          PIN Secreto do Serviço
         </span>
         <div style="font-family: monospace; font-size: 28px; font-weight: 900; color: #ea580c; letter-spacing: 0.25em;">
           ${pin}
@@ -187,8 +187,7 @@ export function getBookingCancellationTemplate(data: BookingEmailData): string {
         </p>
       </div>
 
-      <div style="background-color: #f0fdf4; border: 1px solid #dcfce7; border-radius: 10px; padding: 16px; margin-bottom: 28px; font-size: 13px; color: #166534; line-height: 1.5;">
-        🔒 <strong>Garantia de Reembolso Cookr:</strong> Caso já tenha efetuado o pagamento, qualquer montante retido foi libertado ou será devidamente estornado no seu método original de pagamento.
+      <div style="background-color: #f0fdf4; border: 1px solid #dcfce7; border-radius: 10px; padding: 16px; margin-bottom: 28px; font-size: 13px; color: #166534; line-height: 1.5;">◆<strong>Garantia de Reembolso Cookr:</strong> Caso já tenha efetuado o pagamento, qualquer montante retido foi libertado ou será devidamente estornado no seu método original de pagamento.
       </div>
 
       <!-- Botão CTA -->
@@ -224,8 +223,8 @@ export function getBookingReminderTemplate(data: BookingEmailData): string {
   } = data;
 
   const reminderTitle = reminderType === '1h' 
-    ? '⏰ O Chef chega dentro de 1 hora!' 
-    : '⏰ O seu evento gourmet é amanhã!';
+    ? 'O Chef chega dentro de 1 hora!' 
+    : 'O seu evento gourmet é amanhã!';
 
   return `
 <!DOCTYPE html>

@@ -7,10 +7,10 @@ import { setTrLanguage } from "../lib/tr";
 export type { Language };
 
 export const AVAILABLE_LANGUAGES: Array<{ code: Language; label: string; flag: string }> = [
-  { code: "pt", label: "Português", flag: "🇵🇹" },
-  { code: "en", label: "English", flag: "🇬🇧" },
-  { code: "es", label: "Español", flag: "🇪🇸" },
-  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "pt", label: "Português", flag: "PT" },
+  { code: "en", label: "English", flag: "GB" },
+  { code: "es", label: "Español", flag: "ES" },
+  { code: "fr", label: "Français", flag: "FR" },
 ];
 
 export const getLangText = (
