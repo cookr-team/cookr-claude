@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
-import { createServer as createViteServer } from "vite";
+import os from "os";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
@@ -53,7 +53,8 @@ function getSmtpTransporter() {
 // Initialize GoogleGenAI with server-side API Key
 const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || "";
 const ai = new GoogleGenAI({
-  apiKey,
+  // Sem chave não rebenta no arranque (na Vercel as rotas devolvem erro claro quando usadas).
+  apiKey: apiKey || "not-configured",
   httpOptions: {
     headers: {
       "User-Agent": "aistudio-build",
@@ -1254,7 +1255,8 @@ app.post("/api/push/check-reminders", async (req, res) => {
 // -----------------------------------------------------------------
 // CHEF AVAILABILITY PERSISTENCE (SERVER-SIDE & DISK)
 // -----------------------------------------------------------------
-const AVAILABILITY_FILE = path.join(process.cwd(), "data", "chef_availability.json");
+// Na Vercel o disco só é gravável em /tmp (cache temporária; a fonte de verdade é o Supabase).
+const AVAILABILITY_FILE = path.join(process.env.VERCEL ? os.tmpdir() : path.join(process.cwd(), "data"), "chef_availability.json");
 
 function getStoredAvailability(): Record<string, Record<string, string[]>> {
   try {
@@ -1391,6 +1393,7 @@ app.get("/api/health", (req, res) => {
 async function startServer() {
   // Vite middleware setup
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -1409,4 +1412,9 @@ async function startServer() {
   });
 }
 
-startServer();
+// Na Vercel a app Express é usada como função serverless (api/index.ts); não abre porta.
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
