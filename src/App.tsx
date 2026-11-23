@@ -637,7 +637,7 @@ const App: React.FC = () => {
   const handleImpersonateUser = useCallback((targetUser: User) => {
     if (!currentUser) return;
     if (currentUser.role !== UserRole.ADMIN && !realAdminUser) {
-      addToast("Apenas administradores podem simular utilizadores.", "error");
+      addToast(tr("Apenas administradores podem simular utilizadores."), "error");
       return;
     }
     const adminToSave = realAdminUser || currentUser;
@@ -1271,7 +1271,7 @@ const App: React.FC = () => {
   const handleForgotPassword = async () => {
     const email = loginEmail.toLowerCase().trim();
     if (!email || !email.includes("@")) {
-      setLoginError("Escreva primeiro o seu email e volte a clicar em \"Esqueci-me da palavra-passe\".");
+      setLoginError(tr("Escreva primeiro o seu email e volte a clicar em \"Esqueci-me da palavra-passe\"."));
       return;
     }
     setLoginError(null);
@@ -1290,11 +1290,11 @@ const App: React.FC = () => {
     e.preventDefault();
     setRecoveryError(null);
     if (recoveryPassword.length < 8) {
-      setRecoveryError("A palavra-passe deve ter pelo menos 8 caracteres.");
+      setRecoveryError(tr("A palavra-passe deve ter pelo menos 8 caracteres."));
       return;
     }
     if (recoveryPassword !== recoveryPassword2) {
-      setRecoveryError("As palavras-passe não coincidem.");
+      setRecoveryError(tr("As palavras-passe não coincidem."));
       return;
     }
     setIsRecoveryPending(true);
@@ -1308,7 +1308,7 @@ const App: React.FC = () => {
       addToast(tr("Palavra-passe atualizada! Entre com a nova palavra-passe."), "success");
       navigateTo("login-selection");
     } catch (err: any) {
-      setRecoveryError(err?.message || "Não foi possível atualizar a palavra-passe. Peça um novo link.");
+      setRecoveryError(err?.message || tr("Não foi possível atualizar a palavra-passe. Peça um novo link."));
     } finally {
       setIsRecoveryPending(false);
     }
@@ -1407,13 +1407,13 @@ const App: React.FC = () => {
 
       const lowerMsg = String(msg).toLowerCase();
       if (lowerMsg.includes("invalid login credentials")) {
-        msg = "Email ou palavra-passe incorretos.";
+        msg = tr("Email ou palavra-passe incorretos.");
       } else if (lowerMsg.includes("email not confirmed")) {
-        msg = "Confirme primeiro o seu email: abra a mensagem que lhe enviámos e clique no link.";
+        msg = tr("Confirme primeiro o seu email: abra a mensagem que lhe enviámos e clique no link.");
       } else if (lowerMsg.includes("rate limit") || lowerMsg.includes("too many")) {
-        msg = "Demasiadas tentativas. Aguarde um minuto e tente de novo.";
+        msg = tr("Demasiadas tentativas. Aguarde um minuto e tente de novo.");
       } else if (lowerMsg.includes("failed to fetch") || lowerMsg.includes("network")) {
-        msg = "Sem ligação à internet. Verifique a rede e tente de novo.";
+        msg = tr("Sem ligação à internet. Verifique a rede e tente de novo.");
       }
 
       if (msg === "Palavra-passe incorreta.") {
@@ -1633,7 +1633,7 @@ const App: React.FC = () => {
         notes || "N/A",
       );
       await refreshData();
-      addToast("Curadoria atualizada.", "success");
+      addToast(tr("Curadoria atualizada."), "success");
       return true;
     } catch (e) {
       addToast(tr("Erro na curadoria."), "error");
@@ -1698,7 +1698,7 @@ const App: React.FC = () => {
               if (user) {
                 saveAndSetUser(user);
                 await refreshData(user);
-                addToast(`Bem-vindo, ${user.nome}!`, "success");
+                addToast(`${getLangText({ pt: "Bem-vindo", es: "Bienvenido", en: "Welcome", fr: "Bienvenue" })}, ${user.nome}!`, "success");
                 setTimeout(() => navigateTo("home"), 4000);
                 return true;
               }
@@ -1729,8 +1729,8 @@ const App: React.FC = () => {
                 await refreshData();
                 addToast(
                   (user as any).pendingEmailConfirmation
-                    ? "Candidatura recebida! Confirme primeiro o seu email (enviámos-lhe uma mensagem). Depois aguarde a nossa curadoria."
-                    : "Candidatura submetida com sucesso! Aguarde a nossa curadoria.",
+                    ? tr("Candidatura recebida! Confirme primeiro o seu email (enviámos-lhe uma mensagem). Depois aguarde a nossa curadoria.")
+                    : tr("Candidatura submetida com sucesso! Aguarde a nossa curadoria."),
                   "success",
                 );
                 setTimeout(() => navigateTo("landing"), 4000); // Redirect after overlay
@@ -1739,7 +1739,7 @@ const App: React.FC = () => {
               return false;
             } catch (err: any) {
               console.warn("Signup note:", err);
-              addToast(err.message || "Erro ao criar perfil de chef.", "error");
+              addToast(err.message || tr("Erro ao criar perfil de chef."), "error");
               return false;
             }
           }}

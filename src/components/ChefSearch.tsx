@@ -310,35 +310,35 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
         const chef = (cooks || []).find(c => c.id === (menu.cookId || menu.cook_id));
         const cuisineName = menu.cuisine_type || "Premium";
         
-        let highlight = "Seleção do Chef";
-        let winePairingSuggestion = "Espumante Murganheira Vintage Bruto";
-        let explanation = `Um extraordinário menu de gastronomia ${cuisineName.toLowerCase()}, primorosamente selecionado pelo nosso chef para condizer com os seus gostos refinados. Uma experiência de 'Chef at Home' excecional no conforto da sua casa.`;
+        let highlight = tr("Seleção do Chef");
+        let winePairingSuggestion = tr("Espumante Murganheira Vintage Bruto");
+        let explanation = tr("Um extraordinário menu de gastronomia {cuisine}, primorosamente selecionado pelo nosso chef para condizer com os seus gostos refinados. Uma experiência de 'Chef at Home' excecional no conforto da sua casa.", { cuisine: cuisineName.toLowerCase() });
         
         const cuisineLower = cuisineName.toLowerCase();
         if (cuisineLower.includes("itália") || cuisineLower.includes("italiana")) {
-          highlight = "Elegância Clássica";
-          winePairingSuggestion = "Vinho Tinto Alentejano Reserva (Esporão ou Cartuxa)";
-          explanation = `Uma homenagem sofisticada à clássica culinária italiana, com massas artesanais e aromas mediterrânicos. Perfeito para uma noite romântica ou celebração premium com serviço completo do chef.`;
+          highlight = tr("Elegância Clássica");
+          winePairingSuggestion = tr("Vinho Tinto Alentejano Reserva (Esporão ou Cartuxa)");
+          explanation = tr("Uma homenagem sofisticada à clássica culinária italiana, com massas artesanais e aromas mediterrânicos. Perfeito para uma noite romântica ou celebração premium com serviço completo do chef.");
         } else if (cuisineLower.includes("sushi") || cuisineLower.includes("japonesa") || cuisineLower.includes("asiática")) {
-          highlight = "Precisão Oriental";
-          winePairingSuggestion = "Vinho Verde Alvarinho Premium (Anselmo Mendes ou Soalheiro)";
-          explanation = `A união perfeita entre a precisão da técnica japonesa e a frescura do peixe da costa atlântica. Um banquete de texturas e sensações visuais extraordinárias na sua própria mesa.`;
+          highlight = tr("Precisão Oriental");
+          winePairingSuggestion = tr("Vinho Verde Alvarinho Premium (Anselmo Mendes ou Soalheiro)");
+          explanation = tr("A união perfeita entre a precisão da técnica japonesa e a frescura do peixe da costa atlântica. Um banquete de texturas e sensações visuais extraordinárias na sua própria mesa.");
         } else if (cuisineLower.includes("mediterrânica") || cuisineLower.includes("portuguesa")) {
-          highlight = "Herança Contemporânea";
-          winePairingSuggestion = "Barca Velha Douro Tinto ou Vinho Branco Cartuxa";
-          explanation = `Uma reinterpretação sublime das mais nobres iguarias da nossa costa e planície, confecionadas com técnicas de alta cozinha. O melhor da tradição gastronómica nacional elevado à máxima sofisticação.`;
+          highlight = tr("Herança Contemporânea");
+          winePairingSuggestion = tr("Barca Velha Douro Tinto ou Vinho Branco Cartuxa");
+          explanation = tr("Uma reinterpretação sublime das mais nobres iguarias da nossa costa e planície, confecionadas com técnicas de alta cozinha. O melhor da tradição gastronómica nacional elevado à máxima sofisticação.");
         }
         
         const isVegan = (menu.dietary_tags || []).some(t => t.toLowerCase().includes("vegan"));
         const isVegetarian = (menu.dietary_tags || []).some(t => t.toLowerCase().includes("vegetar"));
         if (isVegan) {
-          highlight = "Alta Cozinha Botânica";
-          winePairingSuggestion = "Vinho Biológico Branco do Douro (Niepoort Redoma)";
-          explanation = `Uma sinfonia requintada de texturas puramente vegetais e ingredientes sazonais premium, provando que a gastronomia vegana atinge o expoente do luxo sob a mestria do nosso chef privado.`;
+          highlight = tr("Alta Cozinha Botânica");
+          winePairingSuggestion = tr("Vinho Biológico Branco do Douro (Niepoort Redoma)");
+          explanation = tr("Uma sinfonia requintada de texturas puramente vegetais e ingredientes sazonais premium, provando que a gastronomia vegana atinge o expoente do luxo sob a mestria do nosso chef privado.");
         } else if (isVegetarian) {
-          highlight = "Harmonia Vegetal";
-          winePairingSuggestion = "Vinho Verde Alvarinho Quinta de Soalheiro";
-          explanation = `Pratos vegetarianos refinados e inovadores que celebram o frescor da horta orgânica com técnicas de vanguarda. Uma experiência de chef at home memorável e equilibrada.`;
+          highlight = tr("Harmonia Vegetal");
+          winePairingSuggestion = tr("Vinho Verde Alvarinho Quinta de Soalheiro");
+          explanation = tr("Pratos vegetarianos refinados e inovadores que celebram o frescor da horta orgânica com técnicas de vanguarda. Uma experiência de chef at home memorável e equilibrada.");
         }
         
         return {

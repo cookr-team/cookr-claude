@@ -569,7 +569,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       !securityData.newPassword ||
       !securityData.confirmPassword
     ) {
-      onNotify?.("Preencha todos os campos.", "error");
+      onNotify?.(tr("Preencha todos os campos."), "error");
       return;
     }
 

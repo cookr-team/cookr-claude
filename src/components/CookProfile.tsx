@@ -299,11 +299,11 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
   const handleSaveFaqItem = () => {
     if (!faqForm.question.trim()) {
-      onNotify?.("Insere a pergunta do FAQ.", "error");
+      onNotify?.(tr("Insere a pergunta do FAQ."), "error");
       return;
     }
     if (!faqForm.answer.trim()) {
-      onNotify?.("Insere a resposta correspondente.", "error");
+      onNotify?.(tr("Insere a resposta correspondente."), "error");
       return;
     }
 
@@ -671,7 +671,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
       onNotify?.(tr("Estás agora Online!"), "success");
     } catch (e: any) {
       console.warn("[CookProfile] Erro ao entrar online:", e);
-      onNotify?.("Erro ao entrar online: " + (e.message || ""), "error");
+      onNotify?.(e?.message || tr("Erro ao entrar online."), "error");
     }
   };
 
@@ -703,7 +703,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
         const updatedUser = { ...editedUser, isAvailable: false };
         setEditedUser(updatedUser);
         onRefresh(updatedUser);
-        onNotify?.("Ficaste Offline.", "info");
+        onNotify?.(tr("Ficaste Offline."), "info");
       } catch (e: any) {
         console.warn("[CookProfile] Erro ao ficar offline:", e);
         onNotify?.(tr("Erro ao ficar offline."), "error");

@@ -292,7 +292,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
           <div className="px-6 py-3 border-b border-slate-100 flex items-center gap-1.5 overflow-x-auto scrollbar-none shrink-0 bg-white">
             {[
               { id: "all", label: "Todas" },
-              { id: "unread", label: `Não Lidas (${unreadCount})` },
+              { id: "unread", label: `${tr("Não Lidas")} (${unreadCount})` },
               { id: "info", label: "Info" },
               { id: "success", label: "Sucesso" },
               { id: "warning", label: "Avisos" }
@@ -306,7 +306,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                     : "bg-slate-50 border-slate-100 text-slate-500 hover:bg-slate-100"
                   }`}
               >
-                {tr(f.label as any) as any}
+                {f.id === "unread" ? f.label : (tr(f.label as any) as any)}
               </button>
             ))}
           </div>

@@ -1,6 +1,5 @@
 import { supabaseService } from './supabaseService';
 import { Booking, BookingStatus } from '../types';
-import { apiFetch } from '../lib/apiClient';
 import { emailService } from './emailService';
 
 export interface PushNotificationPayload {
@@ -93,13 +92,6 @@ export const pushNotificationService = {
               { action: 'open', title: 'Ver na Cookr' }
             ]
           } as any);
-
-          // Post to server push endpoint
-          apiFetch('/api/push/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          }).catch(() => {});
 
           return true;
         }
