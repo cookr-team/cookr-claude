@@ -1730,5 +1730,7 @@
 "Só pode avaliar reservas concluídas e uma única vez por reserva.": "You can only review completed bookings, once per booking.",
 "Sem ligação ao servidor. A avaliação não foi enviada, tente novamente.": "No connection to the server. Your review was not sent, please try again.",
 "Adicionado à lista de espera! Notificaremos se houver desistências para o dia {date}": "Added to the waitlist! We will notify you if there are cancellations for {date}.",
-"O chef já tem outra reserva perto dessa hora. Escolha um horário com pelo menos 3 horas de diferença.": "The chef already has another booking close to that time. Choose a time at least 3 hours apart."
+"O chef já tem outra reserva perto dessa hora. Escolha um horário com pelo menos 3 horas de diferença.": "The chef already has another booking close to that time. Choose a time at least 3 hours apart.",
+"Alertas do dispositivo ativos enquanto a Cookr estiver aberta, para respostas de Chefs e confirmações.": "Device alerts are on while Cookr is open, for Chef replies and confirmations.",
+"Receba alertas no ecrã quando os Chefs aceitarem ou confirmarem serviços (com a Cookr aberta).": "Get on-screen alerts when Chefs accept or confirm services (while Cookr is open)."
 }

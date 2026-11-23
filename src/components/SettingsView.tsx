@@ -773,8 +773,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   </h4>
                   <p className="text-[11px] text-slate-500">
                     {hasPushPermission
-                      ? tr("Notificações push ativas no navegador e telemóvel para respostas de Chefs e confirmações.")
-                      : tr("Receba alertas no ecrã do telemóvel quando os Chefs aceitarem ou confirmarem serviços.")}
+                      ? tr("Alertas do dispositivo ativos enquanto a Cookr estiver aberta, para respostas de Chefs e confirmações.")
+                      : tr("Receba alertas no ecrã quando os Chefs aceitarem ou confirmarem serviços (com a Cookr aberta).")}
                   </p>
                 </div>
 

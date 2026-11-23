@@ -1730,5 +1730,7 @@
 "Só pode avaliar reservas concluídas e uma única vez por reserva.": "Vous ne pouvez évaluer que des réservations terminées, une seule fois par réservation.",
 "Sem ligação ao servidor. A avaliação não foi enviada, tente novamente.": "Pas de connexion au serveur. Votre avis n'a pas été envoyé, veuillez réessayer.",
 "Adicionado à lista de espera! Notificaremos se houver desistências para o dia {date}": "Ajouté à la liste d'attente ! Nous vous préviendrons en cas d'annulation pour le {date}.",
-"O chef já tem outra reserva perto dessa hora. Escolha um horário com pelo menos 3 horas de diferença.": "Le chef a déjà une autre réservation proche de cet horaire. Choisissez un créneau à au moins 3 heures d'écart."
+"O chef já tem outra reserva perto dessa hora. Escolha um horário com pelo menos 3 horas de diferença.": "Le chef a déjà une autre réservation proche de cet horaire. Choisissez un créneau à au moins 3 heures d'écart.",
+"Alertas do dispositivo ativos enquanto a Cookr estiver aberta, para respostas de Chefs e confirmações.": "Alertes de l'appareil actives tant que Cookr est ouverte, pour les réponses des chefs et les confirmations.",
+"Receba alertas no ecrã quando os Chefs aceitarem ou confirmarem serviços (com a Cookr aberta).": "Recevez des alertes à l'écran lorsque les chefs acceptent ou confirment des services (Cookr ouverte)."
 }
