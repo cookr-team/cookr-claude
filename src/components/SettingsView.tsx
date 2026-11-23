@@ -33,6 +33,7 @@ interface SettingsViewProps {
   onRefresh: (userOverride?: User) => void;
   onNavigate: (view: string) => void;
   onNotify?: (message: string, type: "success" | "error" | "info") => void;
+  embedded?: boolean;
 }
 import { formatPostalCode } from "../utils/formatters";
 import { tr } from "../lib/tr";
@@ -76,6 +77,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onRefresh,
   onNavigate,
   onNotify,
+  embedded = false,
 }) => {
   const { t, language, setLanguage, availableLanguages } = useLanguage();
 
@@ -233,7 +235,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       if (onNotify) onNotify(tr("Dados de faturação guardados com sucesso!"), "success");
     } catch (err: any) {
       console.error(err);
-      if (onNotify) onNotify(tr("Erro ao guardar dados de faturação."), "error");
+      if (onNotify) onNotify(err?.message ? `${tr("Erro ao guardar dados de faturação.")} ${err.message}` : tr("Erro ao guardar dados de faturação."), "error");
     } finally {
       setIsSavingBilling(false);
     }
@@ -266,9 +268,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10 space-y-6 sm:space-y-8 text-left min-w-0">
+    <div className={embedded ? "w-full space-y-6 text-left min-w-0" : "w-full max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-10 space-y-6 sm:space-y-8 text-left min-w-0"}>
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/80 pb-5 sm:pb-6">
+      <div className={`${embedded ? "hidden " : ""}flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200/80 pb-5 sm:pb-6`}>
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">

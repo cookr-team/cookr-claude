@@ -17,6 +17,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 
+import { SettingsView } from "./SettingsView";
 import { GIFT_CARDS_ENABLED } from "../config/features";
 import { tr, trLocale } from "../lib/tr";
 import { useLanguage } from "../contexts/LanguageContext";
@@ -38,7 +39,8 @@ interface ProfileDashboardProps {
     | "settings"
     | "giftcards"
     | "loyalty"
-    | "moradas";
+    | "moradas"
+    | "definicoes";
 }
 
 const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
@@ -54,7 +56,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 }) => {
   useLanguage();
   const [activeTab, setActiveTab] = useState<
-    "bookings" | "favorites" | "settings" | "giftcards" | "loyalty" | "moradas"
+    "bookings" | "favorites" | "settings" | "giftcards" | "loyalty" | "moradas" | "definicoes"
   >(initialTab || "bookings");
   const [viewingDetail, setViewingDetail] = useState<Booking | null>(null);
   const [selectedMenu, setSelectedMenu] = useState<MenuItem | null>(null);
@@ -808,6 +810,12 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
               className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "settings" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
             >
               {tr("Informações")}
+            </button>
+            <button
+              onClick={() => setActiveTab("definicoes")}
+              className={`flex-1 md:flex-none px-4 sm:px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap shrink-0 cursor-pointer ${activeTab === "definicoes" ? "bg-white text-slate-950 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/20" : "text-slate-500 hover:text-slate-700"}`}
+            >
+              {tr("Definições")}
             </button>
           </div>
         </div>
@@ -2009,6 +2017,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
             </div>
           )}
         </div>
+      )}
+
+      {activeTab === "definicoes" && (
+        <SettingsView user={user} onRefresh={onRefresh} onNavigate={onNavigate} onNotify={onNotify} embedded />
       )}
 
       {activeTab === "settings" && (

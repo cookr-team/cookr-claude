@@ -67,7 +67,7 @@ const Layout: React.FC<LayoutProps> = ({
       id: "settings",
       label: t("nav_settings"),
       icon: ICONS.Settings,
-      roles: [UserRole.CLIENT, UserRole.COOK, UserRole.ADMIN],
+      roles: [UserRole.COOK, UserRole.ADMIN],
     },
     {
       id: "profile",

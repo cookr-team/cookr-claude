@@ -1265,6 +1265,8 @@ export const supabaseService = {
       }
       // 1. Atualizar campos da tabela profiles
       const profileUpdates: any = {};
+      const privateUpdates: Record<string, any> = {};
+      // Se não for o próprio (ex.: admin), segue o caminho antigo (trigger no servidor).
       if (data.nome !== undefined) profileUpdates.nome = data.nome;
       if (data.telefone !== undefined) profileUpdates.telefone = data.telefone;
       if (data.avatar_url !== undefined) profileUpdates.avatar_url = data.avatar_url;
@@ -1273,16 +1275,16 @@ export const supabaseService = {
       if (data.cidade !== undefined) profileUpdates.cidade = data.cidade;
       if (data.localizacao !== undefined) profileUpdates.localizacao = data.localizacao;
       if (data.zip_code !== undefined) profileUpdates.zip_code = data.zip_code;
-      if (data.nif !== undefined) profileUpdates.nif = data.nif;
-      if (data.iban !== undefined) profileUpdates.iban = data.iban;
-      if (data.fiscal_name !== undefined) profileUpdates.fiscal_name = data.fiscal_name;
-      if (data.billing_address !== undefined) profileUpdates.billing_address = data.billing_address;
-      if (data.billing_street !== undefined) profileUpdates.billing_street = data.billing_street;
-      if (data.billing_number !== undefined) profileUpdates.billing_number = data.billing_number;
-      if (data.billing_floor !== undefined) profileUpdates.billing_floor = data.billing_floor;
-      if (data.billing_zip !== undefined) profileUpdates.billing_zip = data.billing_zip;
-      if (data.billing_city !== undefined) profileUpdates.billing_city = data.billing_city;
-      if (data.billing_country !== undefined) profileUpdates.billing_country = data.billing_country;
+      if (data.nif !== undefined) privateUpdates.nif = data.nif;
+      if (data.iban !== undefined) privateUpdates.iban = data.iban;
+      if (data.fiscal_name !== undefined) privateUpdates.fiscal_name = data.fiscal_name;
+      if (data.billing_address !== undefined) privateUpdates.billing_address = data.billing_address;
+      if (data.billing_street !== undefined) privateUpdates.billing_street = data.billing_street;
+      if (data.billing_number !== undefined) privateUpdates.billing_number = data.billing_number;
+      if (data.billing_floor !== undefined) privateUpdates.billing_floor = data.billing_floor;
+      if (data.billing_zip !== undefined) privateUpdates.billing_zip = data.billing_zip;
+      if (data.billing_city !== undefined) privateUpdates.billing_city = data.billing_city;
+      if (data.billing_country !== undefined) privateUpdates.billing_country = data.billing_country;
       if (data.addresses !== undefined) profileUpdates.addresses = data.addresses;
       if (data.dietary_restrictions !== undefined) profileUpdates.dietary_restrictions = data.dietary_restrictions;
       if (data.cuisine_preferences !== undefined) profileUpdates.cuisine_preferences = data.cuisine_preferences;
@@ -1293,6 +1295,20 @@ export const supabaseService = {
       if (data.notification_settings !== undefined) profileUpdates.notification_settings = data.notification_settings;
       if (data.admin_notes !== undefined) profileUpdates.admin_notes = data.admin_notes;
       if (data.status !== undefined) profileUpdates.status = data.status;
+
+      if (Object.keys(privateUpdates).length > 0 && !(sessionId && sessionId === targetUserId)) Object.assign(profileUpdates, privateUpdates);
+      // Dados privados (NIF, IBAN, faturação): gravados pela função segura; se ainda não existir, usa o caminho antigo.
+      if (Object.keys(privateUpdates).length > 0 && sessionId && sessionId === targetUserId) {
+        const { error: rErr } = await supabase.rpc('save_my_private', { p: privateUpdates });
+        if (rErr) {
+          if (/save_my_private|PGRST202|schema cache/i.test(`${rErr.code || ''} ${rErr.message || ''}`)) {
+            Object.assign(profileUpdates, privateUpdates);
+          } else {
+            console.warn('[Supabase] save_my_private:', rErr.message || rErr);
+            saveError = rErr.message || 'Não foi possível guardar os dados privados.';
+          }
+        }
+      }
 
       if (Object.keys(profileUpdates).length > 0) {
         const { data: updatedRows, error: pErr } = await supabase
