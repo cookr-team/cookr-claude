@@ -1240,7 +1240,17 @@ export const supabaseService = {
       return;
     }
     const targetUserId = isValidUUID(userId) ? userId : toValidUUID(userId);
+    let saveError: string | null = null;
     try {
+      // Em edições do próprio perfil, nunca enviar campos que só o admin pode mexer
+      // (a base de dados recusava a gravação inteira se o valor local estivesse desatualizado).
+      const sessionId = await getVerifiedSessionUserId();
+      if (sessionId && sessionId === targetUserId) {
+        data = { ...data };
+        for (const k of ['status', 'loyalty_points', 'badges', 'admin_notes', 'rating', 'total_avaliacoes', 'total_reservas', 'approvedByAdmin', 'bypass_haccp_restrictions'] as const) {
+          delete (data as any)[k];
+        }
+      }
       // 1. Atualizar campos da tabela profiles
       const profileUpdates: any = {};
       if (data.nome !== undefined) profileUpdates.nome = data.nome;
@@ -1277,7 +1287,10 @@ export const supabaseService = {
           .from('profiles')
           .update(profileUpdates)
           .eq('id', targetUserId);
-        if (pErr) console.warn('[Supabase] updateUserProfile (profiles) note:', pErr.message || pErr);
+        if (pErr) {
+          console.warn('[Supabase] updateUserProfile (profiles):', pErr.message || pErr);
+          saveError = pErr.message || 'Não foi possível guardar o perfil.';
+        }
       }
 
       // 2. Atualizar campos da tabela chefs se relevante
@@ -1343,13 +1356,13 @@ export const supabaseService = {
             } else {
               // Como fallback extremo, guardar sem certifications_and_awards para garantir biografia/especialidades
               const { certifications_and_awards, ...safePayload } = rawPayload;
-              try {
-                await supabase
-                  .from('chefs')
-                  .upsert(safePayload, { onConflict: 'profile_id' });
-              } catch (_) {}
+              const { error: safeErr } = await supabase
+                .from('chefs')
+                .upsert(safePayload, { onConflict: 'profile_id' });
+              if (!safeErr) cErr = null;
             }
           }
+          if (cErr) saveError = saveError || cErr.message || 'Não foi possível guardar o perfil de chef.';
         }
 
         // Sincronizar cache dedicada de chefs
@@ -1357,6 +1370,11 @@ export const supabaseService = {
       }
     } catch (err) {
       console.warn('[Supabase] updateUserProfile note:', err);
+      saveError = saveError || (err as any)?.message || 'Não foi possível guardar o perfil.';
+    }
+
+    if (saveError) {
+      throw new Error(/fetch|network|Failed/i.test(saveError) ? 'Sem ligação à internet. As alterações não foram guardadas.' : `Não foi possível guardar: ${saveError}`);
     }
 
     // Sincronizar sempre no armazenamento local e memória

@@ -466,10 +466,6 @@ const CookProfile: React.FC<CookProfileProps> = ({
       
       const draftKey = `cook_profile_draft_${user.id}`;
       sessionStorage.removeItem(draftKey);
-      try {
-        localStorage.setItem("cookr_user", JSON.stringify(dataToSave));
-      } catch (_) {}
-
       if (!silent) {
         setIsEditing(false);
         onRefresh(dataToSave);
@@ -749,8 +745,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
         addresses: updatedAddresses,
       });
       onRefresh();
-    } catch (e) {
+    } catch (e: any) {
       console.warn("Erro ao eliminar morada:", e);
+      onNotify?.(e?.message || "Não foi possível eliminar a morada.", "error");
+      setEditedUser((prev) => ({ ...prev, addresses: user.addresses || [] }));
     }
   };
 
@@ -774,8 +772,10 @@ const CookProfile: React.FC<CookProfileProps> = ({
       try {
         await supabaseService.updateUserProfile(user.id, newUserState);
         onRefresh();
-      } catch (e) {
+      } catch (e: any) {
         console.warn("Erro ao definir morada principal:", e);
+        onNotify?.(e?.message || "Não foi possível definir a morada principal.", "error");
+        setEditedUser(user);
       }
     }
   };
