@@ -85,7 +85,7 @@ const LandingPage: React.FC<LandingPageProps> = ({
   }, []);
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden selection:bg-orange-500 selection:text-white font-sans">
+    <div className="min-h-dvh bg-white overflow-x-hidden selection:bg-orange-500 selection:text-white font-sans">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-[100] px-3.5 sm:px-6 md:px-16 pt-[calc(env(safe-area-inset-top,0px)+10px)] pb-2.5 md:pt-4 md:pb-4 flex justify-between items-center bg-white/90 backdrop-blur-md border-b border-slate-50 md:border-none">
         <Logo size="sm" onClick={() => onNavigate("landing")} />

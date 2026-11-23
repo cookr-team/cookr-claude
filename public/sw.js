@@ -1,11 +1,12 @@
 // Cookr Native Service Worker - Offline & Cache Strategy (Self-contained, no external CDN dependencies)
 
-const CACHE_NAME = 'cookr-cache-v7';
-const IMAGES_CACHE_NAME = 'cookr-images-v7';
+const CACHE_NAME = 'cookr-cache-v8';
+const IMAGES_CACHE_NAME = 'cookr-images-v8';
 
 const PRECACHE_ASSETS = [
   '/manifest.json',
-  '/icon.svg'
+  '/icon-192.png',
+  '/logo.png'
 ];
 
 // Broadcast channel for offline sync triggers
@@ -179,8 +180,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'Cookr - Gastronomia ao Vivo';
   const options = {
     body: data.body || 'Nova atualização no seu pedido ou reserva.',
-    icon: data.icon || '/icon.svg',
-    badge: data.badge || '/icon.svg',
+    icon: data.icon || '/icon-192.png',
+    badge: data.badge || '/favicon-32.png',
     vibrate: data.vibrate || [200, 100, 200, 100, 300],
     tag: data.tag || 'cookr-push-notification',
     data: data.data || { url: data.url || '/' },

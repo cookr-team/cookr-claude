@@ -113,7 +113,7 @@ const ClientOnboarding: React.FC<ClientOnboardingProps> = ({
   const progress = (step / 4) * 100;
 
   return (
-    <div className="min-h-screen bg-slate-50/30 flex flex-col items-center py-12 px-6 animate-in fade-in duration-700">
+    <div className="min-h-dvh bg-slate-50/30 flex flex-col items-center py-12 px-6 animate-in fade-in duration-700">
       {/* Premium Account Creation Overlay */}
       <AnimatePresence>
         {isAccountCreated && (

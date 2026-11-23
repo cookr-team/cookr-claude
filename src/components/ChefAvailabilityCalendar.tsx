@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { ICONS } from "../constants";
 import { User } from "../types";
 import { useLanguage, getLangText } from "../contexts/LanguageContext";
+import { todayLocal } from "../lib/dateUtils";
 
 interface ChefAvailabilityCalendarProps {
   chef: User;
@@ -30,7 +31,7 @@ const ChefAvailabilityCalendar: React.FC<ChefAvailabilityCalendarProps> = ({
   }, [chef.disponibilidade]);
 
   const hasAnyFutureAvailability = useMemo(() => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = todayLocal();
     const futureDates = Object.keys(dispo).filter(
       (date) => date >= today && dispo[date]?.length > 0,
     );
@@ -116,14 +117,11 @@ const ChefAvailabilityCalendar: React.FC<ChefAvailabilityCalendarProps> = ({
             })}
           </p>
         </div>
-        <button className="px-4 py-2 bg-slate-950 text-white rounded-xl font-bold text-[9px] uppercase tracking-wider hover:bg-orange-500 transition-all cursor-pointer">
-          {getLangText(language, { pt: "Notificar-me quando disponível", en: "Notify me when available", fr: "M'avertir dès disponibilité", es: "Avisarme cuando esté disponible" })}
-        </button>
       </div>
     );
   }
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = todayLocal();
 
   return (
     <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden animate-in fade-in">
@@ -134,15 +132,17 @@ const ChefAvailabilityCalendar: React.FC<ChefAvailabilityCalendarProps> = ({
         <div className="flex gap-1">
           <button
             onClick={prevMonth}
-            className="w-7 h-7 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-950 transition-all shadow-sm cursor-pointer"
+            aria-label={getLangText(language, { pt: "Mês anterior", en: "Previous month", fr: "Mois précédent", es: "Mes anterior" })}
+            className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-950 active:scale-95 transition-all shadow-sm cursor-pointer"
           >
-            <ICONS.ChevronLeft size={12} />
+            <ICONS.ChevronLeft size={16} />
           </button>
           <button
             onClick={nextMonth}
-            className="w-7 h-7 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-950 transition-all shadow-sm cursor-pointer"
+            aria-label={getLangText(language, { pt: "Mês seguinte", en: "Next month", fr: "Mois suivant", es: "Mes siguiente" })}
+            className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-950 active:scale-95 transition-all shadow-sm cursor-pointer"
           >
-            <ICONS.ChevronRight size={12} />
+            <ICONS.ChevronRight size={16} />
           </button>
         </div>
       </div>
@@ -152,7 +152,7 @@ const ChefAvailabilityCalendar: React.FC<ChefAvailabilityCalendarProps> = ({
           {weekdays.map((d, i) => (
             <div
               key={`${d}-${i}`}
-              className="text-center text-[7px] font-bold text-slate-400 uppercase tracking-wider py-1"
+              className="text-center text-[11px] font-bold text-slate-400 uppercase tracking-wider py-1"
             >
               {d}
             </div>
@@ -162,7 +162,7 @@ const ChefAvailabilityCalendar: React.FC<ChefAvailabilityCalendarProps> = ({
         <div className="grid grid-cols-7 gap-1">
           {calendarDays.map((day, idx) => {
             if (!day)
-              return <div key={`empty-${idx}`} className="h-8" />;
+              return <div key={`empty-${idx}`} className="h-11" />;
 
             const isAvailable =
               (dispo[day]?.length > 0 ||
@@ -176,9 +176,11 @@ const ChefAvailabilityCalendar: React.FC<ChefAvailabilityCalendarProps> = ({
               <button
                 key={day}
                 disabled={!isAvailable}
+                aria-pressed={isSelected}
+                aria-label={new Date(`${day}T12:00:00`).toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" })}
                 onClick={() => onSelectDate(day)}
                 className={`
-                  h-8 rounded-lg flex flex-col items-center justify-center transition-all relative group cursor-pointer
+                  h-11 rounded-xl flex flex-col items-center justify-center transition-all relative group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500
                   ${
                     isSelected
                       ? "bg-orange-500 text-white shadow-sm scale-105 z-10"
@@ -189,17 +191,15 @@ const ChefAvailabilityCalendar: React.FC<ChefAvailabilityCalendarProps> = ({
                 `}
               >
                 <span
-                  className={`text-[11px] ${isSelected ? "text-white font-bold" : "text-slate-800"}`}
+                  className={`text-sm ${isSelected ? "text-white font-bold" : "text-slate-800"}`}
                 >
                   {dayNum}
                 </span>
                 {isAvailable && !isSelected && (
-                  <div className="w-0.5 h-0.5 bg-orange-500 rounded-full mt-0.5" />
+                  <div className="w-1 h-1 bg-orange-500 rounded-full mt-0.5" />
                 )}
                 {isToday && !isSelected && (
-                  <span className="absolute top-0.5 right-0.5 text-[5px] font-bold text-orange-500 uppercase tracking-tight">
-                    {t("common.today")}
-                  </span>
+                  <span className="absolute inset-0 rounded-xl ring-1 ring-orange-400 pointer-events-none" aria-hidden="true" />
                 )}
               </button>
             );
@@ -210,13 +210,13 @@ const ChefAvailabilityCalendar: React.FC<ChefAvailabilityCalendarProps> = ({
       <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-3">
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 bg-orange-500 rounded-full" />
-          <span className="text-[7px] font-bold text-slate-400 uppercase tracking-wider">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
             {t("common.active")}
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 bg-slate-100 border border-slate-200 rounded-full" />
-          <span className="text-[7px] font-bold text-slate-400 uppercase tracking-wider">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
             {t("common.inactive")}
           </span>
         </div>

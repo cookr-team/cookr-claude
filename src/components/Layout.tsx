@@ -168,8 +168,14 @@ const Layout: React.FC<LayoutProps> = ({
 
     checkModal();
 
+    // Agrupa mutações num único frame (antes corria querySelectorAll a cada alteração do DOM).
+    let rafId = 0;
     const observer = new MutationObserver(() => {
-      checkModal();
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        checkModal();
+      });
     });
 
     observer.observe(document.body, {
@@ -179,6 +185,7 @@ const Layout: React.FC<LayoutProps> = ({
 
     return () => {
       observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -194,10 +201,10 @@ const Layout: React.FC<LayoutProps> = ({
   }, [isModalOpen]);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col md:flex-row w-full max-w-full overflow-x-hidden">
+    <div className="min-h-dvh bg-white flex flex-col md:flex-row w-full max-w-full overflow-x-hidden">
       {/* Sidebar - Desktop & Tablet */}
       {user && (
-        <aside className="hidden md:flex w-20 lg:w-72 bg-slate-950 border-r border-white/5 flex-col sticky top-0 h-screen z-40 shrink-0 overflow-y-auto overflow-x-hidden select-none transition-all duration-200">
+        <aside className="hidden md:flex w-20 lg:w-72 bg-slate-950 border-r border-white/5 flex-col sticky top-0 h-dvh z-40 shrink-0 overflow-y-auto overflow-x-hidden select-none transition-all duration-200">
           {/* Header section in sidebar */}
           <div className="p-3 lg:p-6 flex flex-col lg:flex-row items-center justify-between gap-3 border-b border-white/5 shrink-0">
             <div className="flex items-center justify-center shrink-0">

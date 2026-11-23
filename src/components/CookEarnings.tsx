@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from "recharts";
 import { useLanguage, getLangText } from "../contexts/LanguageContext";
+import { todayLocal } from "../lib/dateUtils";
 
 interface CookEarningsProps {
   bookings: Booking[];
@@ -278,7 +279,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
       headStyles: { fillColor: [15, 23, 42] }, // slate-950
     });
 
-    doc.save(`relatorio-ganhos-${timeFilter.replace(/\s+/g, "-").toLowerCase()}-${new Date().toISOString().split("T")[0]}.pdf`);
+    doc.save(`relatorio-ganhos-${timeFilter.replace(/\s+/g, "-").toLowerCase()}-${todayLocal()}.pdf`);
   };
 
   return (

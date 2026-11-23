@@ -75,7 +75,7 @@ export const pushNotificationService = {
    * Trigger a native Push Notification (via ServiceWorker or Web Notification API)
    */
   sendNotification: async (payload: PushNotificationPayload): Promise<boolean> => {
-    const { title, body, icon = '/icon.svg', badge = '/icon.svg', url = '/', tag = 'cookr-push', vibrate = [200, 100, 200], actions } = payload;
+    const { title, body, icon = '/icon-192.png', badge = '/favicon-32.png', url = '/', tag = 'cookr-push', vibrate = [200, 100, 200], actions } = payload;
 
     // 1. Always attempt Service Worker showNotification first (native OS/Mobile push experience)
     if ('serviceWorker' in navigator && navigator.serviceWorker) {
@@ -165,8 +165,8 @@ export const pushNotificationService = {
       userId: cookId,
       title,
       body,
-      icon: '/icon.svg',
-      badge: '/icon.svg',
+      icon: '/icon-192.png',
+      badge: '/favicon-32.png',
       tag: `chef-booking-${bookingId}`,
       vibrate: [300, 100, 300, 100, 400],
       url,
@@ -212,8 +212,8 @@ export const pushNotificationService = {
       userId: clientId,
       title,
       body,
-      icon: '/icon.svg',
-      badge: '/icon.svg',
+      icon: '/icon-192.png',
+      badge: '/favicon-32.png',
       tag: `client-reminder-${reminderType}-${bookingId}`,
       vibrate: is24h ? [200, 100, 200] : [300, 150, 300, 150, 500],
       url,

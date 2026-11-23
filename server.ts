@@ -1225,7 +1225,7 @@ app.post("/api/push/send", async (req, res) => {
       success: true,
       delivered: true,
       timestamp: new Date().toISOString(),
-      payload: { userId, title, body, icon: icon || "/icon.svg", url: url || "/" }
+      payload: { userId, title, body, icon: icon || "/icon-192.png", url: url || "/" }
     });
   } catch (err: any) {
     console.error("[Web Push Error]", err);

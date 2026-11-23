@@ -17,6 +17,7 @@ import {
   Pie,
   Cell
 } from "recharts";
+import { todayLocal } from "../lib/dateUtils";
 
 interface AdminInsightsProps {
   users: User[];
@@ -93,7 +94,7 @@ const AdminInsights: React.FC<AdminInsightsProps> = ({
     message:
       "Descubra os melhores rituais de Sushi em Lisboa este fim de semana! 🍣",
     incentive: "10% de desconto",
-    startDate: new Date().toISOString().split("T")[0],
+    startDate: todayLocal(),
     duration: "3",
   });
 

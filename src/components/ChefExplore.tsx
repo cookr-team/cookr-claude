@@ -355,7 +355,7 @@ const ChefExplore: React.FC<ChefExploreProps> = ({
 
   if (showArticle) {
     return (
-      <div className="min-h-screen bg-[#0B0D14] text-gray-300 font-sans p-4 md:p-10 select-none animate-in fade-in duration-500 relative z-50">
+      <div className="min-h-dvh bg-[#0B0D14] text-gray-300 font-sans p-4 md:p-10 select-none animate-in fade-in duration-500 relative z-50">
         <div className="max-w-3xl mx-auto space-y-8 pb-20">
           {/* Header element to go back */}
           <div className="flex items-center justify-between border-b border-gray-800 pb-4">

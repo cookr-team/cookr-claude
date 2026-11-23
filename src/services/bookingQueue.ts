@@ -1,3 +1,5 @@
+import { supabase, isSupabaseConfigured } from '../lib/supabaseClient';
+
 // Dynamic import or typed service interface to avoid circular dependency
 let _supabaseService: any = null;
 async function getService() {
@@ -13,6 +15,18 @@ export interface OfflineAction {
   type: 'create' | 'update_status' | 'delete_booking';
   data: any;
   createdAt: number;
+  /** Utilizador que criou a ação (a fila é partilhada pelo dispositivo). */
+  userId?: string | null;
+}
+
+async function getCurrentUserId(): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const { data } = await supabase.auth.getSession();
+    return data?.session?.user?.id || null;
+  } catch (_) {
+    return null;
+  }
 }
 
 const DB_NAME = 'BookingOfflineQueueDB';
@@ -51,6 +65,7 @@ export function initOfflineDB(): Promise<IDBDatabase> {
 }
 
 export async function addOfflineAction(type: 'create' | 'update_status' | 'delete_booking', data: any): Promise<number> {
+  const userId = await getCurrentUserId();
   try {
     const db = await initOfflineDB();
     return new Promise((resolve, reject) => {
@@ -60,6 +75,7 @@ export async function addOfflineAction(type: 'create' | 'update_status' | 'delet
         type,
         data,
         createdAt: Date.now(),
+        userId,
       };
       const req = store.add(action);
       req.onsuccess = () => resolve(req.result as number);
@@ -70,7 +86,7 @@ export async function addOfflineAction(type: 'create' | 'update_status' | 'delet
     const localQueueStr = localStorage.getItem('offline_actions_fallback') || '[]';
     const localQueue = JSON.parse(localQueueStr);
     const id = Date.now();
-    localQueue.push({ id, type, data, createdAt: Date.now() });
+    localQueue.push({ id, type, data, createdAt: Date.now(), userId });
     localStorage.setItem('offline_actions_fallback', JSON.stringify(localQueue));
     return id;
   }
@@ -112,10 +128,35 @@ export async function removeOfflineAction(id: number): Promise<void> {
   }
 }
 
+let syncInFlight = false;
+
 export async function syncOfflineBookings(
   onProgress?: (msg: string, type: 'success' | 'error' | 'info') => void
 ): Promise<void> {
-  const actions = await getOfflineActions();
+  // Evita sincronizações em paralelo (arranque + evento 'online' + Service Worker) que duplicariam reservas.
+  if (syncInFlight) return;
+  syncInFlight = true;
+  try {
+    await runSync(onProgress);
+  } finally {
+    syncInFlight = false;
+  }
+}
+
+async function runSync(
+  onProgress?: (msg: string, type: 'success' | 'error' | 'info') => void
+): Promise<void> {
+  const all = await getOfflineActions();
+  if (all.length === 0) return;
+
+  // Sem sessão não se sincroniza (o servidor recusaria e as ações perder-se-iam).
+  const currentUserId = await getCurrentUserId();
+  if (isSupabaseConfigured() && !currentUserId) return;
+
+  // Só as ações do utilizador atual; as de outras contas ficam à espera do respetivo login.
+  const actions = all
+    .filter(a => !a.userId || !currentUserId || a.userId === currentUserId)
+    .sort((a, b) => a.createdAt - b.createdAt);
   if (actions.length === 0) return;
 
   if (onProgress) {

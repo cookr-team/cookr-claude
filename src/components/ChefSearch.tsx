@@ -15,6 +15,7 @@ import { apiFetch } from "../lib/apiClient";
 import { PremiumInteractiveGallery } from "./PremiumInteractiveGallery";
 import { DietaryBadges } from "./DietaryBadges";
 import { useLanguage } from "../contexts/LanguageContext";
+import { todayLocal, toLocalDateStr } from "../lib/dateUtils";
 
 const CuisineImage = ({ src, alt }: { src: string; alt: string }) => {
   const [hasError, setHasError] = useState(false);
@@ -553,13 +554,13 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
     [activeCollectionId, collections],
   );
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayLocal();
   const tomorrow = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
     .toISOString()
     .split("T")[0];
   const maxDateObj = new Date();
   maxDateObj.setMonth(new Date().getMonth() + 2);
-  const maxDate = maxDateObj.toISOString().split("T")[0];
+  const maxDate = toLocalDateStr(maxDateObj);
 
   const handleResetFilters = () => {
     setSearchTerm("");
@@ -719,7 +720,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
       if (chefMenus.length === 0) return false;
 
       const dispo = getParsedDisponibilidade(cook);
-      const todayStr = new Date().toISOString().split("T")[0];
+      const todayStr = todayLocal();
       const hasFutureScheduledSlots = Object.keys(dispo).some(
         (date) => date >= todayStr && (dispo[date] || []).length > 0
       );

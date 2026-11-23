@@ -145,7 +145,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
   const progress = (step / 5) * 100;
 
   return (
-    <div className="min-h-screen bg-slate-50/30 flex flex-col animate-in fade-in duration-700">
+    <div className="min-h-dvh bg-slate-50/30 flex flex-col animate-in fade-in duration-700">
       {/* Premium Account Creation Overlay */}
       <AnimatePresence>
         {isAccountCreated && (

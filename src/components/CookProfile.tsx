@@ -763,7 +763,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/30 pb-16 animate-in fade-in duration-500">
+    <div className="min-h-dvh bg-slate-50/30 pb-16 animate-in fade-in duration-500">
       {/* Availability Selection Modal */}
       {showAvailabilityModal && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
@@ -2825,7 +2825,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
       {/* Modal Adicionar / Editar FAQ do Chef */}
       {showAddFaqModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 space-y-5 text-left relative animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 space-y-5 text-left relative animate-in zoom-in-95 duration-200 max-h-[90dvh] overflow-y-auto">
             <button
               onClick={() => setShowAddFaqModal(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-800 p-2 rounded-full hover:bg-slate-100 transition-all"

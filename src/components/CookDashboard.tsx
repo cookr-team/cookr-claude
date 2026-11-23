@@ -20,6 +20,7 @@ import { supabaseService } from "../services/supabaseService";
 import { CancellationModal } from "./CancellationModal";
 import { DietaryBadges } from "./DietaryBadges";
 import { useLanguage } from "../contexts/LanguageContext";
+import { todayLocal } from "../lib/dateUtils";
 
 const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ chef, bookings }) => {
   const [activeModule, setActiveModule] = useState<"checklist" | "service_log">("service_log"); // Default to service_log as requested
@@ -51,7 +52,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
 
   const [logType, setLogType] = useState<"before_service" | "after_service">("before_service");
   const [logBookingId, setLogBookingId] = useState("");
-  const [logDate, setLogDate] = useState(new Date().toISOString().split("T")[0]);
+  const [logDate, setLogDate] = useState(todayLocal());
   const [temperaturesOk, setTemperaturesOk] = useState(true);
   const [surfacesSanitized, setSurfacesSanitized] = useState(true);
   const [personalHygieneOk, setPersonalHygieneOk] = useState(true);
@@ -111,7 +112,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
     try {
       const selectedBooking = eligibleBookings.find((b) => b.id === selectedBookingId);
       const clientName = selectedBooking ? selectedBooking.clientName : "Serviço Avulso";
-      const bookingDate = selectedBooking ? selectedBooking.data : new Date().toISOString().split("T")[0];
+      const bookingDate = selectedBooking ? selectedBooking.data : todayLocal();
 
       await supabaseService.createHaccpChecklist({
         cookId: chef.id,
@@ -187,7 +188,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
 
       // Reset Form
       setLogBookingId("");
-      setLogDate(new Date().toISOString().split("T")[0]);
+      setLogDate(todayLocal());
       setTemperaturesOk(true);
       setSurfacesSanitized(true);
       setPersonalHygieneOk(true);
@@ -2641,7 +2642,7 @@ const BookingCalendarWidget: React.FC<{
   };
 
   const sortedUpcomingBookings = useMemo(() => {
-    const todayStr = new Date().toISOString().split("T")[0];
+    const todayStr = todayLocal();
     return [...bookings]
       .filter((b) => {
         const isFutureOrToday = b.data >= todayStr;
@@ -3970,7 +3971,7 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
 
       {viewingDetail && (
         <div className="fixed inset-0 z-[1000] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-6 animate-in fade-in duration-300">
-          <div className="bg-white rounded-[3rem] md:rounded-[4rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-hide shadow-3xl relative">
+          <div className="bg-white rounded-[3rem] md:rounded-[4rem] max-w-2xl w-full max-h-[90dvh] overflow-y-auto scrollbar-hide shadow-3xl relative">
             {/* Header Background Accent */}
             <div className="absolute top-0 left-0 right-0 h-32 bg-slate-50 border-b border-slate-100" />
 
@@ -4318,7 +4319,7 @@ const AvailabilityManager: React.FC<{
   onNotify,
 }) => {
   const { t } = useLanguage();
-  const today = useMemo(() => new Date().toISOString().split("T")[0], []);
+  const today = useMemo(() => todayLocal(), []);
   const [selectedDate, setSelectedDate] = useState<string>(() => {
     if (typeof window !== "undefined") {
       const savedDate = sessionStorage.getItem("cookr_agenda_selected_date");

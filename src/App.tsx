@@ -1543,7 +1543,7 @@ const App: React.FC = () => {
   const renderView = () => {
     if (isLoading)
       return (
-        <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="min-h-dvh flex items-center justify-center bg-white">
           <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
         </div>
       );
@@ -1764,7 +1764,7 @@ const App: React.FC = () => {
 
     if (currentView === "login-form")
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-8">
+        <div className="min-h-dvh bg-slate-50 flex items-center justify-center px-4 py-8">
           <div className="max-w-sm w-full bg-white p-6 md:p-8 rounded-[2rem] shadow-xl space-y-6 md:space-y-8 animate-in slide-in-from-bottom-8 duration-700">
             <div className="text-center space-y-3">
               <div className="w-14 h-14 bg-slate-50 rounded-xl flex items-center justify-center mx-auto border border-slate-100 shadow-inner">
@@ -2076,7 +2076,7 @@ const App: React.FC = () => {
 
     if (currentUser.status === UserStatus.SUSPENDED && currentUser.role !== UserRole.ADMIN) {
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
+        <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4 font-sans">
           <div className="max-w-md w-full bg-white border border-red-100 rounded-3xl p-8 shadow-xl text-center space-y-6">
             <div className="mx-auto w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center">
               <ICONS.AlertTriangle size={32} />
@@ -2327,7 +2327,7 @@ const App: React.FC = () => {
       setIsMobileMenuOpen={setIsMobileMenuOpen}
     >
       {realAdminUser && (
-        <div className="sticky top-0 z-[9998] w-full bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 text-white px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs font-bold shadow-2xl border-b border-white/20 animate-in slide-in-from-top duration-300 gap-2">
+        <div className="sticky top-[calc(4rem+env(safe-area-inset-top,0px))] md:top-0 z-[45] w-full bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 text-white px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs font-bold shadow-2xl border-b border-white/20 animate-in slide-in-from-top duration-300 gap-2">
           <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
             <span className="bg-white/20 backdrop-blur-sm px-2 sm:px-2.5 py-0.5 rounded-md text-[9px] sm:text-[9.5px] font-black tracking-widest uppercase shadow-2xs">
               🚨 MODO SIMULAÇÃO
@@ -2348,12 +2348,16 @@ const App: React.FC = () => {
       <Toaster />
       <VersionCheckUtility />
       {!isOnline && (
-        <div className="fixed bottom-6 right-6 z-[9999] bg-slate-900 border border-slate-800 text-white rounded-full px-3.5 py-1.5 flex items-center gap-2.5 shadow-lg animate-bounce">
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed left-1/2 -translate-x-1/2 bottom-[calc(6.75rem+env(safe-area-inset-bottom,0px))] md:bottom-6 md:left-auto md:right-6 md:translate-x-0 z-[9999] max-w-[90vw] bg-slate-900 border border-slate-800 text-white rounded-full px-4 py-2 flex items-center gap-2.5 shadow-lg"
+        >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
-          <span className="text-[10px] font-black tracking-wider uppercase italic pr-0.5">Modo Offline</span>
+          <span className="text-[11px] font-black tracking-wider uppercase pr-0.5 whitespace-nowrap">Sem ligação</span>
         </div>
       )}
       <Suspense fallback={<ViewLoadingPlaceholder />}>
