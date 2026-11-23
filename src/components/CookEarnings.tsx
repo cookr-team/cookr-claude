@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Booking, BookingStatus } from "../types";
-import { ICONS, formatPrice } from "../constants";
+import { ICONS, formatPrice, COMMISSION_RATE } from "../constants";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import {
@@ -23,181 +23,96 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
   const { language, t } = useLanguage();
   const [timeFilter, setTimeFilter] = useState("Este Mês");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-  const [startDate, setStartDate] = useState("2026-05-01");
-  const [endDate, setEndDate] = useState("2026-06-01");
+  const [startDate, setStartDate] = useState(() => todayLocal().slice(0, 8) + "01");
+  const [endDate, setEndDate] = useState(() => todayLocal());
   const [isEditingRange, setIsEditingRange] = useState(false);
 
-  const completedBookings = useMemo(
-    () => bookings.filter((b) => b.status === BookingStatus.COMPLETED),
-    [bookings],
+  const rate = 1 - COMMISSION_RATE;
+  const gross = (b: Booking) => Number(b.valorTotal) || 0;
+
+  // Intervalo [from, to] (YYYY-MM-DD, inclusivo) do filtro escolhido
+  const range = useMemo(() => {
+    const today = todayLocal();
+    if (timeFilter === "Este Mês") return { from: today.slice(0, 8) + "01", to: today };
+    if (timeFilter === "Este Ano") return { from: today.slice(0, 4) + "-01-01", to: today };
+    if (timeFilter === "Últimos 30 Dias") {
+      const d = new Date();
+      d.setDate(d.getDate() - 30);
+      const from = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      return { from, to: today };
+    }
+    return { from: startDate <= endDate ? startDate : endDate, to: startDate <= endDate ? endDate : startDate };
+  }, [timeFilter, startDate, endDate]);
+
+  const inRange = (b: Booking) => !!b.data && b.data >= range.from && b.data <= range.to;
+
+  const completedInRange = useMemo(
+    () => bookings.filter((b) => b.status === BookingStatus.COMPLETED && inRange(b)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [bookings, range],
   );
 
-  const mockTransactions = useMemo(() => [
-    {
-      id: "TX-4829",
-      date: "28 Mai, 14:32",
-      service: "Pedido #4829 - Menu Mediterrâneo de Verão",
-      status: "Concluído",
-      gross: 40.50,
-      net: 32.40,
-    },
-    {
-      id: "TX-4112",
-      date: "21 Mai, 19:40",
-      service: "Pedido #4112 - Experiência de Sushi Fusão",
-      status: "Concluído",
-      gross: 110.00,
-      net: 88.00,
-    },
-    {
-      id: "TX-3982",
-      date: "14 Mai, 12:15",
-      service: "Pedido #3982 - Pack Daily Saudável Personalizado",
-      status: "Concluído",
-      gross: 45.00,
-      net: 36.00,
-    }
-  ], []);
-
-  const transactions = useMemo(() => {
-    const list = completedBookings.map((b, idx) => {
-      const gross = Number(b.valorTotal) || 0;
-      const net = gross * 0.8;
-      return {
-        id: `TX-${b.id?.slice(-4) || (4800 + idx)}`,
-        date: b.data || "Hoje, 14:00",
-        service: `Pedido #${b.id?.slice(-4) || (4800 + idx)} - ${b.menu_selected || "Menu Especial"}`,
-        status: "Concluído",
-        gross,
-        net,
-      };
-    });
-
-    return [...list, ...mockTransactions];
-  }, [completedBookings, mockTransactions]);
+  const transactions = useMemo(
+    () =>
+      completedInRange
+        .map((b) => {
+          const g = gross(b);
+          return {
+            id: b.id,
+            date: b.data,
+            service: `${b.menu_selected || "Serviço Cookr"}${b.clientName ? ` · ${b.clientName}` : ""}`,
+            status: "Concluído",
+            gross: g,
+            net: g * rate,
+          };
+        })
+        .sort((x, y) => (x.date < y.date ? 1 : -1)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [completedInRange],
+  );
 
   const stats = useMemo(() => {
-    // Base calculations from completed bookings
-    const dbGross = completedBookings.reduce((acc, b) => acc + Number(b.valorTotal), 0);
-    const dbPending = bookings
-      .filter((b) => b.status !== BookingStatus.COMPLETED && b.status !== BookingStatus.CANCELLED && b.status !== BookingStatus.REJECTED)
-      .reduce((acc, b) => acc + Number(b.valorTotal), 0);
-    
-    // We add our mock base values depending on the selected filter
-    let baseNet = 79.20; // Matches exact screenshot 79.20 €
-    let basePending = 0.00; // Matches exact screenshot 0.00 €
-    let baseCount = 1; // Matches exact screenshot
-    
-    if (timeFilter === "Este Mês") {
-      baseNet = 79.20 + (dbGross * 0.8);
-      basePending = dbPending * 0.8;
-      baseCount = 1 + completedBookings.length;
-    } else if (timeFilter === "Últimos 30 Days" || timeFilter === "Últimos 30 Dias") {
-      baseNet = 156.40 + (dbGross * 0.8);
-      basePending = dbPending * 0.8;
-      baseCount = 3 + completedBookings.length;
-    } else if (timeFilter === "Este Ano") {
-      baseNet = 542.80 + (dbGross * 0.8);
-      basePending = dbPending * 0.8;
-      baseCount = 12 + completedBookings.length;
-    } else if (timeFilter === "Intervalo Customizado") {
-      baseNet = 32.40;
-      basePending = 0.00;
-      baseCount = 1;
-    }
-
+    const upcoming = bookings.filter(
+      (b) => b.status === BookingStatus.ACCEPTED || b.status === BookingStatus.IN_PROGRESS,
+    );
     return {
-      net: baseNet,
-      pending: basePending,
-      count: baseCount,
+      net: transactions.reduce((acc, t) => acc + t.net, 0),
+      pending: upcoming.reduce((acc, b) => acc + gross(b) * rate, 0),
+      count: transactions.length,
     };
-  }, [completedBookings, bookings, timeFilter]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transactions, bookings]);
 
-  const filteredTransactions = useMemo(() => {
-    if (timeFilter === "Este Mês") {
-      return transactions.filter((t) => t.date.includes("Mai") || t.date.includes("Hoje") || t.date.includes("Jun"));
-    } else if (timeFilter === "Intervalo Customizado") {
-      return transactions.slice(0, 1);
-    }
-    return transactions;
-  }, [transactions, timeFilter]);
+  const filteredTransactions = transactions;
 
   const chartData = useMemo(() => {
     const ptMonths = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     const now = new Date();
-    const monthsData = [];
-    
-    // Generate the last 6 months buckets dynamically (inclusive of current month)
+    const buckets: { key: string; name: string; bruto: number; líquido: number }[] = [];
     for (let i = 5; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const mName = ptMonths[d.getMonth()];
-      const yearShort = d.getFullYear().toString().slice(-2);
-      monthsData.push({
-        name: `${mName} '${yearShort}`,
-        monthNum: d.getMonth(),
-        year: d.getFullYear(),
-        líquido: 0,
+      buckets.push({
+        key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
+        name: `${ptMonths[d.getMonth()]} '${String(d.getFullYear()).slice(-2)}`,
         bruto: 0,
+        líquido: 0,
       });
     }
-
-    // Set baseline/realistic mock values for simulated experience
-    monthsData.forEach((m) => {
-      if (m.year === 2026) {
-        if (m.monthNum === 0) { m.líquido = 120.00; m.bruto = 150.00; }
-        else if (m.monthNum === 1) { m.líquido = 180.00; m.bruto = 225.00; }
-        else if (m.monthNum === 2) { m.líquido = 144.00; m.bruto = 180.00; }
-        else if (m.monthNum === 3) { m.líquido = 216.00; m.bruto = 270.00; }
-        else if (m.monthNum === 4) { m.líquido = 156.40; m.bruto = 195.50; }
-        else if (m.monthNum === 5) { m.líquido = 79.20; m.bruto = 99.00; }
-      } else {
-        m.líquido = 80.00 + (m.monthNum * 20);
-        m.bruto = m.líquido * 1.25;
+    bookings.forEach((b) => {
+      if (b.status !== BookingStatus.COMPLETED || !b.data) return;
+      const bucket = buckets.find((m) => m.key === b.data.slice(0, 7));
+      if (bucket) {
+        bucket.bruto += gross(b);
+        bucket.líquido += gross(b) * rate;
       }
     });
-
-    // Accumulate actual database completed bookings dynamically
-    completedBookings.forEach((b) => {
-      if (!b.data) return;
-      let bMonth = -1;
-      let bYear = -1;
-
-      if (b.data.includes("-")) {
-        const parts = b.data.split("-");
-        bYear = parseInt(parts[0], 10);
-        bMonth = parseInt(parts[1], 10) - 1;
-      } else {
-        const lower = b.data.toLowerCase();
-        if (lower.includes("jan")) bMonth = 0;
-        else if (lower.includes("fev")) bMonth = 1;
-        else if (lower.includes("mar")) bMonth = 2;
-        else if (lower.includes("abr")) bMonth = 3;
-        else if (lower.includes("mai")) bMonth = 4;
-        else if (lower.includes("jun")) bMonth = 5;
-        else if (lower.includes("jul")) bMonth = 6;
-        else if (lower.includes("ago")) bMonth = 7;
-        else if (lower.includes("set")) bMonth = 8;
-        else if (lower.includes("out")) bMonth = 9;
-        else if (lower.includes("nov")) bMonth = 10;
-        else if (lower.includes("dez")) bMonth = 11;
-        bYear = 2026;
-      }
-
-      const mBucket = monthsData.find((m) => m.monthNum === bMonth && m.year === bYear);
-      if (mBucket) {
-        const grossVal = Number(b.valorTotal) || 0;
-        const netVal = grossVal * 0.8;
-        mBucket.bruto += grossVal;
-        mBucket.líquido += netVal;
-      }
-    });
-
-    return monthsData.map(m => ({
+    return buckets.map((m) => ({
       name: m.name,
       bruto: Number(m.bruto.toFixed(2)),
-      líquido: Number(m.líquido.toFixed(2))
+      líquido: Number(m.líquido.toFixed(2)),
     }));
-  }, [completedBookings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookings]);
 
   const CustomChartTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -209,7 +124,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
               <div key={index} className="flex items-center gap-3 justify-between">
                 <span className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-slate-300">
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.color }} />
-                  {entry.name === "bruto" ? "Bruto" : "Líquido (80%)"}:
+                  {entry.name === "bruto" ? "Bruto" : "Líquido"}:
                 </span>
                 <span className="font-black text-white">{formatPrice(entry.value)}</span>
               </div>
@@ -243,8 +158,8 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
 
     const statsData = [
       ["Total de Rituais", stats.count.toString()],
-      ["Saldo Disponivel (Liquido)", formatPrice(stats.net)],
-      ["Em Processamento (Liquido)", formatPrice(stats.pending)],
+      ["Ganhos concluidos (Liquido)", formatPrice(stats.net)],
+      ["A Receber (Liquido)", formatPrice(stats.pending)],
     ];
 
     autoTable(doc, {
@@ -273,7 +188,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
 
     autoTable(doc, {
       startY: (doc as any).lastAutoTable.finalY + 20,
-      head: [["Data", "Servico", "Estado", "Bruto", "Liquido (80%)"]],
+      head: [["Data", "Servico", "Estado", "Bruto", "Liquido"]],
       body: tableData,
       theme: "grid",
       headStyles: { fillColor: [15, 23, 42] }, // slate-950
@@ -339,7 +254,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
         <div className="bg-orange-50/30 border border-orange-100/30 p-3.5 rounded-xl text-left space-y-3 animate-in fade-in duration-300">
           <div className="flex items-center gap-2">
             <ICONS.Filter size={12} className="text-orange-500" />
-            <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-700">Definir Intervalo Customizado</span>
+            <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-700">Intervalo personalizado</span>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -384,7 +299,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
           <div className="absolute top-0 right-0 w-20 md:w-24 h-24 bg-orange-500/10 rounded-full -mr-10 -mt-10 blur-xl group-hover:bg-orange-500/15 transition-all" />
           <div className="p-4 md:p-5 pb-1 space-y-2 relative z-10">
             <p className="text-[7.5px] md:text-[8.5px] font-bold text-orange-500 uppercase tracking-wider">
-              Saldo Disponível
+              Ganhos Concluídos
             </p>
             <p className="text-xl md:text-2xl font-extrabold text-white leading-none">
               {formatPrice(stats.net)}
@@ -394,12 +309,12 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
                 size={11}
                 className="text-emerald-500 shrink-0"
               />
-              <span>Pronto para Levantamento</span>
+              <span>Serviços já realizados</span>
             </div>
           </div>
           <div className="px-4 pb-4 md:px-5 md:pb-5 pt-2 mt-auto border-t border-white/5 relative z-10">
             <p className="text-xs text-gray-400 leading-tight font-medium opacity-90">
-              Taxas da plataforma Cookr já deduzidas
+              Comissão Cookr já deduzida
             </p>
           </div>
         </div>
@@ -407,7 +322,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
         <div className="bg-white p-4 md:p-5 rounded-xl border border-slate-100 shadow-xs text-left min-h-[145px] flex flex-col justify-between">
           <div className="space-y-2">
             <p className="text-[7.5px] md:text-[8.5px] font-bold text-slate-400 uppercase tracking-wider max-w-full">
-              Em Processamento
+              A Receber
             </p>
             <p className="text-xl md:text-2xl font-extrabold text-slate-950 leading-none">
               {formatPrice(stats.pending)}
@@ -415,7 +330,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
           </div>
           <div className="flex items-center gap-1.5 text-[8px] md:text-[8.5px] font-medium text-slate-400 pt-0.5 mt-auto">
             <ICONS.Clock size={11} className="text-orange-500 shrink-0" />
-            <span>Rituais Agendados</span>
+            <span>Serviços confirmados por realizar</span>
           </div>
         </div>
 
@@ -429,12 +344,8 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
             </p>
           </div>
           <div className="flex items-center gap-1.5 text-[8px] md:text-[8.5px] font-medium text-slate-400 pt-0.5 mt-auto">
-            <ICONS.Star
-              size={11}
-              className="text-orange-500 shrink-0"
-              fill="currentColor"
-            />
-            <span>Média 4.9/5.0</span>
+            <ICONS.CheckCircle size={11} className="text-orange-500 shrink-0" />
+            <span>No período selecionado</span>
           </div>
         </div>
       </div>
@@ -457,7 +368,7 @@ const CookEarnings: React.FC<CookEarningsProps> = ({ bookings }) => {
             </div>
             <div className="flex items-center gap-1.5 border-l border-slate-200 pl-4">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>Líquido (80%)</span>
+              <span>Líquido</span>
             </div>
           </div>
         </div>
