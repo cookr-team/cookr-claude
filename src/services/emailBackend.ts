@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { Resend } from 'resend';
 import nodemailer from 'nodemailer';
 import { createClient } from '@supabase/supabase-js';
@@ -9,7 +10,8 @@ import { renderEmail, SupportedLanguage } from '../templates/transactionalEmails
 // -------------------------------------------------------------
 // CONFIGURATION & CLIENT INITIALIZATION
 // -------------------------------------------------------------
-const DATA_DIR = path.join(process.cwd(), 'data');
+// Na Vercel o disco só é gravável em /tmp.
+const DATA_DIR = process.env.VERCEL ? path.join(os.tmpdir(), 'cookr-data') : path.join(process.cwd(), 'data');
 const EMAIL_LOGS_FILE = path.join(DATA_DIR, 'email_events.json');
 
 // Ensure local persistence directory exists
