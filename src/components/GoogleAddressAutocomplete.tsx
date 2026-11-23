@@ -194,9 +194,7 @@ function AutocompleteInput({
                   : "hover:bg-slate-50 active:bg-slate-100 text-slate-700"
               }`}
             >
-              <span className={`mt-0.5 shrink-0 text-orange-500`}>
-                📍
-              </span>
+              <span className={`mt-0.5 shrink-0 text-orange-500`}>◆</span>
               <div className="flex-1 min-w-0">
                 <p className="font-bold truncate text-left">{suggestion.structured_formatting.main_text}</p>
                 {suggestion.structured_formatting.secondary_text && (

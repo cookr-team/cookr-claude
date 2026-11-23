@@ -2209,12 +2209,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 </span>
                                 {user.bypass_haccp_restrictions && (
                                   <span className="px-2 py-0.5 rounded text-[7.5px] font-black uppercase tracking-wider bg-amber-500 text-white border border-amber-600 shadow-2xs flex items-center gap-1">
-                                    <span>🛡️</span> Bypass HACCP Ativo
+                                    <span>◆</span> Bypass HACCP Ativo
                                   </span>
                                 )}
                                 {user.status === UserStatus.PENDING && (
                                   <span className="px-2 py-0.5 rounded text-[7.5px] font-bold uppercase tracking-wider bg-sky-50 text-sky-700 border border-sky-200 flex items-center gap-1">
-                                    <span>⏳</span> Aguardando Revisão
+                                    <span>◆</span> Aguardando Revisão
                                   </span>
                                 )}
                               </div>
@@ -2331,7 +2331,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <div className="flex items-center justify-between gap-3">
                             <div>
                               <h5 className="text-[11px] font-black uppercase text-amber-900 tracking-wider flex items-center gap-1.5">
-                                <span>🛡️</span>
+                                <span>◆</span>
                                 <span>Bypass de Documentação & Regras HACCP</span>
                               </h5>
                               <p className="text-[9.5px] text-amber-800 font-medium leading-relaxed mt-0.5">
@@ -2692,7 +2692,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               }}
                               className="py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-[8.5px] rounded-lg transition-all flex items-center justify-center gap-1 shadow-2xs"
                             >
-                              <span>💬</span>
+                              <span>◆</span>
                               WhatsApp
                             </button>
                             <button
@@ -2704,7 +2704,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               }}
                               className="py-1.5 bg-slate-800 hover:bg-slate-900 text-white font-bold uppercase text-[8.5px] rounded-lg transition-all flex items-center justify-center gap-1 shadow-2xs"
                             >
-                              <span>✉️</span>
+                              <span>◆</span>
                               E-mail
                             </button>
                           </div>
@@ -2953,7 +2953,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     : "text-slate-600 hover:text-orange-500 hover:bg-white/50"
                 }`}
               >
-                <span>✅ Ativos</span>
+                <span>✓ Ativos</span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${menusStatusTab === "active" ? "bg-white text-orange-600" : "bg-slate-250 text-slate-700"}`}>
                   {filteredAndCategorizedMenus.activeCount}
                 </span>
@@ -2969,7 +2969,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     : "text-slate-600 hover:text-orange-500 hover:bg-white/50"
                 }`}
               >
-                <span>❌ Rejeitados/Arquivo</span>
+                <span>✕ Rejeitados/Arquivo</span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${menusStatusTab === "rejected" ? "bg-white text-orange-600" : "bg-slate-250 text-slate-700"}`}>
                   {filteredAndCategorizedMenus.rejectedCount}
                 </span>

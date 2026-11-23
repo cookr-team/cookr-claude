@@ -217,7 +217,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
       <div className="bg-slate-900 p-5 rounded-[2.5rem] border border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-y-1">
           <h3 className="text-sm font-black text-white uppercase tracking-tight flex items-center gap-2">
-            {tr("🛡️ Segurança Alimentar (HACCP)")}
+            {tr("Segurança Alimentar (HACCP)")}
           </h3>
           <p className="text-[10px] text-white/40 font-semibold uppercase tracking-wider">
             {tr("Monitoriza a cadeia de frio, higienização de bancadas e conformidade da cozinha")}
@@ -232,7 +232,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                 : "text-white/60 hover:text-white"
             }`}
           >
-            {tr("🚚 Checklist de Transporte")}
+            {tr("Checklist de Transporte")}
           </button>
           <button
             onClick={() => setActiveModule("service_log")}
@@ -242,7 +242,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                 : "text-white/60 hover:text-white"
             }`}
           >
-            {tr("🧼 Diário de Higiene de Serviço")}
+            {tr("Diário de Higiene de Serviço")}
           </button>
         </div>
       </div>
@@ -756,7 +756,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                         : "text-slate-500 hover:text-slate-950"
                     }`}
                   >
-                    {tr("🟢 Antes do Serviço")}
+                    {tr("Antes do Serviço")}
                   </button>
                   <button
                     type="button"
@@ -767,7 +767,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                         : "text-slate-500 hover:text-slate-950"
                     }`}
                   >
-                    {tr("🔵 Após o Serviço")}
+                    {tr("Após o Serviço")}
                   </button>
                 </div>
               </div>
@@ -1009,11 +1009,11 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
                             <div className="flex items-center gap-2">
                               {log.logType === "before_service" ? (
                                 <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase bg-emerald-100 text-emerald-800">
-                                  {tr("🟢 Pré-Serviço")}
+                                  {tr("Pré-Serviço")}
                                 </span>
                               ) : (
                                 <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase bg-blue-100 text-blue-800">
-                                  {tr("🔵 Pós-Serviço")}
+                                  {tr("Pós-Serviço")}
                                 </span>
                               )}
                               <span className="text-[10px] font-black text-slate-950 uppercase tracking-tight">
@@ -1089,7 +1089,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
 
                                 <div className="p-3 bg-slate-900 text-white rounded-xl text-left border border-slate-800">
                                   <p className="text-[8px] font-black uppercase text-orange-500 tracking-wide flex items-center gap-1">
-                                    {tr("🛡️ Certificação Eletrónica Cookr HACCP")}
+                                    {tr("Certificação Eletrónica Cookr HACCP")}
                                   </p>
                                   <p className="text-[7.5px] text-white/50 font-semibold leading-relaxed mt-1">
                                     {tr("Atestado digitalmente sob compromisso de honra por")} <strong>{tr("Chef")} {log.cookName}</strong>{tr(". Este registo constitui prova auditável de segurança alimentar.")}
@@ -2493,7 +2493,7 @@ const KitchenManager: React.FC<KitchenManagerProps> = React.memo(({
                     </span>
                     {item.dynamic_pricing?.enabled && (
                       <span className="flex items-center gap-0.5 px-1 py-0.2 bg-orange-100 text-orange-600 rounded text-[5.5px] md:text-[6.5px] font-black uppercase tracking-wider">
-                        {tr("⚡ Inteligente")}
+                        {tr("Inteligente")}
                       </span>
                     )}
                   </div>
@@ -3554,7 +3554,7 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
               "{nextUpcomingBooking.menu_selected}" — <span className="not-italic text-slate-300 font-bold">{nextUpcomingBooking.clientName}</span>
             </h3>
             <p className="text-[9px] text-slate-400 font-medium truncate max-w-md">
-              📍 {nextUpcomingBooking.morada || tr("Morada a confirmar")}
+              {nextUpcomingBooking.morada || tr("Morada a confirmar")}
             </p>
           </div>
           <div className="flex items-center gap-2 z-10 w-full sm:w-auto shrink-0">
@@ -4485,7 +4485,7 @@ const AvailabilityManager: React.FC<{
         </div>
         <div className="shrink-0 flex items-center gap-2">
           <span className="px-3 py-1.5 bg-white/10 rounded-xl text-[9px] font-bold text-slate-200 border border-white/10 backdrop-blur-sm">
-            {chef.isAvailable ? "🟢 " + t("dashboard.online_available") : "⚪ " + t("dashboard.offline_agenda_only")}
+            {chef.isAvailable ? "" + t("dashboard.online_available") : "" + t("dashboard.offline_agenda_only")}
           </span>
         </div>
       </div>

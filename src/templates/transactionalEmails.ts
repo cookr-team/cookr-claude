@@ -248,7 +248,7 @@ function renderBookingTable(
     data.pin
       ? `<div style="background-color: #fff7ed; border: 1.5px dashed #fdba74; border-radius: 12px; padding: 18px; text-align: center; margin: 20px 0;">
           <span style="display: block; font-size: 11px; text-transform: uppercase; color: #c2410c; font-weight: 800; letter-spacing: 0.1em; margin-bottom: 4px;">
-            ${labels.pinLabel || '🔑 PIN de Serviço'}
+            ${labels.pinLabel || 'PIN de Serviço'}
           </span>
           <div style="font-family: monospace; font-size: 26px; font-weight: 900; color: ${BRAND_ORANGE}; letter-spacing: 0.25em;">
             ${data.pin}
@@ -351,7 +351,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
       const texts = {
         pt: {
           subject: 'Candidatura de Chef Recebida — Cookr',
-          badge: '⏳ Registo em Análise',
+          badge: 'Registo em Análise',
           title: `Olá, Chef ${recipientName}!`,
           subtitle: 'A sua candidatura à rede de Chefs Privados Cookr foi recebida com sucesso.',
           body: `<p style="font-size: 15px; color: #475569; line-height: 1.6; margin: 0 0 16px 0;">
@@ -369,7 +369,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         en: {
           subject: 'Chef Application Received — Cookr',
-          badge: '⏳ Application Under Review',
+          badge: 'Application Under Review',
           title: `Hello, Chef ${recipientName}!`,
           subtitle: 'Your application to join the Cookr Chef network has been received.',
           body: `<p style="font-size: 15px; color: #475569; line-height: 1.6; margin: 0 0 16px 0;">
@@ -379,7 +379,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         es: {
           subject: 'Solicitud de Chef Recibida — Cookr',
-          badge: '⏳ En Revisión',
+          badge: 'En Revisión',
           title: `¡Hola, Chef ${recipientName}!`,
           subtitle: 'Hemos recibido tu candidatura para unirte a Cookr.',
           body: `<p style="font-size: 15px; color: #475569; line-height: 1.6; margin: 0 0 16px 0;">
@@ -389,7 +389,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         fr: {
           subject: 'Candidature Chef Reçue — Cookr',
-          badge: '⏳ En Cours d’Examen',
+          badge: 'En Cours d’Examen',
           title: `Bonjour Chef ${recipientName} !`,
           subtitle: 'Votre candidature au réseau de Chefs Cookr a bien été reçue.',
           body: `<p style="font-size: 15px; color: #475569; line-height: 1.6; margin: 0 0 16px 0;">
@@ -424,7 +424,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
       const texts = {
         pt: {
           subject: `Pedido de Reserva Recebido — ${data.experienceName || 'Cookr'}`,
-          badge: '📋 Pedido Registado',
+          badge: 'Pedido Registado',
           title: `Olá, ${data.clientName || recipientName}!`,
           subtitle: 'O seu pedido de reserva foi registado e enviado para o Chef.',
           intro: `Registámos o seu pedido para a experiência <strong>"${data.experienceName || 'Ritual Gastronómico'}"</strong> com o Chef <strong>${data.cookName || 'Chef Privado'}</strong>. O Chef tem agora a oportunidade de rever a data e confirmar a disponibilidade.`,
@@ -440,7 +440,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         en: {
           subject: `Booking Request Received — ${data.experienceName || 'Cookr'}`,
-          badge: '📋 Request Registered',
+          badge: 'Request Registered',
           title: `Hello, ${data.clientName || recipientName}!`,
           subtitle: 'Your booking request has been sent to the Chef.',
           intro: `We have received your request for <strong>"${data.experienceName || 'Culinary Experience'}"</strong> with Chef <strong>${data.cookName || 'Private Chef'}</strong>. The Chef will review and confirm availability shortly.`,
@@ -456,7 +456,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         es: {
           subject: `Solicitud de Reserva Recibida — ${data.experienceName || 'Cookr'}`,
-          badge: '📋 Solicitud Registrada',
+          badge: 'Solicitud Registrada',
           title: `¡Hola, ${data.clientName || recipientName}!`,
           subtitle: 'Tu solicitud de reserva ha sido enviada al Chef.',
           intro: `Hemos registrado tu solicitud para <strong>"${data.experienceName || 'Experiencia'}"</strong> con el Chef <strong>${data.cookName || 'Chef Privado'}</strong>.`,
@@ -472,7 +472,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         fr: {
           subject: `Demande de Réservation Reçue — ${data.experienceName || 'Cookr'}`,
-          badge: '📋 Demande Enregistrée',
+          badge: 'Demande Enregistrée',
           title: `Bonjour ${data.clientName || recipientName} !`,
           subtitle: 'Votre demande a été transmise au Chef.',
           intro: `Votre demande pour <strong>"${data.experienceName || 'Expérience'}"</strong> avec le Chef <strong>${data.cookName || 'Chef Privé'}</strong> est en attente de confirmation.`,
@@ -520,7 +520,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
       const texts = {
         pt: {
           subject: `Novo Pedido de Reserva — ${data.clientName || 'Cliente'} (${data.date || 'Data'})`,
-          badge: '⚡ Nova Reserva Pendente',
+          badge: 'Nova Reserva Pendente',
           title: `Chef ${data.cookName || recipientName}, tem um novo pedido!`,
           subtitle: `O cliente ${data.clientName || 'Cliente'} solicitou uma experiência no seu calendário.`,
           intro: `Recebeu uma nova solicitação para a experiência <strong>"${data.experienceName || 'Ritual'}"</strong>. Por favor, consulte os detalhes e confirme a reserva através do seu painel.`,
@@ -537,7 +537,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         en: {
           subject: `New Booking Request — ${data.clientName || 'Client'} (${data.date || 'Date'})`,
-          badge: '⚡ New Booking Pending',
+          badge: 'New Booking Pending',
           title: `Chef ${data.cookName || recipientName}, new booking request!`,
           subtitle: `Client ${data.clientName || 'Client'} has requested a culinary ritual.`,
           intro: `You have received a new booking for <strong>"${data.experienceName || 'Experience'}"</strong>. Please review and confirm via your Cockpit.`,
@@ -554,7 +554,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         es: {
           subject: `Nueva Solicitud de Reserva — ${data.clientName || 'Cliente'}`,
-          badge: '⚡ Nueva Reserva',
+          badge: 'Nueva Reserva',
           title: `Chef ${data.cookName || recipientName}, ¡tienes una nueva reserva!`,
           subtitle: `El cliente ${data.clientName || 'Cliente'} ha solicitado tu menú.`,
           intro: `Has recibido una solicitud para <strong>"${data.experienceName || 'Experiencia'}"</strong>.`,
@@ -571,7 +571,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         fr: {
           subject: `Nouvelle Demande de Réservation — ${data.clientName || 'Client'}`,
-          badge: '⚡ Nouvelle Réservation',
+          badge: 'Nouvelle Réservation',
           title: `Chef ${data.cookName || recipientName}, nouvelle demande !`,
           subtitle: `Le client ${data.clientName || 'Client'} souhaite réserver votre expérience.`,
           intro: `Une nouvelle réservation pour <strong>"${data.experienceName || 'Expérience'}"</strong> est en attente de votre réponse.`,
@@ -619,7 +619,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
     case 'booking_confirmed_client': {
       const texts = {
         pt: {
-          subject: `Reserva Confirmada! Preparação Gourmet com o Chef ${data.cookName || 'Privado'} 🍽️`,
+          subject: `Reserva Confirmada! Preparação Gourmet com o Chef ${data.cookName || 'Privado'}`,
           badge: '✓ Reserva Confirmada',
           title: `Tudo pronto, ${data.clientName || recipientName}!`,
           subtitle: `O Chef ${data.cookName || 'Privado'} confirmou a sua reserva. O seu ritual gourmet está agendado!`,
@@ -631,13 +631,13 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Convidados',
             location: 'Localização',
             total: 'Valor Total',
-            pinLabel: '🔑 PIN Secreto do Serviço',
+            pinLabel: 'PIN Secreto do Serviço',
             pinDesc: 'Entregue este código ao Chef na sua morada para iniciar o serviço.',
           },
           cta: 'Ver Detalhes da Reserva',
         },
         en: {
-          subject: `Booking Confirmed! Gourmet Experience with Chef ${data.cookName || 'Private Chef'} 🍽️`,
+          subject: `Booking Confirmed! Gourmet Experience with Chef ${data.cookName || 'Private Chef'}`,
           badge: '✓ Booking Confirmed',
           title: `You're all set, ${data.clientName || recipientName}!`,
           subtitle: `Chef ${data.cookName || 'Private Chef'} has accepted your reservation.`,
@@ -649,13 +649,13 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Guests',
             location: 'Location',
             total: 'Total Amount',
-            pinLabel: '🔑 Service Secret PIN',
+            pinLabel: 'Service Secret PIN',
             pinDesc: 'Provide this code to your Chef upon arrival to start the service.',
           },
           cta: 'View Booking',
         },
         es: {
-          subject: `¡Reserva Confirmada con el Chef ${data.cookName || 'Privado'}! 🍽️`,
+          subject: `¡Reserva Confirmada con el Chef ${data.cookName || 'Privado'}!`,
           badge: '✓ Confirmada',
           title: `¡Todo listo, ${data.clientName || recipientName}!`,
           subtitle: `El Chef ${data.cookName || 'Privado'} ha confirmado tu reserva.`,
@@ -667,13 +667,13 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Comensales',
             location: 'Ubicación',
             total: 'Total',
-            pinLabel: '🔑 PIN de Servicio',
+            pinLabel: 'PIN de Servicio',
             pinDesc: 'Entrega este código al Chef al llegar a tu domicilio.',
           },
           cta: 'Ver Reserva',
         },
         fr: {
-          subject: `Réservation Confirmée avec le Chef ${data.cookName || 'Privé'} ! 🍽️`,
+          subject: `Réservation Confirmée avec le Chef ${data.cookName || 'Privé'} !`,
           badge: '✓ Confirmée',
           title: `Tout est prêt, ${data.clientName || recipientName} !`,
           subtitle: `Le Chef ${data.cookName || 'Privé'} a confirmé votre réservation.`,
@@ -685,7 +685,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Invités',
             location: 'Lieu',
             total: 'Montant Total',
-            pinLabel: '🔑 Code PIN du Service',
+            pinLabel: 'Code PIN du Service',
             pinDesc: 'Transmettez ce code au Chef à son arrivée pour débuter la préparation.',
           },
           cta: 'Consulter la Réservation',
@@ -736,7 +736,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'N.º Pessoas',
             location: 'Morada do Cliente',
             total: 'Valor Total',
-            pinLabel: '🔑 Validação do PIN',
+            pinLabel: 'Validação do PIN',
             pinDesc: 'Solicite o PIN de 4 dígitos ao cliente no início do serviço para validação e desbloqueio de payout.',
           },
           cta: 'Abrir no Cockpit do Chef',
@@ -755,7 +755,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Guests',
             location: 'Address',
             total: 'Total',
-            pinLabel: '🔑 PIN Validation',
+            pinLabel: 'PIN Validation',
             pinDesc: 'Request the 4-digit PIN from the client to begin and secure your payout.',
           },
           cta: 'Open Cockpit',
@@ -829,7 +829,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
       const texts = {
         pt: {
           subject: `Pagamento Confirmado — Cookr (${totalNum.toFixed(2)} €)`,
-          badge: '💳 Pagamento Concluído',
+          badge: 'Pagamento Concluído',
           title: `Pagamento Confirmado, ${data.clientName || recipientName}!`,
           subtitle: 'O seu pagamento foi processado com sucesso em ambiente seguro.',
           intro: `Confirmamos a receção do pagamento no valor de <strong>${totalNum.toFixed(2)} €</strong> referente à sua experiência gastronómica com o Chef <strong>${data.cookName || 'Privado'}</strong>. O comprovativo fiscal estará disponível na sua área de cliente.`,
@@ -845,7 +845,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         en: {
           subject: `Payment Confirmed — Cookr (${totalNum.toFixed(2)} €)`,
-          badge: '💳 Payment Completed',
+          badge: 'Payment Completed',
           title: `Payment Confirmed, ${data.clientName || recipientName}!`,
           subtitle: 'Your payment was successfully processed.',
           intro: `We confirm receipt of <strong>${totalNum.toFixed(2)} €</strong> for your booking with Chef <strong>${data.cookName || 'Private Chef'}</strong>.`,
@@ -861,7 +861,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         es: {
           subject: `Pago Confirmado — Cookr (${totalNum.toFixed(2)} €)`,
-          badge: '💳 Pago Realizado',
+          badge: 'Pago Realizado',
           title: `¡Pago Confirmado, ${data.clientName || recipientName}!`,
           subtitle: 'Tu pago ha sido procesado correctamente.',
           intro: `Confirmamos el pago de <strong>${totalNum.toFixed(2)} €</strong> con el Chef <strong>${data.cookName || 'Privado'}</strong>.`,
@@ -877,7 +877,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
         },
         fr: {
           subject: `Paiement Confirmé — Cookr (${totalNum.toFixed(2)} €)`,
-          badge: '💳 Paiement Réussi',
+          badge: 'Paiement Réussi',
           title: `Paiement Confirmé, ${data.clientName || recipientName} !`,
           subtitle: 'Votre paiement a été traité avec succès.',
           intro: `Nous confirmons la réception de <strong>${totalNum.toFixed(2)} €</strong> pour votre expérience avec le Chef <strong>${data.cookName || 'Privé'}</strong>.`,
@@ -940,8 +940,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
                     ${reason}
                   </p>
                 </div>
-                <div style="background-color: #f0fdf4; border: 1px solid #dcfce7; border-radius: 10px; padding: 16px; margin: 20px 0; font-size: 13px; color: #166534; line-height: 1.5;">
-                  🔒 <strong>Garantia Cookr:</strong> Caso o pagamento já tenha sido efetuado, o montante retido foi libertado ou reembolsado de acordo com a nossa política de cancelamentos transparentes.
+                <div style="background-color: #f0fdf4; border: 1px solid #dcfce7; border-radius: 10px; padding: 16px; margin: 20px 0; font-size: 13px; color: #166534; line-height: 1.5;">◆<strong>Garantia Cookr:</strong> Caso o pagamento já tenha sido efetuado, o montante retido foi libertado ou reembolsado de acordo com a nossa política de cancelamentos transparentes.
                 </div>`,
           cta: 'Explorar Outros Chefs',
         },
@@ -1082,8 +1081,8 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
     case 'booking_reminder_client': {
       const texts = {
         pt: {
-          subject: `Lembrete: A sua experiência gastronómica é amanhã! ⏰`,
-          badge: '⏰ Lembrete 24 Horas',
+          subject: `Lembrete: A sua experiência gastronómica é amanhã!`,
+          badge: 'Lembrete 24 Horas',
           title: `Está quase na hora, ${data.clientName || recipientName}!`,
           subtitle: `A sua experiência com o Chef ${data.cookName || 'Privado'} é já amanhã.`,
           intro: `O Chef <strong>${data.cookName || 'Privado'}</strong> já está a selecionar os ingredientes mais frescos para a sua experiência <strong>"${data.experienceName || 'Ritual'}"</strong>. Lembre-se de ter o espaço da cozinha pronto e o seu PIN acessível.`,
@@ -1094,14 +1093,14 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Convidados',
             location: 'Localização',
             total: 'Valor Total',
-            pinLabel: '🔑 PIN de Início do Serviço',
+            pinLabel: 'PIN de Início do Serviço',
             pinDesc: 'Entregue este PIN ao Chef quando este chegar à sua morada.',
           },
           cta: 'Ver Detalhes do Agendamento',
         },
         en: {
-          subject: `Reminder: Your private culinary experience is tomorrow! ⏰`,
-          badge: '⏰ 24h Reminder',
+          subject: `Reminder: Your private culinary experience is tomorrow!`,
+          badge: '24h Reminder',
           title: `Almost time, ${data.clientName || recipientName}!`,
           subtitle: `Your private dining ritual with Chef ${data.cookName || 'Private Chef'} is tomorrow.`,
           intro: `Chef <strong>${data.cookName || 'Private Chef'}</strong> is sourcing fresh local ingredients for your <strong>"${data.experienceName || 'Experience'}"</strong>.`,
@@ -1112,14 +1111,14 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Guests',
             location: 'Location',
             total: 'Total',
-            pinLabel: '🔑 Service PIN',
+            pinLabel: 'Service PIN',
             pinDesc: 'Provide this PIN to your Chef upon arrival.',
           },
           cta: 'View Booking',
         },
         es: {
-          subject: `Recordatorio: ¡Tu experiencia gourmet es mañana! ⏰`,
-          badge: '⏰ Recordatorio 24h',
+          subject: `Recordatorio: ¡Tu experiencia gourmet es mañana!`,
+          badge: 'Recordatorio 24h',
           title: `¡Falta muy poco, ${data.clientName || recipientName}!`,
           subtitle: `Tu experiencia con el Chef ${data.cookName || 'Privado'} es mañana.`,
           intro: `El Chef <strong>${data.cookName || 'Privado'}</strong> ya está preparando tu experiencia <strong>"${data.experienceName || 'Ritual'}"</strong>.`,
@@ -1130,14 +1129,14 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Comensales',
             location: 'Ubicación',
             total: 'Total',
-            pinLabel: '🔑 PIN de Servicio',
+            pinLabel: 'PIN de Servicio',
             pinDesc: 'Entrega este PIN al Chef.',
           },
           cta: 'Ver Reserva',
         },
         fr: {
-          subject: `Rappel : Votre expérience gastronomique est demain ! ⏰`,
-          badge: '⏰ Rappel 24h',
+          subject: `Rappel : Votre expérience gastronomique est demain !`,
+          badge: 'Rappel 24h',
           title: `C’est presque l’heure, ${data.clientName || recipientName} !`,
           subtitle: `Votre expérience avec le Chef ${data.cookName || 'Privé'} aura lieu demain.`,
           intro: `Le Chef <strong>${data.cookName || 'Privé'}</strong> prépare votre <strong>"${data.experienceName || 'Expérience'}"</strong>.`,
@@ -1148,7 +1147,7 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'Invités',
             location: 'Lieu',
             total: 'Total',
-            pinLabel: '🔑 Code PIN',
+            pinLabel: 'Code PIN',
             pinDesc: 'Transmettez ce code PIN au Chef.',
           },
           cta: 'Voir la Réservation',
@@ -1186,8 +1185,8 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
     case 'booking_reminder_chef': {
       const texts = {
         pt: {
-          subject: `Lembrete: Serviço Agendado para Amanhã — ${data.clientName || 'Cliente'} ⏰`,
-          badge: '⏰ Lembrete de Operação (24h)',
+          subject: `Lembrete: Serviço Agendado para Amanhã — ${data.clientName || 'Cliente'}`,
+          badge: 'Lembrete de Operação (24h)',
           title: `Chef ${data.cookName || recipientName}, serviço amanhã!`,
           subtitle: `Amanhã tem um serviço agendado com ${data.clientName || 'Cliente'}.`,
           intro: `Lembramos que amanhã tem o ritual <strong>"${data.experienceName || 'Ritual Gastronómico'}"</strong> marcado para as <strong>${data.time || 'hora indicada'}</strong>. Certifique-se de que dispõe de todos os ingredientes e utensílios necessários.`,
@@ -1199,14 +1198,14 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
             guests: 'N.º Pessoas',
             location: 'Morada do Cliente',
             total: 'Remuneração Total',
-            pinLabel: '🔑 Validação do PIN',
+            pinLabel: 'Validação do PIN',
             pinDesc: 'Valide o PIN no início do serviço para garantir a conclusão e o payout.',
           },
           cta: 'Ver Detalhes do Serviço',
         },
         en: {
-          subject: `Reminder: Service Scheduled for Tomorrow — ${data.clientName || 'Client'} ⏰`,
-          badge: '⏰ 24h Service Reminder',
+          subject: `Reminder: Service Scheduled for Tomorrow — ${data.clientName || 'Client'}`,
+          badge: '24h Service Reminder',
           title: `Chef ${data.cookName || recipientName}, service tomorrow!`,
           subtitle: `You have an event tomorrow with ${data.clientName || 'Client'}.`,
           intro: `Reminder for <strong>"${data.experienceName || 'Experience'}"</strong> tomorrow at <strong>${data.time || 'scheduled time'}</strong>.`,
@@ -1222,8 +1221,8 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
           cta: 'Open Cockpit',
         },
         es: {
-          subject: `Recordatorio: Servicio Mañana — ${data.clientName || 'Cliente'} ⏰`,
-          badge: '⏰ Recordatorio 24h',
+          subject: `Recordatorio: Servicio Mañana — ${data.clientName || 'Cliente'}`,
+          badge: 'Recordatorio 24h',
           title: `Chef ${data.cookName || recipientName}, ¡servicio mañana!`,
           subtitle: `Tienes un evento programado para mañana con ${data.clientName || 'Cliente'}.`,
           intro: `Recordatorio del servicio <strong>"${data.experienceName || 'Experiencia'}"</strong>.`,
@@ -1239,8 +1238,8 @@ export function renderEmail(payload: EmailPayload): RenderedEmail {
           cta: 'Ver en Panel',
         },
         fr: {
-          subject: `Rappel : Prestation Demain — ${data.clientName || 'Client'} ⏰`,
-          badge: '⏰ Rappel 24h',
+          subject: `Rappel : Prestation Demain — ${data.clientName || 'Client'}`,
+          badge: 'Rappel 24h',
           title: `Chef ${data.cookName || recipientName}, prestation demain !`,
           subtitle: `Vous avez un service prévu demain avec ${data.clientName || 'Client'}.`,
           intro: `Rappel pour votre prestation <strong>"${data.experienceName || 'Expérience'}"</strong> demain.`,

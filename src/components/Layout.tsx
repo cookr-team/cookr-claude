@@ -382,7 +382,7 @@ const Layout: React.FC<LayoutProps> = ({
         {/* Mobile Header */}
         {user && (
           <>
-            <header className="md:hidden fixed top-0 left-0 right-0 h-[calc(4rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] bg-white/95 border-b border-slate-100 flex items-center justify-between px-3 sm:px-5 z-[55] backdrop-blur-xl">
+            <header className="md:hidden fixed top-0 left-0 right-0 h-[calc(4rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] bg-white border-b border-slate-100 flex items-center justify-between px-3 sm:px-5 z-[55] shadow-[0_1px_0_rgba(15,23,42,0.06)]">
               <Logo size="sm" onClick={() => onNavigate("search")} />
               <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
                 {/* Notification Bell Mobile */}

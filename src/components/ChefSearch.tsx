@@ -17,7 +17,7 @@ import { DietaryBadges } from "./DietaryBadges";
 import { useLanguage } from "../contexts/LanguageContext";
 import { todayLocal, toLocalDateStr } from "../lib/dateUtils";
 
-import { tr, getTrLanguage } from "../lib/tr";
+import { tr, getTrLanguage, trLocale } from "../lib/tr";
 const CuisineImage = ({ src, alt }: { src: string; alt: string }) => {
   const [hasError, setHasError] = useState(false);
 
@@ -969,21 +969,22 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
 
       {/* 2. FILTERS */}
       <section className="space-y-6 md:space-y-10" id="chef-results-anchor">
-        <div className="relative -mt-6 md:-mt-8 z-20 space-y-4 md:space-y-6">
-          <div className="bg-white rounded-2xl md:rounded-[2rem] shadow-luxury p-3 sm:p-4 md:p-5 flex flex-col gap-3 sm:gap-4 border border-slate-100 overflow-hidden">
+        <div className="relative mt-4 md:mt-6 z-20 space-y-4 md:space-y-6">
+          <div className="bg-white rounded-2xl shadow-sm p-3 sm:p-4 flex flex-col gap-3 border border-slate-200 overflow-hidden">
             {/* LINHA 1: Bloco de Seletores Dinâmicos (Local, Data, Hora) */}
             <div className="w-full">
-              <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/80 w-full items-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 w-full items-center rounded-xl border border-slate-200">
                 {/* 1. Seletor Local */}
-                <div className="flex items-center gap-2.5 sm:gap-3 px-2.5 sm:px-4 py-2 sm:py-2.5 min-w-0">
-                  <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center shrink-0 text-orange-500">
+                <div className="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 min-w-0 relative">
+                  <div className="w-5 h-5 flex items-center justify-center shrink-0 text-slate-400">
                     <ICONS.MapPin size={14} className="shrink-0" />
                   </div>
                   <div className="flex flex-col min-w-0 flex-1 text-left">
-                    <span className="text-[8px] md:text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 truncate">
+                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider leading-none mb-1.5 truncate">
                       {t("local")}
                     </span>
                     {currentUser?.addresses && currentUser.addresses.length > 0 ? (
+                      <>
                       <select
                         value={currentUser.addresses.find(a => a.city === selectedCity)?.id || selectedCity}
                         onChange={(e) => {
@@ -995,12 +996,12 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                             setSelectedCity(val);
                           }
                         }}
-                        className="w-full bg-transparent font-black text-[10px] sm:text-[11px] md:text-xs uppercase outline-none text-slate-900 cursor-pointer min-w-0 truncate leading-tight pr-1"
+                        className="w-full appearance-none bg-transparent font-semibold text-sm normal-case outline-none text-slate-900 cursor-pointer min-w-0 truncate leading-tight pr-6"
                       >
                         <optgroup label={tr("Meus Endereços (Raio Validado)")}>
                           {currentUser.addresses.map((addr, addrIdx) => (
                             <option key={addr.id || `addr-${addrIdx}`} value={addr.id}>
-                              📍 {tr(addr.label as any) as any} ({addr.city})
+                              {tr(addr.label as any) as any} ({addr.city})
                             </option>
                           ))}
                         </optgroup>
@@ -1013,11 +1014,14 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                           ))}
                         </optgroup>
                       </select>
+                    <ICONS.ChevronDown size={14} className="absolute right-3 bottom-[1.05rem] text-slate-400 pointer-events-none" />
+                      </>
                     ) : (
+                      <>
                       <select
                         value={selectedCity}
                         onChange={(e) => setSelectedCity(e.target.value)}
-                        className="w-full bg-transparent font-black text-[10px] sm:text-[11px] md:text-xs uppercase outline-none text-slate-900 cursor-pointer min-w-0 truncate leading-tight pr-1"
+                        className="w-full appearance-none bg-transparent font-semibold text-sm normal-case outline-none text-slate-900 cursor-pointer min-w-0 truncate leading-tight pr-6"
                       >
                         <option value="Todas">{tr("Portugal")}</option>
                         {PORTUGAL_CITIES.map((city) => (
@@ -1026,43 +1030,53 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                           </option>
                         ))}
                       </select>
+                    <ICONS.ChevronDown size={14} className="absolute right-3 bottom-[1.05rem] text-slate-400 pointer-events-none" />
+                      </>
                     )}
                   </div>
                 </div>
 
                 {/* 2. Seletor Data */}
-                <div className="flex items-center gap-2.5 sm:gap-3 px-2.5 sm:px-4 py-2 sm:py-2.5 min-w-0">
-                  <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center shrink-0 text-orange-500">
+                <div className="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 min-w-0 relative">
+                  <div className="w-5 h-5 flex items-center justify-center shrink-0 text-slate-400">
                     <ICONS.Calendar size={14} className="shrink-0" />
                   </div>
                   <div className="flex flex-col min-w-0 flex-1 text-left">
-                    <span className="text-[8px] md:text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 truncate">
+                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider leading-none mb-1.5 truncate">
                       {t("date")}
                     </span>
-                    <input
-                      type="date"
-                      min={today}
-                      max={maxDate}
-                      value={selectedDate || ""}
-                      onChange={(e) => onDateChange(e.target.value || null)}
-                      className="w-full bg-transparent font-black text-[10px] sm:text-[11px] md:text-xs uppercase outline-none text-slate-900 cursor-pointer leading-tight min-w-0"
-                    />
+                    <div className="relative h-5">
+                      <span className={`block text-sm font-semibold leading-5 ${selectedDate ? "text-slate-900" : "text-slate-400"}`}>
+                        {selectedDate
+                          ? new Date(selectedDate + "T12:00:00").toLocaleDateString(trLocale(), { day: "2-digit", month: "short", year: "numeric" })
+                          : tr("Qualquer data")}
+                      </span>
+                      <input
+                        type="date"
+                        min={today}
+                        max={maxDate}
+                        value={selectedDate || ""}
+                        onChange={(e) => onDateChange(e.target.value || null)}
+                        aria-label={t("date")}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* 3. Seletor Hora */}
-                <div className="flex items-center gap-2.5 sm:gap-3 px-2.5 sm:px-4 py-2 sm:py-2.5 min-w-0">
-                  <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center shrink-0 text-orange-500">
+                <div className="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 min-w-0 relative">
+                  <div className="w-5 h-5 flex items-center justify-center shrink-0 text-slate-400">
                     <ICONS.Clock size={14} className="shrink-0" />
                   </div>
                   <div className="flex flex-col min-w-0 flex-1 text-left">
-                    <span className="text-[8px] md:text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1 truncate">
+                    <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider leading-none mb-1.5 truncate">
                       {t("time")}
                     </span>
                     <select
                       value={selectedTime || ""}
                       onChange={(e) => onTimeChange?.(e.target.value || null)}
-                      className="w-full bg-transparent font-black text-[10px] sm:text-[11px] md:text-xs uppercase outline-none text-slate-900 cursor-pointer min-w-0 truncate leading-tight pr-1"
+                      className="w-full appearance-none bg-transparent font-semibold text-sm normal-case outline-none text-slate-900 cursor-pointer min-w-0 truncate leading-tight pr-6"
                     >
                       <option value="">{t("any_time")}</option>
                       {TIME_SLOTS.map((time) => (
@@ -1071,13 +1085,14 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                         </option>
                       ))}
                     </select>
+                    <ICONS.ChevronDown size={14} className="absolute right-3 bottom-[1.05rem] text-slate-400 pointer-events-none" />
                   </div>
                 </div>
               </div>
             </div>
 
             {/* LINHA 2: Campo de Busca Principal com Botão Magic Embutido */}
-            <div className="w-full flex items-center gap-2.5 bg-slate-100/60 hover:bg-slate-100/90 border border-slate-200/60 rounded-full pl-3.5 sm:pl-4 pr-1.5 h-11 sm:h-12 transition-colors">
+            <div className="w-full flex items-center gap-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-full pl-3.5 sm:pl-4 pr-1.5 h-11 sm:h-12 transition-colors">
               <ICONS.Search
                 size={15}
                 className="text-slate-400 shrink-0"
@@ -1088,7 +1103,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSmartSearch()}
-                className="flex-1 min-w-0 bg-transparent outline-none font-bold text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 h-full py-2"
+                className="flex-1 min-w-0 bg-transparent outline-none font-medium text-sm text-slate-900 placeholder:text-slate-400 h-full py-2"
               />
               <button
                 type="button"
@@ -1121,7 +1136,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               <button
                 type="button"
                 onClick={() => setIsFilterDrawerOpen(true)}
-                className={`h-10 sm:h-11 px-4 sm:px-5 rounded-full font-black text-[10px] sm:text-[11px] uppercase tracking-wider border transition-all active:scale-95 flex items-center justify-center gap-2 group shadow-xs shrink-0 cursor-pointer ${
+                className={`h-10 sm:h-11 px-4 sm:px-5 rounded-full font-semibold text-xs tracking-wide border transition-all active:scale-95 flex items-center justify-center gap-2 group shadow-xs shrink-0 cursor-pointer ${
                   selectedDietary.length > 0 || selectedPriceRange !== "all" || selectedCuisine !== "all" || selectedRating > 0
                     ? "bg-orange-500 border-orange-500 text-white"
                     : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
@@ -1138,7 +1153,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="h-10 sm:h-11 px-4 sm:px-5 bg-slate-50 border border-slate-200 text-slate-500 rounded-full font-black text-[10px] sm:text-[11px] uppercase tracking-wider hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all active:scale-95 flex items-center justify-center gap-2 group shadow-xs shrink-0 cursor-pointer"
+                className="h-10 sm:h-11 px-4 sm:px-5 bg-slate-50 border border-slate-200 text-slate-500 rounded-full font-semibold text-xs tracking-wide hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all active:scale-95 flex items-center justify-center gap-2 group shadow-xs shrink-0 cursor-pointer"
               >
                 <ICONS.XCircle
                   size={13}
@@ -1153,7 +1168,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-5 py-3 bg-orange-500/[0.03] rounded-2xl border border-orange-500/10 text-[11px] font-semibold text-slate-800 shadow-xs"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-5 py-3 bg-slate-50 rounded-xl border border-slate-200 text-xs font-medium text-slate-700"
           >
             <div className="flex items-center gap-2">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white shrink-0 shadow-[0_2px_6px_rgba(249,115,22,0.3)]">
@@ -1165,8 +1180,8 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 }</strong> {currentUser.addresses.find(a => a.city === selectedCity)?.address ? `(${currentUser.addresses.find(a => a.city === selectedCity)?.address})` : `(${selectedCity})`}
               </span>
             </div>
-            <div className="flex items-center gap-1.5 text-[9px] font-black uppercase text-orange-600 tracking-wider bg-orange-50 px-2.5 py-1 rounded-full border border-orange-100/50">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase text-emerald-700 tracking-wider">
+              <ICONS.CheckCircle size={12} />
               {tr("Raio de Cobertura Validado")}
             </div>
           </motion.div>
@@ -1335,13 +1350,13 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
 
                         {cook.sustainability_badges && cook.sustainability_badges.length > 0 && (
                           <span className="px-1.5 py-0.5 bg-emerald-600/90 backdrop-blur-md text-white text-[7px] md:text-[8px] font-black uppercase rounded-full shadow-sm flex items-center gap-0.5">
-                            <span>🌱</span>
+                            <span>◆</span>
                             <span className="hidden md:inline">{tr("Eco Chef")}</span>
                           </span>
                         )}
                         {cook.allergen_certifications && cook.allergen_certifications.length > 0 && (
                           <span className="px-1.5 py-0.5 bg-amber-600/90 backdrop-blur-md text-white text-[7px] md:text-[8px] font-black uppercase rounded-full shadow-sm flex items-center gap-0.5">
-                            <span>🛡️</span>
+                            <span>◆</span>
                             <span className="hidden md:inline">{tr("Sem Alergénios")}</span>
                           </span>
                         )}
@@ -1925,11 +1940,11 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {[
-                    { id: "sushi", label: "Sushi 🍣" },
-                    { id: "italiana", label: "Italiana 🍝" },
-                    { id: "portuguesa", label: "Portuguesa 🇵🇹" },
-                    { id: "mediterrânica", label: "Mediterrânica 🥗" },
-                    { id: "mexicana", label: "Mexicana 🌮" },
+                    { id: "sushi", label: "Sushi" },
+                    { id: "italiana", label: "Italiana" },
+                    { id: "portuguesa", label: "Portuguesa PT" },
+                    { id: "mediterrânica", label: "Mediterrânica" },
+                    { id: "mexicana", label: "Mexicana" },
                   ].map((cuisine) => {
                     const active = userCuisines.includes(cuisine.id);
                     return (
@@ -1958,10 +1973,10 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {[
-                    { id: "Glúten", label: "Sem Glúten 🌾" },
-                    { id: "Lactose", label: "Sem Lactose 🥛" },
-                    { id: "Vegetariano", label: "Vegetariano 🥦" },
-                    { id: "Vegano", label: "Vegano 🌱" },
+                    { id: "Glúten", label: "Sem Glúten" },
+                    { id: "Lactose", label: "Sem Lactose" },
+                    { id: "Vegetariano", label: "Vegetariano" },
+                    { id: "Vegano", label: "Vegano" },
                   ].map((res) => {
                     const active = userRestrictions.includes(res.id);
                     return (
@@ -1985,7 +2000,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
             {!currentUser && (
               <div className="text-right shrink-0">
                 <span className="text-[8px] text-slate-500 italic block">
-                  {tr("💡 Autentique-se para gravar de forma permanente.")}
+                  {tr("Autentique-se para gravar de forma permanente.")}
                 </span>
               </div>
             )}
@@ -2059,7 +2074,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
 
                     {/* Match Score */}
                     <div className="absolute top-2 right-2 px-2 py-0.5 bg-black/70 border border-white/10 backdrop-blur-sm text-amber-400 text-[8px] font-black rounded-md">
-                      🔥 {rec.matchScore}{tr("% MATCH")}
+                      {rec.matchScore}{tr("% MATCH")}
                     </div>
 
                     {/* Chef Overlay */}

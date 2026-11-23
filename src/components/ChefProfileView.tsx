@@ -2384,7 +2384,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       Responsabilidade & Origem
                     </span>
                     <h3 className="text-xs font-bold text-slate-950 uppercase tracking-wider leading-none flex items-center gap-1.5">
-                      <span className="text-sm">🌱</span>
+                      <span className="text-sm">◆</span>
                       <span>Sustentabilidade & Ingredientes Locais</span>
                     </h3>
                   </div>
@@ -2438,7 +2438,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
                       Segurança Alimentar & Prevenção
                     </span>
                     <h3 className="text-xs font-bold text-slate-950 uppercase tracking-wider leading-none flex items-center gap-1.5">
-                      <span className="text-sm">🛡️</span>
+                      <span className="text-sm">◆</span>
                       <span>Gestão de Alergénios & Dietas Especiais</span>
                     </h3>
                   </div>
