@@ -137,7 +137,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     try {
       await supabaseService.deleteNotification(id);
       setNotifications((prev) => prev.filter((n) => n.id !== id));
-      if (onNotify) onNotify("Notificação eliminada.", "info");
+      if (onNotify) onNotify(tr("Notificação eliminada."), "info");
     } catch (err) {
       console.warn(err);
     }
@@ -148,7 +148,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     try {
       await supabaseService.markAllNotificationsAsRead(user.id);
       setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-      if (onNotify) onNotify("Todas as notificações marcadas como lidas.", "success");
+      if (onNotify) onNotify(tr("Todas as notificações marcadas como lidas."), "success");
     } catch (err) {
       console.warn(err);
     }
@@ -156,11 +156,11 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
 
   const handleClearAll = async () => {
     if (notifications.length === 0) return;
-    if (window.confirm("Tem a certeza que deseja eliminar todo o histórico de alertas?")) {
+    if (window.confirm(tr("Tem a certeza que deseja eliminar todo o histórico de alertas?"))) {
       try {
         await supabaseService.clearAllNotifications(user.id);
         setNotifications([]);
-        if (onNotify) onNotify("Histórico de alertas limpo.", "success");
+        if (onNotify) onNotify(tr("Histórico de alertas limpo."), "success");
       } catch (err) {
         console.warn(err);
       }

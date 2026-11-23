@@ -169,7 +169,7 @@ export const CancellationModal: React.FC<CancellationModalProps> = ({
       }
     } catch (error) {
       console.error("Erro na ação:", error);
-      alert("Ocorreu um erro ao processar o seu pedido.");
+      alert(tr("Ocorreu um erro ao processar o seu pedido."));
     } finally {
       setLoading(false);
     }

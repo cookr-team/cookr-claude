@@ -117,7 +117,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
   const handlePurchaseGiftCard = async () => {
     if (!giftRecipientName || !giftRecipientEmail) {
-      if (onNotify) onNotify("Por favor, preencha o nome e e-mail do destinatário.", "error");
+      if (onNotify) onNotify(tr("Por favor, preencha o nome e e-mail do destinatário."), "error");
       return;
     }
     setIsPurchasingGift(true);
@@ -142,7 +142,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       const cards = await supabaseService.getGiftCards(user.email || "");
       setGiftCards(cards || []);
 
-      if (onNotify) onNotify("Gift card comprado e enviado com sucesso!", "success");
+      if (onNotify) onNotify(tr("Gift card comprado e enviado com sucesso!"), "success");
       
       setSelectedGiftExperience(null);
       setGiftRecipientName("");
@@ -150,7 +150,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       setGiftMessage("");
     } catch (e: any) {
       console.error("Error purchasing gift card:", e);
-      if (onNotify) onNotify(`Erro ao comprar gift card: ${e.message}`, "error");
+      if (onNotify) onNotify(tr("Erro ao comprar gift card: {v0}", { v0: e.message }), "error");
     } finally {
       setIsPurchasingGift(false);
     }
@@ -164,23 +164,23 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       if (success) {
         if (onRefresh) onRefresh();
         if (onNotify) {
-          onNotify("Reservas de demonstração sincronizadas com sucesso!", "success");
+          onNotify(tr("Reservas de demonstração sincronizadas com sucesso!"), "success");
         } else {
-          alert("As suas reservas de demonstração foram sincronizadas com sucesso à sua nova conta Cookr!");
+          alert(tr("As suas reservas de demonstração foram sincronizadas com sucesso à sua nova conta Cookr!"));
         }
       } else {
         if (onNotify) {
-          onNotify("Nenhuma nova reserva encontrada para sincronizar.", "info");
+          onNotify(tr("Nenhuma nova reserva encontrada para sincronizar."), "info");
         } else {
-          alert("Não encontrámos novas reservas de demonstração para sincronizar (ou estas já foram todas associadas).");
+          alert(tr("Não encontrámos novas reservas de demonstração para sincronizar (ou estas já foram todas associadas)."));
         }
       }
     } catch (err) {
       console.error(err);
       if (onNotify) {
-        onNotify("Ocorreu um erro ao sincronizar as reservas.", "error");
+        onNotify(tr("Ocorreu um erro ao sincronizar as reservas."), "error");
       } else {
-        alert("Ocorreu um erro ao sincronizar as reservas.");
+        alert(tr("Ocorreu um erro ao sincronizar as reservas."));
       }
     } finally {
       setIsImporting(false);
@@ -420,7 +420,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       setSelectedChefForQuote(chef);
     } catch (e) {
       console.warn("Note fetching chef menus:", e);
-      onNotify?.("Erro ao carregar ementa do chef.", "error");
+      onNotify?.(tr("Erro ao carregar ementa do chef."), "error");
     } finally {
       setIsLoadingMenusForQuote(false);
     }
@@ -430,7 +430,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        onNotify?.("A imagem é demasiado grande. Máximo 2MB.", "error");
+        onNotify?.(tr("A imagem é demasiado grande. Máximo 2MB."), "error");
         return;
       }
 
@@ -438,7 +438,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       try {
         const url = await supabaseService.uploadAvatar(user.id, file);
         if (!url) {
-          onNotify?.("Erro ao carregar imagem. Tenta novamente.", "error");
+          onNotify?.(tr("Erro ao carregar imagem. Tenta novamente."), "error");
           return;
         }
         const finalUrl = url.startsWith("data:") ? url : `${url}?t=${Date.now()}`;
@@ -455,10 +455,10 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
         // Refresh global state with override
         onRefresh(updatedUser);
 
-        onNotify?.("Foto de perfil atualizada!", "success");
+        onNotify?.(tr("Foto de perfil atualizada!"), "success");
       } catch (err: any) {
         onNotify?.(
-          `Erro: ${err.message || "Não foi possível carregar a imagem"}`,
+          tr("Erro: {v0}", { v0: err.message || "Não foi possível carregar a imagem" }),
           "error",
         );
       } finally {
@@ -469,7 +469,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
 
   const handleRemoveAvatar = async () => {
     if (
-      !window.confirm("Tens a certeza que queres remover a tua foto de perfil?")
+      !window.confirm(tr("Tens a certeza que queres remover a tua foto de perfil?"))
     )
       return;
 
@@ -479,9 +479,9 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       const updatedUser = { ...user, avatar_url: null };
       setEditedUser(updatedUser);
       onRefresh(updatedUser);
-      onNotify?.("Foto de perfil removida.", "success");
+      onNotify?.(tr("Foto de perfil removida."), "success");
     } catch (err: any) {
-      onNotify?.("Erro ao remover foto.", "error");
+      onNotify?.(tr("Erro ao remover foto."), "error");
     } finally {
       setUploading(false);
     }
@@ -521,7 +521,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       onRefresh(updatedUserCopy);
       // No notification needed for rapid in-page toggles as the state is clearly reflected visually
     } catch (e) {
-      onNotify?.("Erro ao atualizar restrições dietéticas.", "error");
+      onNotify?.(tr("Erro ao atualizar restrições dietéticas."), "error");
     }
   };
 
@@ -540,7 +540,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       onRefresh(updatedUserCopy);
       // No notification needed for rapid in-page toggles as the state is clearly reflected visually
     } catch (e) {
-      onNotify?.("Erro ao atualizar preferências culinárias.", "error");
+      onNotify?.(tr("Erro ao atualizar preferências culinárias."), "error");
     }
   };
 
@@ -555,7 +555,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
     } catch (e: any) {
       if (!silent)
         onNotify?.(
-          `Erro ao guardar perfil: ${e.message || "Erro desconhecido"}`,
+          tr("Erro ao guardar perfil: {v0}", { v0: e.message || "Erro desconhecido" }),
           "error",
         );
     } finally {
@@ -574,14 +574,14 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
     }
 
     if (securityData.newPassword !== securityData.confirmPassword) {
-      onNotify?.("As novas palavras-passe não coincidem.", "error");
+      onNotify?.(tr("As novas palavras-passe não coincidem."), "error");
       return;
     }
 
     try {
       setIsSaving(true);
       await supabaseService.updatePassword(securityData.newPassword);
-      onNotify?.("Palavra-passe atualizada com sucesso no Supabase Auth!", "success");
+      onNotify?.(tr("Palavra-passe atualizada com sucesso no Supabase Auth!"), "success");
       setShowSecurityModal(false);
       setSecurityData({
         currentPassword: "",
@@ -601,11 +601,11 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
     try {
       setIsSaving(true);
       await supabaseService.deleteUser(user.id);
-      onNotify?.("Conta eliminada permanentemente.", "success");
+      onNotify?.(tr("Conta eliminada permanentemente."), "success");
       onNavigate("landing");
       window.location.reload();
     } catch (e) {
-      onNotify?.("Erro ao eliminar conta.", "error");
+      onNotify?.(tr("Erro ao eliminar conta."), "error");
     } finally {
       setIsSaving(false);
     }
@@ -647,7 +647,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
       });
       onRefresh();
     } catch (e) {
-      onNotify?.("Erro ao eliminar morada.", "error");
+      onNotify?.(tr("Erro ao eliminar morada."), "error");
     }
   };
 
@@ -672,7 +672,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
         await supabaseService.updateUserProfile(user.id, newUserState);
         onRefresh();
       } catch (e) {
-        onNotify?.("Erro ao definir morada principal.", "error");
+        onNotify?.(tr("Erro ao definir morada principal."), "error");
       }
     }
   };
@@ -1881,7 +1881,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({
                                 <button
                                   onClick={() => {
                                     navigator.clipboard.writeText(card.code);
-                                    if (onNotify) onNotify("Código copiado!", "success");
+                                    if (onNotify) onNotify(tr("Código copiado!"), "success");
                                   }}
                                   className="text-slate-400 hover:text-slate-900 transition-colors cursor-pointer"
                                   title={tr("Copiar Código")}

@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 
+import { tr } from "../lib/tr";
 // Retrieve build timestamp compiled at build time
 const LOCAL_BUILD_TIMESTAMP = process.env.BUILD_TIMESTAMP || "dev";
 
@@ -48,7 +49,7 @@ export const VersionCheckUtility: React.FC = () => {
     try {
       // Append cache buster to bypass service worker/browser caches for version metadata
       const response = await fetch(`/version.json?t=${Date.now()}`);
-      if (!response.ok) throw new Error("Falha ao obter ficheiro de versão");
+      if (!response.ok) throw new Error(tr("Falha ao obter ficheiro de versão"));
       
       const data = await response.json();
       const currentRemote = data.timestamp;

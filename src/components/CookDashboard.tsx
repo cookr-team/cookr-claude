@@ -106,7 +106,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!signatureChecked) {
-      alert("Por favor, declare sob compromisso de honra que as verificações foram efetuadas.");
+      alert(tr("Por favor, declare sob compromisso de honra que as verificações foram efetuadas."));
       return;
     }
 
@@ -149,12 +149,12 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
       setObservations("");
       setSignatureChecked(false);
 
-      alert("Registo HACCP Digital gravado com sucesso! Mantém-te seguro na cozinha.");
+      alert(tr("Registo HACCP Digital gravado com sucesso! Mantém-te seguro na cozinha."));
       await loadChecklists();
       setHaccpTab("history");
     } catch (err) {
       console.error(err);
-      alert("Erro ao gravar registo HACCP.");
+      alert(tr("Erro ao gravar registo HACCP."));
     } finally {
       setIsSubmitting(false);
     }
@@ -163,7 +163,7 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
   const handleLogSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!logSignatureChecked) {
-      alert("Por favor, declare sob compromisso de honra que as verificações foram efetuadas.");
+      alert(tr("Por favor, declare sob compromisso de honra que as verificações foram efetuadas."));
       return;
     }
 
@@ -200,12 +200,12 @@ const HaccpPanel: React.FC<{ chef: User; bookings: Booking[] }> = React.memo(({ 
       setLogObservations("");
       setLogSignatureChecked(false);
 
-      alert("Diário de Higiene de Serviço gravado com sucesso!");
+      alert(tr("Diário de Higiene de Serviço gravado com sucesso!"));
       await loadServiceLogs();
       setServiceLogTab("history");
     } catch (err) {
       console.error(err);
-      alert("Erro ao gravar diário de Higiene de Serviço.");
+      alert(tr("Erro ao gravar diário de Higiene de Serviço."));
     } finally {
       setIsLogSubmitting(false);
     }
@@ -1726,7 +1726,7 @@ const KitchenManager: React.FC<KitchenManagerProps> = React.memo(({
       if (onNavigate) onNavigate("ops");
     } catch (e: any) {
       console.error("Connection Error:", e);
-      alert(`Erro de ligação: ${e.message || "Erro desconhecido"}`);
+      alert(tr("Erro de ligação: {v0}", { v0: e.message || "Erro desconhecido" }));
     } finally {
       setIsSaving(false);
     }
@@ -1747,10 +1747,10 @@ const KitchenManager: React.FC<KitchenManagerProps> = React.memo(({
       await loadMenu();
       onRefresh();
       setItemToDelete(null);
-      alert("Item eliminado com sucesso.");
+      alert(tr("Item eliminado com sucesso."));
     } catch (e: any) {
       console.error("[KitchenManager] Erro ao eliminar:", e);
-      alert(`Erro ao eliminar: ${e.message || "Erro desconhecido"}`);
+      alert(tr("Erro ao eliminar: {v0}", { v0: e.message || "Erro desconhecido" }));
     }
   };
 
@@ -3367,7 +3367,7 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
       await supabaseService.updateBookingStatus(id, status);
       onRefresh();
     } catch (e) {
-      alert("Erro ao atualizar estado.");
+      alert(tr("Erro ao atualizar estado."));
     } finally {
       setIsUpdating(null);
     }
@@ -3379,7 +3379,7 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
       await supabaseService.requestPinValidation(id);
       onRefresh();
     } catch (e) {
-      alert("Erro ao solicitar conclusão.");
+      alert(tr("Erro ao solicitar conclusão."));
     } finally {
       setIsUpdating(null);
     }
@@ -3391,7 +3391,7 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
       await supabaseService.cancelPinValidation(id);
       onRefresh();
     } catch (e) {
-      alert("Erro ao cancelar procedimento.");
+      alert(tr("Erro ao cancelar procedimento."));
     } finally {
       setIsUpdating(null);
     }
@@ -3408,10 +3408,10 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
       if (success) {
         onRefresh();
       } else {
-        alert("PIN inválido.");
+        alert(tr("PIN inválido."));
       }
     } catch (e) {
-      alert("Erro ao validar PIN.");
+      alert(tr("Erro ao validar PIN."));
     } finally {
       setIsUpdating(null);
     }
@@ -3430,11 +3430,11 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
           hora: quoteResponse.time || respondingToQuote.hora,
         },
       );
-      onNotify?.("Orçamento enviado com sucesso!", "success");
+      onNotify?.(tr("Orçamento enviado com sucesso!"), "success");
       setRespondingToQuote(null);
       onRefresh();
     } catch (e) {
-      onNotify?.("Erro ao enviar orçamento.", "error");
+      onNotify?.(tr("Erro ao enviar orçamento."), "error");
     } finally {
       setIsUpdating(null);
     }
@@ -4424,11 +4424,11 @@ const AvailabilityManager: React.FC<{
         }
         onRefresh?.();
       } else {
-        onNotify?.("Aviso: Falha ao sincronizar totalmente na base de dados.", "error");
+        onNotify?.(tr("Aviso: Falha ao sincronizar totalmente na base de dados."), "error");
       }
     } catch (e) {
       console.warn("Aviso ao persistir disponibilidade:", e);
-      onNotify?.("Erro ao sincronizar disponibilidade na base de dados.", "error");
+      onNotify?.(tr("Erro ao sincronizar disponibilidade na base de dados."), "error");
     } finally {
       setIsSaving(false);
     }
@@ -4642,13 +4642,13 @@ const CookDashboard: React.FC<CookDashboardProps> = ({
       const success = await supabaseService.importDemoDataForNewChef(chefUser.id, chefUser.nome);
       if (success) {
         onRefreshData();
-        onNotify?.("Dados de demonstração (menus, avaliações e reservas) sincronizados com sucesso!", "success");
+        onNotify?.(tr("Dados de demonstração (menus, avaliações e reservas) sincronizados com sucesso!"), "success");
       } else {
-        onNotify?.("Não foram encontrados novos dados de demonstração para sincronizar (ou já foram importados).", "info");
+        onNotify?.(tr("Não foram encontrados novos dados de demonstração para sincronizar (ou já foram importados)."), "info");
       }
     } catch (err) {
       console.error(err);
-      onNotify?.("Ocorreu um erro ao sincronizar os dados de demonstração.", "error");
+      onNotify?.(tr("Ocorreu um erro ao sincronizar os dados de demonstração."), "error");
     } finally {
       setIsImporting(false);
     }
@@ -4710,7 +4710,7 @@ const CookDashboard: React.FC<CookDashboardProps> = ({
                   } catch (e) {
                     // Revert state if failed
                     setLocalIsAvailable(chefUser.isAvailable);
-                    onNotify?.("Erro ao atualizar estado de disponibilidade.", "error");
+                    onNotify?.(tr("Erro ao atualizar estado de disponibilidade."), "error");
                   } finally {
                     setIsUpdatingAvailability(false);
                   }

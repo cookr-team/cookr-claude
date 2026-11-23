@@ -118,7 +118,7 @@ const CookOnboarding: React.FC<CookOnboardingProps> = ({
       }
     } else {
       alert(
-        "Por favor, preencha todos os campos obrigatórios e garanta uma palavra-passe segura.",
+        tr("Por favor, preencha todos os campos obrigatórios e garanta uma palavra-passe segura."),
       );
     }
   };

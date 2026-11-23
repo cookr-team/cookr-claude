@@ -145,12 +145,12 @@ export const QuoteRequestOnboarding: React.FC<QuoteRequestOnboardingProps> = ({
       };
 
       await supabaseService.createBooking(bookingData);
-      onNotify?.("Pedido de orçamento enviado com sucesso!", "success");
+      onNotify?.(tr("Pedido de orçamento enviado com sucesso!"), "success");
       onSuccess();
     } catch (error) {
       console.error("Error submitting quote request:", error);
       onNotify?.(
-        "Erro ao enviar pedido de orçamento. Tente novamente.",
+        tr("Erro ao enviar pedido de orçamento. Tente novamente."),
         "error",
       );
     } finally {

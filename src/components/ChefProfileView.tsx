@@ -387,7 +387,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     try {
       const card = await supabaseService.redeemGiftCard(giftCode);
       setAppliedGiftCard(card);
-      onNotify?.("Vale de oferta aplicado com sucesso!", "success");
+      onNotify?.(tr("Vale de oferta aplicado com sucesso!"), "success");
     } catch (e: any) {
       onNotify?.(e.message || "Erro ao aplicar vale de oferta.", "error");
     }
@@ -450,14 +450,14 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       await supabaseService.flagReview(reviewId, reason || "Denúncia de utilizador");
       setReportedReviewIds(prev => [...prev, reviewId]);
       if (onNotify) {
-        onNotify("Avaliação reportada com sucesso. Um administrador irá analisá-la em breve.", "success");
+        onNotify(tr("Avaliação reportada com sucesso. Um administrador irá analisá-la em breve."), "success");
       } else {
-        alert("Avaliação reportada com sucesso. Um administrador irá analisá-la em breve.");
+        alert(tr("Avaliação reportada com sucesso. Um administrador irá analisá-la em breve."));
       }
       if (onRefresh) onRefresh();
     } catch (err: any) {
       console.error("Erro ao reportar avaliação:", err);
-      alert("Erro ao reportar avaliação. Tente novamente.");
+      alert(tr("Erro ao reportar avaliação. Tente novamente."));
     }
   };
 
@@ -554,7 +554,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
     );
     setIsFavorite(result);
     if (result) {
-      onNotify?.("Chef adicionado aos favoritos!", "success");
+      onNotify?.(tr("Chef adicionado aos favoritos!"), "success");
       onNavigate("profile", "favorites");
     }
   };
@@ -718,11 +718,11 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
   const handleBooking = async () => {
     if (!currentUser) {
-      onNotify?.("Por favor, faça login para reservar.", "error");
+      onNotify?.(tr("Por favor, faça login para reservar."), "error");
       return;
     }
     if (!selectedMenu || !selectedDate || !selectedTime || !morada) {
-      onNotify?.("Por favor, preencha todos os campos.", "error");
+      onNotify?.(tr("Por favor, preencha todos os campos."), "error");
       return;
     }
 
@@ -806,7 +806,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       setBookingStep("success");
     } catch (e: any) {
       onNotify?.(
-        `Erro ao reservar: ${e.message || "Erro desconhecido"}`,
+        tr("Erro ao reservar: {v0}", { v0: e.message || "Erro desconhecido" }),
         "error",
       );
     } finally {
@@ -817,13 +817,13 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
   const handleWaitlist = async () => {
     if (!currentUser) {
       onNotify?.(
-        "Por favor, faça login para entrar na lista de espera.",
+        tr("Por favor, faça login para entrar na lista de espera."),
         "error",
       );
       return;
     }
     if (!waitlistDate) {
-      onNotify?.("Por favor, selecione uma data.", "error");
+      onNotify?.(tr("Por favor, selecione uma data."), "error");
       return;
     }
 
@@ -843,7 +843,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       setWaitlistDate("");
     } catch (e: any) {
       onNotify?.(
-        `Erro ao entrar na lista de espera: ${e.message || "Erro desconhecido"}`,
+        tr("Erro ao entrar na lista de espera: {v0}", { v0: e.message || "Erro desconhecido" }),
         "error",
       );
     } finally {
@@ -865,10 +865,10 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
       console.log("[ChefProfileView] Delete successful, refreshing...");
       if (onRefresh) onRefresh();
       setItemToDelete(null);
-      alert("Item eliminado com sucesso.");
+      alert(tr("Item eliminado com sucesso."));
     } catch (err: any) {
       console.error("[ChefProfileView] Erro ao eliminar item:", err);
-      alert(`Erro ao eliminar item: ${err.message || "Erro desconhecido"}`);
+      alert(tr("Erro ao eliminar item: {v0}", { v0: err.message || "Erro desconhecido" }));
     }
   };
 

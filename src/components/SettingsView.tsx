@@ -158,10 +158,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       };
       await supabaseService.updateUserProfile(user.id, updatedProfile);
       onRefresh({ ...user, ...updatedProfile });
-      if (onNotify) onNotify("Dados pessoais atualizados com sucesso!", "success");
+      if (onNotify) onNotify(tr("Dados pessoais atualizados com sucesso!"), "success");
     } catch (err: any) {
       console.error(err);
-      if (onNotify) onNotify("Erro ao atualizar dados pessoais.", "error");
+      if (onNotify) onNotify(tr("Erro ao atualizar dados pessoais."), "error");
     } finally {
       setIsSavingPersonal(false);
     }
@@ -184,11 +184,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
 
       setShowAutoSavedIndicator(true);
       setTimeout(() => setShowAutoSavedIndicator(false), 2200);
-      if (onNotify) onNotify("Preferência guardada!", "success");
+      if (onNotify) onNotify(tr("Preferência guardada!"), "success");
     } catch (error) {
       console.error(error);
       setNotifSettings(notifSettings);
-      if (onNotify) onNotify("Erro ao atualizar preferência.", "error");
+      if (onNotify) onNotify(tr("Erro ao atualizar preferência."), "error");
     }
   };
 
@@ -202,9 +202,9 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         if (!notifSettings.push_enabled) {
           handleToggle("push_enabled");
         }
-        if (onNotify) onNotify("Notificações no dispositivo ativadas com sucesso!", "success");
+        if (onNotify) onNotify(tr("Notificações no dispositivo ativadas com sucesso!"), "success");
       } else {
-        if (onNotify) onNotify("Permissão de notificações não foi concedida pelo navegador.", "info");
+        if (onNotify) onNotify(tr("Permissão de notificações não foi concedida pelo navegador."), "info");
       }
     } catch (err) {
       console.error(err);
@@ -230,10 +230,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       await supabaseService.updateUserProfile(user.id, updatedProfile);
       onRefresh({ ...user, ...updatedProfile });
 
-      if (onNotify) onNotify("Dados de faturação guardados com sucesso!", "success");
+      if (onNotify) onNotify(tr("Dados de faturação guardados com sucesso!"), "success");
     } catch (err: any) {
       console.error(err);
-      if (onNotify) onNotify("Erro ao guardar dados de faturação.", "error");
+      if (onNotify) onNotify(tr("Erro ao guardar dados de faturação."), "error");
     } finally {
       setIsSavingBilling(false);
     }
@@ -246,7 +246,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
     try {
       await supabaseService.resetPasswordForEmail(user.email);
       if (onNotify) {
-        onNotify(`Enviámos instruções de redefinição para ${user.email}. Verifique o seu email.`, "success");
+        onNotify(tr("Enviámos instruções de redefinição para {v0}. Verifique o seu email.", { v0: user.email }), "success");
       }
     } catch (err: any) {
       if (onNotify) onNotify("Erro ao enviar pedido de recuperação: " + (err.message || "Tente mais tarde"), "error");

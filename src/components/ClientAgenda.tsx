@@ -376,13 +376,13 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       const success = await supabaseService.importDemoBookingsForNewClient(user.id, user.nome);
       if (success) {
         if (onRefresh) onRefresh();
-        alert("As suas reservas de demonstração foram sincronizadas com sucesso à sua nova conta Cookr!");
+        alert(tr("As suas reservas de demonstração foram sincronizadas com sucesso à sua nova conta Cookr!"));
       } else {
-        alert("Não encontrámos novas reservas de demonstração para sincronizar (ou estas já foram todas associadas).");
+        alert(tr("Não encontrámos novas reservas de demonstração para sincronizar (ou estas já foram todas associadas)."));
       }
     } catch (err) {
       console.error(err);
-      alert("Ocorreu um erro ao sincronizar as reservas.");
+      alert(tr("Ocorreu um erro ao sincronizar as reservas."));
     } finally {
       setIsImporting(false);
     }
@@ -721,7 +721,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       setRating(5);
       onRefresh();
     } catch (e) {
-      alert("Erro ao enviar avaliação.");
+      alert(tr("Erro ao enviar avaliação."));
     } finally {
       setIsSubmitting(false);
     }
@@ -742,10 +742,10 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       );
       if (error) throw error;
       onRefresh();
-      alert("Reagendamento aceite com sucesso!");
+      alert(tr("Reagendamento aceite com sucesso!"));
     } catch (e) {
       console.error("Erro ao aceitar reagendamento:", e);
-      alert("Erro ao aceitar reagendamento.");
+      alert(tr("Erro ao aceitar reagendamento."));
     }
   }, [onRefresh]);
 
@@ -758,13 +758,13 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
       );
       if (result.success) {
         onRefresh();
-        alert("Reagendamento rejeitado. A reserva foi cancelada.");
+        alert(tr("Reagendamento rejeitado. A reserva foi cancelada."));
       } else {
         alert(result.message);
       }
     } catch (e) {
       console.error("Erro ao rejeitar reagendamento:", e);
-      alert("Erro ao rejeitar reagendamento.");
+      alert(tr("Erro ao rejeitar reagendamento."));
     }
   }, [user.id, onRefresh]);
 

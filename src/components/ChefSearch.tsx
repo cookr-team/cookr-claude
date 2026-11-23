@@ -456,13 +456,13 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
       });
 
       if (!response.ok) {
-        throw new Error("Falha ao comunicar com o servidor de IA.");
+        throw new Error(tr("Falha ao comunicar com o servidor de IA."));
       }
 
       const resData = await response.json();
       const responseText = resData.text || "";
       if (!responseText) {
-        throw new Error("Resposta de IA vazia");
+        throw new Error(tr("Resposta de IA vazia"));
       }
 
       const sanitizedResponseText = responseText
@@ -658,7 +658,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
       });
 
       if (!response.ok) {
-        throw new Error("Falha ao comunicar com o servidor de IA.");
+        throw new Error(tr("Falha ao comunicar com o servidor de IA."));
       }
 
       const result = await response.json();

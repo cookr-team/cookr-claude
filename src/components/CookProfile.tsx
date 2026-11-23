@@ -161,11 +161,11 @@ const CookProfile: React.FC<CookProfileProps> = ({
 
   const handleSaveCertItem = () => {
     if (!certForm.title.trim()) {
-      onNotify?.("Insere o título da certificação ou prémio.", "error");
+      onNotify?.(tr("Insere o título da certificação ou prémio."), "error");
       return;
     }
     if (!certForm.issuer.trim()) {
-      onNotify?.("Insere a entidade emissora ou instituição.", "error");
+      onNotify?.(tr("Insere a entidade emissora ou instituição."), "error");
       return;
     }
 
@@ -221,7 +221,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
       localStorage.setItem("cookr_user", JSON.stringify(newUserData));
     } catch (_) {}
 
-    onNotify?.("Certificação/Prémio guardado!", "success");
+    onNotify?.(tr("Certificação/Prémio guardado!"), "success");
 
     // Persistir na base de dados Supabase e propagar ao contexto global
     supabaseService.updateUserProfile(user.id, { certifications_and_awards: updatedList })
@@ -245,7 +245,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
       localStorage.setItem("cookr_user", JSON.stringify(newUserData));
     } catch (_) {}
 
-    onNotify?.("Certificação removida.", "info");
+    onNotify?.(tr("Certificação removida."), "info");
 
     // Persistir na base de dados Supabase e propagar ao contexto global
     supabaseService.updateUserProfile(user.id, { certifications_and_awards: updatedList })
@@ -342,7 +342,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
       localStorage.setItem("cookr_user", JSON.stringify(newUserData));
     } catch (_) {}
 
-    onNotify?.("Pergunta de FAQ guardada no perfil!", "success");
+    onNotify?.(tr("Pergunta de FAQ guardada no perfil!"), "success");
 
     supabaseService.updateUserProfile(user.id, { faqs: updatedFaqs })
       .then(() => {
@@ -365,7 +365,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
       localStorage.setItem("cookr_user", JSON.stringify(newUserData));
     } catch (_) {}
 
-    onNotify?.("Pergunta de FAQ removida.", "info");
+    onNotify?.(tr("Pergunta de FAQ removida."), "info");
 
     supabaseService.updateUserProfile(user.id, { faqs: updatedFaqs })
       .then(() => {
@@ -406,7 +406,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
         const parsedDraft = JSON.parse(savedDraft);
         setEditedUser(parsedDraft);
         setIsEditing(true);
-        onNotify?.("Rascunho recuperado de uma sessão anterior!", "info");
+        onNotify?.(tr("Rascunho recuperado de uma sessão anterior!"), "info");
       } catch (err) {
         console.error("Error restoring draft:", err);
       }
@@ -475,7 +475,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
         setIsEditing(false);
         onRefresh(dataToSave);
         if (onNotify) {
-          onNotify("Perfil atualizado com sucesso!", "success");
+          onNotify(tr("Perfil atualizado com sucesso!"), "success");
         } else {
           console.log("Perfil updated with success!");
         }
@@ -509,7 +509,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
             : await supabaseService.uploadCover(user.id, file);
 
         if (!url) {
-          onNotify?.("Erro ao carregar imagem.", "error");
+          onNotify?.(tr("Erro ao carregar imagem."), "error");
           return;
         }
         const finalUrl = url.startsWith("data:") ? url : `${url}?t=${Date.now()}`;
@@ -536,14 +536,14 @@ const CookProfile: React.FC<CookProfileProps> = ({
     if (!file) return;
     const current = editedUser.portfolio_images || [];
     if (current.length >= 6) {
-      onNotify?.("O limite máximo é de 6 fotografias no portefólio.", "error");
+      onNotify?.(tr("O limite máximo é de 6 fotografias no portefólio."), "error");
       return;
     }
     setUploading("portfolio");
     try {
       const url = await supabaseService.uploadFile("covers", user.id, file, 1280);
       if (!url) {
-        onNotify?.("Erro ao carregar imagem.", "error");
+        onNotify?.(tr("Erro ao carregar imagem."), "error");
         return;
       }
       setEditedUser((prev: any) => ({ ...prev, portfolio_images: [...(prev.portfolio_images || []), url].slice(0, 6) }));
@@ -557,7 +557,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
   const handleRemoveFile = async (type: "avatar" | "cover") => {
     if (
       !window.confirm(
-        `Tens a certeza que queres remover a tua ${type === "avatar" ? "foto de perfil" : "foto de capa"}?`,
+        tr("Tens a certeza que queres remover a tua {v0}?", { v0: type === "avatar" ? "foto de perfil" : "foto de capa" }),
       )
     )
       return;
@@ -572,11 +572,11 @@ const CookProfile: React.FC<CookProfileProps> = ({
       setEditedUser(updatedUser);
       onRefresh(updatedUser);
       onNotify?.(
-        `${type === "avatar" ? "Foto de perfil" : "Foto de capa"} removida com sucesso!`,
+        tr("{v0} removida com sucesso!", { v0: type === "avatar" ? "Foto de perfil" : "Foto de capa" }),
         "success",
       );
     } catch (err: any) {
-      onNotify?.("Erro ao remover imagem.", "error");
+      onNotify?.(tr("Erro ao remover imagem."), "error");
     } finally {
       setUploading(null);
     }
@@ -672,7 +672,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
       setEditedUser(updatedUser);
       setShowAvailabilityModal(false);
       onRefresh(updatedUser);
-      onNotify?.("Estás agora Online!", "success");
+      onNotify?.(tr("Estás agora Online!"), "success");
     } catch (e: any) {
       console.warn("[CookProfile] Erro ao entrar online:", e);
       onNotify?.("Erro ao entrar online: " + (e.message || ""), "error");
@@ -710,7 +710,7 @@ const CookProfile: React.FC<CookProfileProps> = ({
         onNotify?.("Ficaste Offline.", "info");
       } catch (e: any) {
         console.warn("[CookProfile] Erro ao ficar offline:", e);
-        onNotify?.("Erro ao ficar offline.", "error");
+        onNotify?.(tr("Erro ao ficar offline."), "error");
       }
     }
   };

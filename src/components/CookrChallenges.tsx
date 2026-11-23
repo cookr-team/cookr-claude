@@ -322,7 +322,7 @@ export const CookrChallenges: React.FC<CookrChallengesProps> = ({
     setUserSubmissions(updated);
     if (onNotify) {
       onNotify(
-        "Prato submetido com sucesso ao Desafio Cookr! Boa sorte!",
+        tr("Prato submetido com sucesso ao Desafio Cookr! Boa sorte!"),
         "success"
       );
     }
@@ -673,15 +673,15 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!dishTitle.trim()) {
-      setError("Por favor, insere o nome da tua criação gastronómica.");
+      setError(tr("Por favor, insere o nome da tua criação gastronómica."));
       return;
     }
     if (!description.trim()) {
-      setError("Por favor, adiciona uma breve descrição e inspiração do prato.");
+      setError(tr("Por favor, adiciona uma breve descrição e inspiração do prato."));
       return;
     }
     if (!photoUrl.trim()) {
-      setError("Por favor, anexa uma fotografia do empratamento.");
+      setError(tr("Por favor, anexa uma fotografia do empratamento."));
       return;
     }
 
@@ -707,7 +707,7 @@ const DishSubmissionModal: React.FC<DishSubmissionModalProps> = ({
     };
 
     if (!currentUser?.id) {
-      setError("Inicia sessão como chef para submeter um prato.");
+      setError(tr("Inicia sessão como chef para submeter um prato."));
       setIsSubmitting(false);
       return;
     }

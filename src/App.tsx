@@ -663,7 +663,7 @@ const App: React.FC = () => {
     } else {
       setCurrentView("home");
     }
-    addToast(`Modo Simulação Ativo: A navegar como ${targetUser.nome} (${targetUser.role.toUpperCase()})`, "info");
+    addToast(tr("Modo Simulação Ativo: A navegar como {v0} ({v1})", { v0: targetUser.nome, v1: targetUser.role.toUpperCase() }), "info");
   }, [currentUser, realAdminUser, addToast]);
 
   const handleStopImpersonation = useCallback(() => {
@@ -671,7 +671,7 @@ const App: React.FC = () => {
       setCurrentUser(realAdminUser);
       setRealAdminUser(null);
       setCurrentView("admin");
-      addToast("Modo de simulação encerrado. Regressado ao Painel de Administrador.", "success");
+      addToast(tr("Modo de simulação encerrado. Regressado ao Painel de Administrador."), "success");
     }
   }, [realAdminUser, addToast]);
 
@@ -1258,7 +1258,7 @@ const App: React.FC = () => {
       // Resposta igual com ou sem conta, para não revelar que emails existem.
     }
     addToast(
-      "Se existir uma conta com esse email, enviámos instruções para definir uma nova palavra-passe.",
+      tr("Se existir uma conta com esse email, enviámos instruções para definir uma nova palavra-passe."),
       "success",
     );
   };
@@ -1282,7 +1282,7 @@ const App: React.FC = () => {
       setShowRecoveryModal(false);
       setRecoveryPassword("");
       setRecoveryPassword2("");
-      addToast("Palavra-passe atualizada! Entre com a nova palavra-passe.", "success");
+      addToast(tr("Palavra-passe atualizada! Entre com a nova palavra-passe."), "success");
       navigateTo("login-selection");
     } catch (err: any) {
       setRecoveryError(err?.message || "Não foi possível atualizar a palavra-passe. Peça um novo link.");
@@ -1613,7 +1613,7 @@ const App: React.FC = () => {
       addToast("Curadoria atualizada.", "success");
       return true;
     } catch (e) {
-      addToast("Erro na curadoria.", "error");
+      addToast(tr("Erro na curadoria."), "error");
       return false;
     }
   };
@@ -1666,7 +1666,7 @@ const App: React.FC = () => {
               );
               if (user && (user as any).pendingEmailConfirmation) {
                 addToast(
-                  "Conta criada! Enviámos um email para confirmar o seu endereço. Confirme e depois entre com a sua palavra-passe.",
+                  tr("Conta criada! Enviámos um email para confirmar o seu endereço. Confirme e depois entre com a sua palavra-passe."),
                   "success",
                 );
                 setTimeout(() => navigateTo("login-selection"), 4000);
