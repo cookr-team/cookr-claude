@@ -1027,7 +1027,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                 value={historySearch}
                 onChange={(e) => setHistorySearch(e.target.value)}
                 placeholder={tr("Pesquisar por prato ou chef...")}
-                className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-xl text-xs font-medium placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all shadow-sm text-slate-800"
+                className="w-full pl-10 pr-10 h-11 bg-white border border-slate-200 rounded-xl text-sm font-medium placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all shadow-sm text-slate-800"
               />
               {historySearch && (
                 <button
@@ -1049,7 +1049,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                 <select
                   value={historyStatus}
                   onChange={(e: any) => setHistoryStatus(e.target.value)}
-                  className="w-full sm:w-auto pl-8 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 focus:outline-none focus:border-orange-500 transition-all appearance-none cursor-pointer shadow-sm"
+                  className="w-full sm:w-auto pl-8 pr-10 h-11 bg-white border border-slate-200 rounded-xl text-sm font-medium normal-case tracking-normal text-slate-800 focus:outline-none focus:border-orange-500 transition-all appearance-none cursor-pointer shadow-sm"
                 >
                   <option value="all">{tr("Todos os Estados")}</option>
                   <option value="completed">{tr("Concluídos")}</option>
@@ -1067,7 +1067,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                 <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-slate-400 z-10">
                   <ICONS.Calendar size={11} className="text-slate-400" />
                 </span>
-                <div className="w-full sm:w-auto min-w-[150px] pl-8 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 shadow-sm flex items-center justify-between min-h-[38px] max-h-[38px] cursor-pointer">
+                <div className="w-full sm:w-auto min-w-[150px] pl-8 pr-10 h-11 bg-white border border-slate-200 rounded-xl text-sm font-medium normal-case tracking-normal text-slate-800 shadow-sm flex items-center justify-between cursor-pointer">
                   <span className="truncate">
                     {historyDate ? historyDate.split("-").reverse().join("/") : tr("Filtrar por data")}
                   </span>
@@ -1105,7 +1105,7 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                 <select
                   value={historySort}
                   onChange={(e: any) => setHistorySort(e.target.value)}
-                  className="w-full sm:w-auto pl-8 pr-10 py-2.5 bg-white border border-slate-200/80 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 focus:outline-none focus:border-orange-500 transition-all appearance-none cursor-pointer shadow-sm"
+                  className="w-full sm:w-auto pl-8 pr-10 h-11 bg-white border border-slate-200 rounded-xl text-sm font-medium normal-case tracking-normal text-slate-800 focus:outline-none focus:border-orange-500 transition-all appearance-none cursor-pointer shadow-sm"
                 >
                   <option value="newest">{tr("Mais Recentes Primeiro")}</option>
                   <option value="oldest">{tr("Mais Antigos Primeiro")}</option>
