@@ -1,3 +1,4 @@
+import { tr } from '../lib/tr';
 import { supabase } from '../lib/supabaseClient';
 import { User, UserRole, UserStatus } from '../types';
 
@@ -8,13 +9,21 @@ export interface SignUpMetadata {
   avatar_url?: string;
 }
 
+/** Política de palavra-passe: mínimo 8 caracteres, com letras e números. */
+export function assertStrongPassword(password: string) {
+  if (typeof password !== 'string' || password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+    throw new Error(tr('A palavra-passe deve ter pelo menos 8 caracteres, com letras e números.'));
+  }
+}
+
 export const supabaseAuthService = {
   /**
    * Supabase Auth: Registar novo utilizador passando metadados para o trigger handle_new_user
    */
   signUp: async (email: string, password: string, metadata: SignUpMetadata) => {
     const sanitizedEmail = email.toLowerCase().trim();
-    
+    assertStrongPassword(password);
+
     const { data, error } = await supabase.auth.signUp({
       email: sanitizedEmail,
       password,
@@ -59,6 +68,7 @@ export const supabaseAuthService = {
    * Supabase Auth: Atualizar palavra-passe de forma segura do utilizador autenticado
    */
   updatePassword: async (newPassword: string) => {
+    assertStrongPassword(newPassword);
     const { data, error } = await supabase.auth.updateUser({
       password: newPassword,
     });

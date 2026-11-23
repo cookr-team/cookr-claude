@@ -74,7 +74,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [userRoleFilter, setUserRoleFilter] = useState<UserRole | "ALL">("ALL");
   const [userStatusFilter, setUserStatusFilter] = useState<UserStatus | "ALL">("ALL");
   const [suspensionReason, setSuspensionReason] = useState("");
-  const [generatedResetLink, setGeneratedResetLink] = useState("");
 
   // Menu Moderation
   const [selectedMenus, setSelectedMenus] = useState<string[]>([]);
@@ -1050,23 +1049,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   };
 
+  // Envia o email oficial de recuperação (link real, gerado e assinado pelo Supabase Auth).
   const handleGenerateRecoveryLink = async (user: User) => {
-    const token = `cookr_rst_${Math.random().toString(36).slice(2, 11)}_${Date.now()}`;
-    const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://cookr.pt";
-    const link = `${baseUrl}/?action=reset-password&token=${token}&email=${encodeURIComponent(user.email)}`;
-    setGeneratedResetLink(link);
     try {
+      await supabaseService.resetPasswordForEmail(user.email);
       await supabaseService.createAdminLog(
         "ADMIN",
-        "GENERATE_RESET_LINK",
+        "SEND_RESET_EMAIL",
         user.id,
-        `Gerado link direto de recuperação de senha para ${user.nome} (${user.email})`
+        `Email de recuperação de palavra-passe enviado para ${user.email}`
       );
       fetchLogs();
-    } catch (e) {
-      console.warn("Log creation error:", e);
+      onNotify("Email de recuperação enviado.", "success");
+    } catch (e: any) {
+      onNotify("Não foi possível enviar o email de recuperação: " + (e?.message || ""), "error");
     }
-    onNotify("Link direto de redefinição de palavra-passe gerado!", "success");
   };
 
   // Live Menu Moderation actions
@@ -2641,75 +2638,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                         {/* Send reset recovery link */}
                         <div className="space-y-2 flex flex-col justify-end">
-                          <label className="text-[8px] text-slate-500 uppercase font-bold block">Link Rápido de Recuperação</label>
+                          <label className="text-[8px] text-slate-500 uppercase font-bold block">Recuperação de Acesso</label>
                           <button
                             type="button"
                             onClick={() => handleGenerateRecoveryLink(selectedUser)}
                             className="relative w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl text-[10px] uppercase shadow transition-all flex items-center justify-center gap-1.5"
                           >
                             <ICONS.Link size={12} />
-                            Gerar Link Rápido
+                            Enviar Email de Recuperação
                           </button>
                         </div>
                       </div>
 
-                      {generatedResetLink && (
-                        <div className="p-3 bg-indigo-50/50 border border-indigo-100 rounded-xl space-y-2 animate-in slide-in-from-top-1 duration-250 text-left">
-                          <div className="flex justify-between items-center">
-                            <span className="text-[8px] font-bold uppercase text-indigo-700 flex items-center gap-1">
-                              <ICONS.CheckCircle size={10} className="text-indigo-600" />
-                              Link Pronto para Envio Direto
-                            </span>
-                            <button
-                              onClick={() => {
-                                setGeneratedResetLink("");
-                              }}
-                              className="text-[8px] uppercase font-bold text-slate-400 hover:text-slate-600"
-                            >
-                              Limpar
-                            </button>
-                          </div>
-                          <p className="text-[9px] text-indigo-900 font-mono break-all bg-white border border-indigo-100 p-2 rounded-lg select-all">
-                            {generatedResetLink}
-                          </p>
-                          <div className="grid grid-cols-3 gap-1.5 pt-1">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                navigator.clipboard.writeText(generatedResetLink);
-                                onNotify("Link copiado com sucesso! Envie diretamente ao utilizador.", "success");
-                              }}
-                              className="py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase text-[8.5px] rounded-lg transition-all flex items-center justify-center gap-1 shadow-2xs"
-                            >
-                              <ICONS.Copy size={11} />
-                              Copiar
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const msg = `Olá ${selectedUser.nome}, aqui está o seu link direto para redefinir a palavra-passe na Cookr: ${generatedResetLink}`;
-                                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-                              }}
-                              className="py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase text-[8.5px] rounded-lg transition-all flex items-center justify-center gap-1 shadow-2xs"
-                            >
-                              <span>◆</span>
-                              WhatsApp
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const subject = `Redefinição de Palavra-passe Cookr - ${selectedUser.nome}`;
-                                const body = `Olá ${selectedUser.nome},\n\nPara redefinir a sua palavra-passe de acesso à plataforma Cookr, utilize o seguinte link direto gerado pelo Administrador:\n\n${generatedResetLink}\n\nAtentamente,\nEquipa de Suporte Cookr`;
-                                window.open(`mailto:${selectedUser.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
-                              }}
-                              className="py-1.5 bg-slate-800 hover:bg-slate-900 text-white font-bold uppercase text-[8.5px] rounded-lg transition-all flex items-center justify-center gap-1 shadow-2xs"
-                            >
-                              <span>◆</span>
-                              E-mail
-                            </button>
-                          </div>
-                        </div>
-                      )}
                     </div>
 
                     {/* Historical direct bookings of user */}
