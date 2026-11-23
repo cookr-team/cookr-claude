@@ -1784,5 +1784,6 @@
 "Não foi possível iniciar a configuração.": "Could not start the setup.",
 "Não foi possível iniciar o pagamento.": "Could not start the payment.",
 "Pagamento por concluir. O valor fica apenas retido e só é cobrado quando o chef aceitar a reserva.": "Payment pending. The amount is only held and charged when the chef accepts the booking.",
-"Pagar agora": "Pay now"
+"Pagar agora": "Pay now",
+"Ver Menus e Reservar": "View Menus & Book"
 }
