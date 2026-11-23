@@ -1764,5 +1764,7 @@
 "Selecione uma das suas moradas": "Select one of your addresses",
 "Adicione primeiro uma morada no separador Moradas do seu perfil.": "First add an address in the Addresses tab of your profile.",
 "As moradas gerem-se num único sítio: separador Moradas do perfil.": "Addresses are managed in one place: the Addresses tab of your profile.",
-"Definições": "Settings"
+"Definições": "Settings",
+"A palavra-passe deve ter pelo menos 8 caracteres, com letras e números.": "The password must be at least 8 characters long and include letters and numbers.",
+"Enviar Email de Recuperação": "Send Recovery Email"
 }

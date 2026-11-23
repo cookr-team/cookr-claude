@@ -1289,8 +1289,8 @@ const App: React.FC = () => {
   const handleRecoverySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setRecoveryError(null);
-    if (recoveryPassword.length < 8) {
-      setRecoveryError(tr("A palavra-passe deve ter pelo menos 8 caracteres."));
+    if (recoveryPassword.length < 8 || !/[A-Za-z]/.test(recoveryPassword) || !/\d/.test(recoveryPassword)) {
+      setRecoveryError(tr("A palavra-passe deve ter pelo menos 8 caracteres, com letras e números."));
       return;
     }
     if (recoveryPassword !== recoveryPassword2) {
@@ -1331,8 +1331,7 @@ const App: React.FC = () => {
           user.role === UserRole.COOK &&
           (user.status === UserStatus.PENDING ||
             user.status === UserStatus.UNDER_REVIEW) &&
-          !isAdminMaster &&
-          sanitizedEmail !== "teste5@gmail.com"
+          !isAdminMaster
         ) {
           setLoginError(
             user.status === UserStatus.UNDER_REVIEW
@@ -1351,12 +1350,6 @@ const App: React.FC = () => {
           );
           setIsLoginPending(false);
           return;
-        }
-
-        // Se a conta for de teste ou estiver ativa, garantir status ACTIVE
-        if (sanitizedEmail === "teste5@gmail.com") {
-          user.status = UserStatus.ACTIVE;
-          user.approvedByAdmin = true;
         }
 
         // Adaptar dinamicamente à role real da conta

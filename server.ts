@@ -25,7 +25,31 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-app.use(express.json({ limit: "10mb" }));
+app.disable("x-powered-by");
+app.set("trust proxy", 1);
+
+// Cabeçalhos de segurança também nas respostas servidas pelo Express (API e desenvolvimento).
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(self), payment=()");
+  if (req.path.startsWith("/api")) res.setHeader("Cache-Control", "no-store");
+  next();
+});
+
+// Limite global por IP (travão a abusos e força bruta); os limites finos por utilizador vêm depois.
+app.use("/api", (req, res, next) => {
+  if (hitRateLimit(`ip:${req.ip}`, 240, 60 * 1000)) {
+    return res.status(429).json({ error: "Demasiados pedidos. Tente novamente dentro de instantes." });
+  }
+  next();
+});
+
+// Corpo pequeno por defeito; só a IA aceita payloads maiores.
+app.use("/api/gemini", express.json({ limit: "8mb" }));
+app.use(express.json({ limit: "1mb" }));
 
 // Helper to configure SMTP Transporter using process.env
 function getSmtpTransporter() {
