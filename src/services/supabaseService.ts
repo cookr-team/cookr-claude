@@ -1284,13 +1284,18 @@ export const supabaseService = {
       if (data.status !== undefined) profileUpdates.status = data.status;
 
       if (Object.keys(profileUpdates).length > 0) {
-        const { error: pErr } = await supabase
+        const { data: updatedRows, error: pErr } = await supabase
           .from('profiles')
           .update(profileUpdates)
-          .eq('id', targetUserId);
+          .eq('id', targetUserId)
+          .select('id');
         if (pErr) {
           console.warn('[Supabase] updateUserProfile (profiles):', pErr.message || pErr);
           saveError = pErr.message || 'Não foi possível guardar o perfil.';
+        } else if (sessionId && (!updatedRows || updatedRows.length === 0)) {
+          // O RLS ignora em silêncio as linhas que não pode alterar: sem esta verificação a app dizia "guardado".
+          console.warn('[Supabase] updateUserProfile: nenhuma linha atualizada para', targetUserId);
+          saveError = tr("Não foi possível guardar as alterações no servidor. Termine a sessão, entre de novo e tente outra vez.");
         }
       }
 

@@ -973,7 +973,7 @@ const ChefSearch: React.FC<ChefSearchProps> = ({
           <div className="bg-white rounded-2xl md:rounded-[2rem] shadow-luxury p-3 sm:p-4 md:p-5 flex flex-col gap-3 sm:gap-4 border border-slate-100 overflow-hidden">
             {/* LINHA 1: Bloco de Seletores Dinâmicos (Local, Data, Hora) */}
             <div className="w-full">
-              <div className="grid grid-cols-1 min-[360px]:grid-cols-3 divide-y min-[360px]:divide-y-0 min-[360px]:divide-x divide-slate-200/80 w-full items-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/80 w-full items-center">
                 {/* 1. Seletor Local */}
                 <div className="flex items-center gap-2.5 sm:gap-3 px-2.5 sm:px-4 py-2 sm:py-2.5 min-w-0">
                   <div className="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center shrink-0 text-orange-500">

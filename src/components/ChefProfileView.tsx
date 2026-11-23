@@ -2078,7 +2078,7 @@ const ChefProfileView: React.FC<ChefProfileViewProps> = ({
 
         <button
           onClick={onBack}
-          className="absolute top-3 left-3 md:top-4 md:left-4 w-8 h-8 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-lg flex items-center justify-center shadow-md hover:bg-slate-900/60 transition-all z-50 active:scale-95 group"
+          className="absolute top-3 left-3 md:top-4 md:left-4 w-8 h-8 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-lg flex items-center justify-center shadow-md hover:bg-slate-900/60 transition-all z-20 active:scale-95 group"
         >
           <ICONS.ChevronLeft
             size={14}
