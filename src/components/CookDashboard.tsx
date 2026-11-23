@@ -3366,8 +3366,8 @@ const OperationsManager: React.FC<OperationsManagerProps> = React.memo(({
     try {
       await supabaseService.updateBookingStatus(id, status);
       onRefresh();
-    } catch (e) {
-      alert(tr("Erro ao atualizar estado."));
+    } catch (e: any) {
+      alert(e?.message || tr("Erro ao atualizar estado."));
     } finally {
       setIsUpdating(null);
     }

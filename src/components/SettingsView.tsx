@@ -37,6 +37,7 @@ interface SettingsViewProps {
 }
 import { formatPostalCode } from "../utils/formatters";
 import { tr } from "../lib/tr";
+import { paymentService } from "../services/paymentService";
 export { formatPostalCode };
 
 // Custom Accessible Premium Toggle
@@ -69,6 +70,59 @@ const SettingToggle: React.FC<{
         {checked && <Check size={9} className="text-orange-600 stroke-[3]" />}
       </div>
     </button>
+  );
+};
+
+/** Recebimentos do chef (Stripe Connect): estado da conta e configuração. */
+const PayoutsCard: React.FC<{ onNotify?: (m: string, t: "success" | "error" | "info") => void }> = ({ onNotify }) => {
+  const [status, setStatus] = useState<{ enabled: boolean; connected?: boolean; detailsSubmitted?: boolean; payoutsEnabled?: boolean } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    paymentService.connectStatus().then((r) => alive && setStatus(r));
+    return () => { alive = false; };
+  }, []);
+
+  if (!status || !status.enabled) return null;
+
+  const start = async () => {
+    setBusy(true);
+    try {
+      window.location.href = await paymentService.connectOnboard();
+    } catch (e: any) {
+      onNotify?.(e?.message || tr("Não foi possível iniciar a configuração."), "error");
+      setBusy(false);
+    }
+  };
+
+  const ready = !!status.payoutsEnabled;
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-bold text-slate-900">{tr("Recebimentos")}</h3>
+          <p className="text-xs text-slate-500 mt-0.5">
+            {ready
+              ? tr("Conta de recebimentos ativa. Recebe o pagamento de cada serviço depois de o PIN ser validado.")
+              : tr("Configure a sua conta de recebimentos (Stripe) para receber os pagamentos dos serviços.")}
+          </p>
+        </div>
+        <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${ready ? "text-emerald-700 border-emerald-200 bg-emerald-50" : "text-amber-700 border-amber-200 bg-amber-50"}`}>
+          {ready ? tr("Ativo") : status.connected ? tr("Por concluir") : tr("Não configurado")}
+        </span>
+      </div>
+      {!ready && (
+        <button
+          type="button"
+          onClick={start}
+          disabled={busy}
+          className="px-4 py-2.5 bg-slate-950 text-white rounded-xl text-xs font-semibold tracking-wide hover:bg-slate-800 disabled:opacity-50 cursor-pointer"
+        >
+          {busy ? tr("A abrir...") : status.connected ? tr("Concluir configuração") : tr("Configurar recebimentos")}
+        </button>
+      )}
+    </div>
   );
 };
 
@@ -566,6 +620,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </section>
 
         {/* ================================================================= */}
+        {user.role === UserRole.COOK && <PayoutsCard onNotify={onNotify} />}
+
         {/* 3. PREFERÊNCIAS DE NOTIFICAÇÕES */}
         {/* ================================================================= */}
         <section className="bg-white p-5 sm:p-7 md:p-8 rounded-2xl border border-slate-200/80 shadow-xs space-y-6">

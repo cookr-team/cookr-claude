@@ -1184,8 +1184,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       );
       onNotify(`Reserva atualizada para ${status}!`, "success");
       onRefresh();
-    } catch (e) {
-      onNotify("Erro ao forçar estado da reserva.", "error");
+    } catch (e: any) {
+      onNotify(e?.message || "Erro ao forçar estado da reserva.", "error");
     } finally {
       setIsActionPending(null);
     }

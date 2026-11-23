@@ -7,6 +7,7 @@ import { Download, RefreshCw } from "lucide-react";
 import { useLanguage, getLangText } from "../contexts/LanguageContext";
 
 import { tr } from "../lib/tr";
+import { paymentService, PaymentStatus } from "../services/paymentService";
 interface UpcomingBookingCardProps {
   b: Booking;
   cooks: User[];
@@ -355,6 +356,31 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
   isLoading = false,
 }) => {
   useLanguage();
+  const [paymentsOn, setPaymentsOn] = useState(false);
+  const [payStatuses, setPayStatuses] = useState<Record<string, PaymentStatus>>({});
+  const [isPaying, setIsPaying] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    paymentService.isEnabled().then((on) => {
+      if (!alive) return;
+      setPaymentsOn(on);
+      if (on) {
+        paymentService.getStatuses(bookings.map((b) => b.id)).then((m) => alive && setPayStatuses(m));
+      }
+    });
+    return () => { alive = false; };
+  }, [bookings]);
+
+  const payNow = async (bookingId: string) => {
+    setIsPaying(true);
+    try {
+      window.location.href = await paymentService.startCheckout(bookingId);
+    } catch (e: any) {
+      alert(e?.message || tr("Não foi possível iniciar o pagamento."));
+      setIsPaying(false);
+    }
+  };
+
   const [reviewingBooking, setReviewingBooking] =
     useState<Booking | null>(null);
   const [viewingDetail, setViewingDetail] = useState<Booking | null>(
@@ -1315,6 +1341,21 @@ const ClientAgenda: React.FC<ClientAgendaProps> = ({
                   <ICONS.X size={13} />
                 </button>
               </div>
+
+              {paymentsOn && viewingDetail.status === BookingStatus.PENDING && !["authorized", "captured", "paid_out"].includes(payStatuses[viewingDetail.id] || "") && (
+                <div className="mb-6 p-4 rounded-2xl border border-amber-200 bg-amber-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <p className="text-xs text-amber-800 font-medium">
+                    {tr("Pagamento por concluir. O valor fica apenas retido e só é cobrado quando o chef aceitar a reserva.")}
+                  </p>
+                  <button
+                    onClick={() => payNow(viewingDetail.id)}
+                    disabled={isPaying}
+                    className="shrink-0 px-4 py-2.5 bg-slate-950 text-white rounded-xl text-xs font-semibold tracking-wide hover:bg-slate-800 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isPaying ? tr("A abrir...") : tr("Pagar agora")}
+                  </button>
+                </div>
+              )}
 
               {/* Main Content Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
