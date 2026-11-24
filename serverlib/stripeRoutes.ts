@@ -146,11 +146,25 @@ export function registerStripeWebhook(app: express.Express, deps: StripeDeps) {
           const s = event.data.object as Stripe.Checkout.Session;
           const bookingId = s.metadata?.booking_id;
           if (bookingId && isUuid(bookingId)) {
-            await admin
+            const { data: expired } = await admin
               .from("booking_payments")
               .update({ status: "expired", updated_at: new Date().toISOString() })
               .eq("booking_id", bookingId)
-              .eq("status", "checkout_created");
+              .eq("status", "checkout_created")
+              .select("booking_id");
+            // Pagamento nunca concluído: a reserva pendente deixa de ocupar o horário do chef
+            // (o gatilho da base de dados liberta o horário quando a reserva é cancelada).
+            if (expired && expired.length > 0) {
+              await admin
+                .from("bookings")
+                .update({
+                  status: "cancelled",
+                  cancelled_at: new Date().toISOString(),
+                  cancellation_reason: "Pagamento não concluído a tempo.",
+                })
+                .eq("id", bookingId)
+                .eq("status", "pending");
+            }
           }
           break;
         }
