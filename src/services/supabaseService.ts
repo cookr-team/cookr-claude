@@ -20,6 +20,12 @@ import {
 } from '../types';
 import { addOfflineAction, isNetworkError } from './bookingQueue';
 import { mockUsers, mockMenus, mockRecipes, mockBookings } from './mockData.ts.tsx';
+
+// Dados de demonstração só existem quando o Supabase NÃO está configurado.
+// Em produção nunca se misturam utilizadores, reservas ou menus fictícios com os reais.
+const demoUsers = (): typeof mockUsers => (isSupabaseConfigured() ? [] : mockUsers);
+const demoBookings = (): typeof mockBookings => (isSupabaseConfigured() ? [] : mockBookings);
+const demoMenus = (): MenuItem[] => (isSupabaseConfigured() ? [] : Object.values(mockMenus).flat());
 import { emailService } from './emailService';
 
 import { tr } from "../lib/tr";
@@ -836,11 +842,11 @@ export const supabaseService = {
       }
 
       if (userList.length === 0) {
-        return mockUsers;
+        return demoUsers();
       }
 
       // Garantir que contas mock fundamentais (ex: admin) fiquem disponíveis
-      for (const mu of mockUsers) {
+      for (const mu of demoUsers()) {
         if (!userList.some(u => u.id === mu.id || u.email?.toLowerCase().trim() === mu.email?.toLowerCase().trim())) {
           userList.push(mu);
         }
@@ -851,7 +857,7 @@ export const supabaseService = {
       console.warn('[Supabase] getUsers note:', err);
       const localUsers = getLocalCachedUsers();
       const combined = [...localUsers];
-      for (const mu of mockUsers) {
+      for (const mu of demoUsers()) {
         if (!combined.some(u => u.id === mu.id || u.email?.toLowerCase().trim() === mu.email?.toLowerCase().trim())) {
           combined.push(mu);
         }
@@ -967,11 +973,11 @@ export const supabaseService = {
       }
 
       if (results.length === 0) {
-        return mockUsers.filter(u => u.role === role);
+        return demoUsers().filter(u => u.role === role);
       }
 
       // Garantir mocks
-      for (const mu of mockUsers.filter(u => u.role === role)) {
+      for (const mu of demoUsers().filter(u => u.role === role)) {
         if (!results.some(u => u.id === mu.id || u.email?.toLowerCase().trim() === mu.email?.toLowerCase().trim())) {
           results.push(mu);
         }
@@ -985,7 +991,7 @@ export const supabaseService = {
       console.warn(`[Supabase] getUsersByRole (${role}) note:`, err);
       const localUsers = getLocalCachedUsers().filter(u => u.role === role);
       const combined = [...localUsers];
-      for (const mu of mockUsers.filter(u => u.role === role)) {
+      for (const mu of demoUsers().filter(u => u.role === role)) {
         if (!combined.some(u => u.id === mu.id || u.email?.toLowerCase().trim() === mu.email?.toLowerCase().trim())) {
           combined.push(mu);
         }
@@ -1032,7 +1038,7 @@ export const supabaseService = {
     const localUser = getLocalCachedUsers().find(u => u.id === id);
     if (localUser) return localUser;
 
-    return mockUsers.find(u => u.id === id) || null;
+    return demoUsers().find(u => u.id === id) || null;
   },
 
   /**
@@ -1072,7 +1078,7 @@ export const supabaseService = {
     const localUser = getLocalCachedUsers().find(u => u.email?.toLowerCase().trim() === sanitizedEmail);
     if (localUser) return localUser;
 
-    return mockUsers.find(u => u.email.toLowerCase().trim() === sanitizedEmail) || null;
+    return demoUsers().find(u => u.email.toLowerCase().trim() === sanitizedEmail) || null;
   },
 
   /**
@@ -1659,10 +1665,10 @@ export const supabaseService = {
       if (!error && data && data.length > 0) {
         return (await attachBookingPins(data)).map(mapBookingRowToBooking);
       }
-      return mockBookings;
+      return demoBookings();
     } catch (err) {
       console.warn('[Supabase] getBookings note:', err);
-      return mockBookings;
+      return demoBookings();
     }
   },
 
@@ -1676,10 +1682,10 @@ export const supabaseService = {
       if (role === UserRole.ADMIN) {
         query = query.order('created_at', { ascending: false });
       } else if (role === UserRole.COOK) {
-        if (!userId || !isValidUUID(userId)) return mockBookings.filter(b => b.cookId === userId);
+        if (!userId || !isValidUUID(userId)) return demoBookings().filter(b => b.cookId === userId);
         query = query.eq('cook_id', userId).order('data', { ascending: true });
       } else {
-        if (!userId || !isValidUUID(userId)) return mockBookings.filter(b => b.clientId === userId);
+        if (!userId || !isValidUUID(userId)) return demoBookings().filter(b => b.clientId === userId);
         query = query.eq('client_id', userId).order('data', { ascending: true });
       }
 
@@ -1689,10 +1695,10 @@ export const supabaseService = {
         return withPins.map(mapBookingRowToBooking);
       }
 
-      return mockBookings.filter(b => role === UserRole.COOK ? b.cookId === userId : b.clientId === userId);
+      return demoBookings().filter(b => role === UserRole.COOK ? b.cookId === userId : b.clientId === userId);
     } catch (err) {
       console.warn('[Supabase] getBookingsByUserId note:', err);
-      return mockBookings.filter(b => role === UserRole.COOK ? b.cookId === userId : b.clientId === userId);
+      return demoBookings().filter(b => role === UserRole.COOK ? b.cookId === userId : b.clientId === userId);
     }
   },
 
@@ -2084,7 +2090,7 @@ export const supabaseService = {
 
       // Se a base de dados remota não tiver menus ainda, recorrer aos mockMenus
       if (list.length === 0) {
-        list = Object.values(mockMenus).flat();
+        list = demoMenus();
       }
 
       if (list.length > 0) {
@@ -2096,7 +2102,7 @@ export const supabaseService = {
       console.warn('[Supabase] getAllMenusList note:', err);
       const local = getLocalCachedMenus();
       if (local.length > 0) return local;
-      return Object.values(mockMenus).flat();
+      return demoMenus();
     }
   },
 
@@ -2125,7 +2131,7 @@ export const supabaseService = {
     if (local) return local;
 
     // Verificar mockMenus
-    const mockList = mockMenus[cookId] || [];
+    const mockList = isSupabaseConfigured() ? [] : (mockMenus[cookId] || []);
     return mockList.find(m => m.nome.toLowerCase() === name.toLowerCase()) || null;
   },
 
