@@ -786,19 +786,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     };
   }, [allMenus, menusStatusTab, menusSearchText, menusChefFilter, menusTypeFilter, users]);
 
-  // stable IP generator helper for logs UI
-  const generateIpForLog = (logId: string) => {
-    if (!logId) return "192.168.1.10";
-    let hash = 0;
-    for (let i = 0; i < logId.length; i++) {
-      hash = logId.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const octet1 = 180 + (Math.abs(hash) % 50);
-    const octet2 = Math.abs(hash >> 8) % 256;
-    const octet3 = Math.abs(hash >> 16) % 256;
-    const octet4 = Math.abs(hash >> 24) % 256;
-    return `${octet1}.${octet2}.${octet3}.${octet4}`;
-  };
+  // O IP não é recolhido (um IP "gerado" num registo de auditoria seria falso): mostra-se "—".
+  const generateIpForLog = (_logId: string) => "—";
 
   const filteredLogs = useMemo(() => {
     return adminLogs.filter((log) => {
@@ -4705,7 +4694,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <th className="px-6 py-4 text-[9px] font-black uppercase text-slate-500">Data / Timestamp</th>
                       <th className="px-6 py-4 text-[9px] font-black uppercase text-slate-500">Auditor</th>
                       <th className="px-6 py-4 text-[9px] font-black uppercase text-slate-500">Ação de Auditor</th>
-                      <th className="px-6 py-4 text-[9px] font-black uppercase text-slate-500">IP Originário</th>
+                      <th className="px-6 py-4 text-[9px] font-black uppercase text-slate-500">IP Originário (não recolhido)</th>
                       <th className="px-6 py-4 text-[9px] font-black uppercase text-slate-500">Alvo ID</th>
                       <th className="px-6 py-4 text-[9px] font-black uppercase text-slate-500">Detalhes</th>
                     </tr>
@@ -4805,7 +4794,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                       <div>
                         <span className="text-slate-400 block uppercase text-[8px] font-bold tracking-wider">Auditor / Operador</span>
-                        <span className="text-slate-700 font-bold">{selectedLog.admin_id || "SYSTEM"}</span>
+                        <span className="text-slate-700 font-bold">{selectedLog.admin_id ? (users.find((u) => u.id === selectedLog.admin_id)?.nome || String(selectedLog.admin_id).slice(0, 8)) : "SYSTEM"}</span>
                       </div>
                       <div>
                         <span className="text-slate-400 block uppercase text-[8px] font-bold tracking-wider">IP Originário</span>
