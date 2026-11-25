@@ -824,14 +824,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           act.includes("EDIT_CHEF") ||
           act.includes("ADJUST") ||
           act.includes("ROLE") ||
-          act.includes("BULK")
+          act.includes("BULK") ||
+          act.includes("BYPASS")
         );
       }
       if (logActionFilter === "MODERATION") {
         return (
           act.includes("REVIEW") ||
           act.includes("MODERATE") ||
-          act.includes("AUDIT_")
+          act.includes("AUDIT_") ||
+          act.includes("APPROVED")
         );
       }
       if (logActionFilter === "SETTINGS") {
@@ -863,13 +865,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         act.includes("EDIT_CHEF") ||
         act.includes("ADJUST") ||
         act.includes("ROLE") ||
-        act.includes("BULK")
+        act.includes("BULK") ||
+          act.includes("BYPASS")
       ) {
         overrides++;
       } else if (
         act.includes("REVIEW") ||
         act.includes("MODERATE") ||
-        act.includes("AUDIT_")
+        act.includes("AUDIT_") ||
+          act.includes("APPROVED")
       ) {
         moderations++;
       } else if (
@@ -4722,7 +4726,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           log.action?.includes("EDIT_CHEF") ||
                           log.action?.includes("ADJUST") ||
                           log.action?.includes("ROLE") ||
-                          log.action?.includes("BULK");
+                          log.action?.includes("BULK") ||
+                          log.action?.includes("BYPASS");
                         
                         const isDeletion = log.action?.startsWith("DELETE_");
 
@@ -4736,7 +4741,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               {log.created_at ? new Date(log.created_at).toLocaleString() : "N/A"}
                             </td>
                             <td className="px-6 py-4 text-slate-700 font-bold truncate max-w-[100px]">
-                              {log.admin_id || "SYSTEM"}
+                              {log.admin_id ? (users.find((u) => u.id === log.admin_id)?.nome || String(log.admin_id).slice(0, 8)) : "SYSTEM"}
                             </td>
                             <td className="px-6 py-4">
                               <span

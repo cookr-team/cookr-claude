@@ -1085,6 +1085,7 @@ const App: React.FC = () => {
       }
     );
 
+    let rtFailedHandled = false;
     channel.subscribe((status) => {
       if (!isSubscribed) return;
       if (status === "SUBSCRIBED") {
@@ -1097,6 +1098,9 @@ const App: React.FC = () => {
           if (u) refreshData(u).catch(() => {});
         }
       } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+        // removeChannel() volta a chamar este callback com "CLOSED": sem este guarda, entrava em recursão infinita.
+        if (rtFailedHandled) return;
+        rtFailedHandled = true;
         console.warn(`[Supabase Realtime] Canal ${channelName} indisponível (${status}). A religar...`);
         rtJoinedRef.current = false;
         try {
