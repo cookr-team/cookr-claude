@@ -180,10 +180,10 @@ function areEntityArraysEqual<T extends { id?: string; updated_at?: string; stat
 }
 
 const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>(() => mockUsers);
-  const [bookings, setBookings] = useState<Booking[]>(() => mockBookings);
+  const [users, setUsers] = useState<User[]>(() => (isSupabaseConfigured() ? [] : mockUsers));
+  const [bookings, setBookings] = useState<Booking[]>(() => (isSupabaseConfigured() ? [] : mockBookings));
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [allMenus, setAllMenus] = useState<MenuItem[]>(() => Object.values(mockMenus).flat());
+  const [allMenus, setAllMenus] = useState<MenuItem[]>(() => (isSupabaseConfigured() ? [] : Object.values(mockMenus).flat()));
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     try {
       const saved = localStorage.getItem("cookr_user");
@@ -726,30 +726,7 @@ const App: React.FC = () => {
           supabaseService.getAllReviews().catch(() => []),
         ]);
 
-        if ((!u || u.length === 0) && isSupabaseReachable()) {
-          console.log(
-            "[Supabase Auto-Seed] Database is uninitialized. Seeding standard datasets..."
-          );
-          try {
-            await supabaseService.seedDatabase(
-              mockUsers,
-              mockMenus,
-              mockRecipes,
-              mockBookings
-            );
-          } catch (seedErr) {
-            console.warn("[Supabase Auto-Seed] Note during seedDatabase:", seedErr);
-          }
-          // Refetch after seeding
-          u = await usersPromise.catch(() => mockUsers);
-          if (!u || u.length === 0) u = mockUsers;
-          const [newM, newRevs] = await Promise.all([
-            supabaseService.getAllMenusList().catch(() => []),
-            supabaseService.getAllReviews().catch(() => []),
-          ]);
-          m = newM && newM.length > 0 ? newM : Object.values(mockMenus).flat();
-          revs = newRevs || [];
-        }
+        // Nunca se semeiam dados de demonstração automaticamente (em produção a base de dados é só dados reais).
 
         if (u) {
           let updatedList = u;
