@@ -60,6 +60,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   >("overview");
 
   const [isSeeding, setIsSeeding] = useState(false);
+  const [stripePayments, setStripePayments] = useState<any[]>([]);
   const [isActionPending, setIsActionPending] = useState<string | null>(null);
   const [broadcastMsg, setBroadcastMsg] = useState("");
   const [adminLogs, setAdminLogs] = useState<any[]>([]);
@@ -605,7 +606,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
 
     // Alert: Unapproved chefs
-    const pendingChefsCount = users.filter((u) => u.role === UserRole.COOK && u.status === UserStatus.PENDING).length;
+    const pendingChefsCount = users.filter((u) => u.role === UserRole.COOK && (u.status === UserStatus.PENDING || u.status === UserStatus.UNDER_REVIEW)).length;
     if (pendingChefsCount > 0) {
       list.push({
         id: "under_review_chefs",
@@ -622,21 +623,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const monthlyData = useMemo(() => {
     const months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     
-    // Baseline metrics to give a beautiful, complete slope even with a brand new or empty database during testing
-    const baseline: Record<string, { monthName: string; completed: number; total: number; gmv: number; cancelled: number }> = {
-      "0": { monthName: "Jan", completed: 8, total: 12, gmv: 1440, cancelled: 2 },
-      "1": { monthName: "Fev", completed: 10, total: 15, gmv: 1800, cancelled: 3 },
-      "2": { monthName: "Mar", completed: 14, total: 19, gmv: 2520, cancelled: 2 },
-      "3": { monthName: "Abr", completed: 18, total: 24, gmv: 3240, cancelled: 3 },
-      "4": { monthName: "Mai", completed: 22, total: 29, gmv: 3960, cancelled: 4 },
-      "5": { monthName: "Jun", completed: 35, total: 42, gmv: 6300, cancelled: 4 },
-      "6": { monthName: "Jul", completed: 48, total: 58, gmv: 8640, cancelled: 6 }, // Summer peak
-      "7": { monthName: "Ago", completed: 52, total: 64, gmv: 9360, cancelled: 7 }, // Summer peak
-      "8": { monthName: "Set", completed: 25, total: 32, gmv: 4500, cancelled: 4 },
-      "9": { monthName: "Out", completed: 20, total: 26, gmv: 3600, cancelled: 3 },
-      "10": { monthName: "Nov", completed: 24, total: 30, gmv: 4320, cancelled: 2 },
-      "11": { monthName: "Dez", completed: 58, total: 72, gmv: 10440, cancelled: 8 }, // Holiday season peak
-    };
+    // Só dados reais: cada mês começa a zero e soma as reservas existentes.
+    const baseline: Record<string, { monthName: string; completed: number; total: number; gmv: number; cancelled: number }> = {};
+    months.forEach((name, i) => {
+      baseline[String(i)] = { monthName: name, completed: 0, total: 0, gmv: 0, cancelled: 0 };
+    });
 
     // Safely add dynamic completed bookings
     bookings.forEach((b) => {
@@ -918,6 +909,58 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setIsActionPending(null);
     }
   };
+
+  useEffect(() => {
+    if (activeTab !== "financial" || !isSupabaseConfigured()) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from("booking_payments")
+          .select("booking_id,amount_cents,platform_fee_cents,chef_payout_cents,status,updated_at")
+          .order("updated_at", { ascending: false })
+          .limit(50);
+        if (!cancelled) setStripePayments(data || []);
+      } catch {
+        if (!cancelled) setStripePayments([]);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [activeTab]);
+
+  const handleApproveChef = async (target: any) => {
+    if (!target?.id) return;
+    setIsActionPending(target.id);
+    try {
+      await supabaseService.updateUserProfile(target.id, {
+        status: UserStatus.ACTIVE,
+        approvedByAdmin: true,
+        admin_notes: "",
+      });
+      await supabaseService.createAdminLog(
+        "ADMIN",
+        "CHEF_APPROVED",
+        target.id,
+        `Candidatura de chef aprovada: ${target.nome} (${target.email}).`
+      );
+      setSelectedUser((prev) => (prev && prev.id === target.id ? { ...prev, status: UserStatus.ACTIVE, approvedByAdmin: true } : prev));
+      onNotify(`Candidatura de ${target.nome} aprovada. O chef já aparece no catálogo.`, "success");
+      fetchLogs();
+      onRefresh();
+    } catch (e) {
+      console.error(e);
+      onNotify("Erro ao aprovar a candidatura.", "error");
+    } finally {
+      setIsActionPending(null);
+    }
+  };
+
+  const statusLabel = (st: string) =>
+    st === UserStatus.ACTIVE ? "Ativa"
+    : st === UserStatus.UNDER_REVIEW ? "Em revisão"
+    : st === UserStatus.PENDING ? "Pendente"
+    : st === UserStatus.SUSPENDED ? "Suspensa"
+    : st;
 
   const handleDelete = async (type: "user" | "menu" | "booking", id: string) => {
     if (!window.confirm(`Tem a certeza que deseja eliminar irreversivelmente este ${type}?`)) return;
@@ -1208,7 +1251,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         bId,
         `Reagendado para ${rescheduleDate} às ${rescheduleTime}`
       );
-      onNotify(`Reserva reagendada no Firestore!`, "success");
+      onNotify(`Reserva reagendada!`, "success");
       setRescheduleDate("");
       setRescheduleTime("");
       onRefresh();
@@ -1230,7 +1273,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         editingMenu.id,
         "Alteração de Menu de Chef efetuada via Drawer de Administrador."
       );
-      onNotify("Menu de Chef atualizado no Firestore!", "success");
+      onNotify("Menu de Chef atualizado!", "success");
       onRefresh();
     } catch (e) {
       onNotify("Erro ao guardar alterações de menu.", "error");
@@ -1504,6 +1547,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   const handleSeedData = async () => {
+    if (!import.meta.env.DEV) {
+      onNotify("A sementeira de dados de teste está desativada em produção.", "error");
+      return;
+    }
     if (!window.confirm("Deseja popular os dados em tempo real no Supabase?")) return;
     setIsSeeding(true);
     try {
@@ -1569,7 +1616,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </span>
               </div>
               <p className="text-[10px] text-slate-400 tracking-wide mt-0.5">
-                Sessão Segura: Administrador Consolidado • Infraestrutura Cloud Firestore Ativa
+                Sessão Segura: Administrador Consolidado • Infraestrutura Cloud Supabase Ativa
               </p>
             </div>
           </div>
@@ -1587,7 +1634,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <button
               onClick={onRefresh}
               className="relative p-2 bg-orange-50 hover:bg-orange-500 text-orange-600 hover:text-white rounded-xl border border-orange-100/80 transition-all duration-200 shadow-xs focus:ring-2 focus:ring-orange-500/20"
-              title="Sincronizar Cloud Firestore"
+              title="Sincronizar dados"
             >
               <ICONS.RefreshCw className="animate-spin-slow" size={15} />
             </button>
@@ -1611,7 +1658,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               { id: "settings", label: "Definições Sistema", icon: ICONS.Settings },
               { id: "logs", label: "Rastreios Audit", icon: ICONS.List },
               { id: "backstage", label: "Sandboxes DevOps", icon: ICONS.Database },
-            ].map((tab) => {
+            ].filter((tab) => tab.id !== "backstage" || import.meta.env.DEV).map((tab) => {
               const isTabActive = activeTab === tab.id;
               return (
                 <button
@@ -2141,7 +2188,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {sortedAndFilteredUsers.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="py-20 text-center text-slate-400 italic text-xs">
-                          Nenhum utilizador encontrado com esta filtragem no Firestore.
+                          Nenhum utilizador encontrado com esta filtragem.
                         </td>
                       </tr>
                     ) : (
@@ -2298,15 +2345,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                     </div>
 
-                    {/* Quick simulated tech information panel */}
+                    {/* Informação básica da conta */}
                     <div className="grid grid-cols-2 gap-4 mb-6 text-[10px] bg-slate-50 p-4 rounded-xl border border-slate-150/60 font-mono">
                       <div>
-                        <span className="text-slate-400">IP de Cadastro:</span>{" "}
-                        <span className="text-slate-700">194.22.41.{selectedUser.id.charCodeAt(0) || 5}</span>
+                        <span className="text-slate-400">Perfil:</span>{" "}
+                        <span className="text-slate-700">{selectedUser.role}</span>
                       </div>
                       <div>
-                        <span className="text-slate-400">Dispositivo:</span>{" "}
-                        <span className="text-slate-700">macOS / Chrome Client</span>
+                        <span className="text-slate-400">Estado:</span>{" "}
+                        <span className="text-slate-700">{statusLabel(selectedUser.status)}</span>
                       </div>
                       <div>
                         <span className="text-slate-400">Pontos Loyalty:</span>{" "}
@@ -2323,6 +2370,26 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <h4 className="text-xs font-black uppercase text-orange-500 italic">Central de Super-Poderes</h4>
                       
                       <div className="space-y-4">
+                        {/* Aprovação de candidatura de chef */}
+                        {selectedUser.role === UserRole.COOK &&
+                          (selectedUser.status === UserStatus.UNDER_REVIEW || selectedUser.status === UserStatus.PENDING) && (
+                            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center justify-between gap-3">
+                              <div>
+                                <h5 className="text-[11px] font-black uppercase text-emerald-900 tracking-wider">Candidatura de chef por aprovar</h5>
+                                <p className="text-[9.5px] text-emerald-800 font-medium leading-relaxed mt-0.5">
+                                  Ao aprovar, a conta fica ativa e o chef passa a aparecer no catálogo e a poder receber reservas.
+                                </p>
+                              </div>
+                              <button
+                                type="button"
+                                disabled={isActionPending === selectedUser.id}
+                                onClick={() => handleApproveChef(selectedUser)}
+                                className="px-3 py-2 rounded-xl text-[9.5px] font-black uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white shadow-sm shrink-0"
+                              >
+                                Aprovar candidatura
+                              </button>
+                            </div>
+                          )}
                         {/* Bypass de Documentação & Regras HACCP (Admin Override) */}
                         <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-4 space-y-2">
                           <div className="flex items-center justify-between gap-3">
@@ -2391,13 +2458,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                 className={`w-2.5 h-2.5 rounded-full ${
                                   selectedUser.status === UserStatus.SUSPENDED
                                     ? "bg-red-500 animate-pulse"
-                                    : selectedUser.status === UserStatus.PENDING
+                                    : selectedUser.status === UserStatus.PENDING || selectedUser.status === UserStatus.UNDER_REVIEW
                                     ? "bg-amber-500 animate-pulse"
                                     : "bg-emerald-500"
                                 }`}
                               />
                               <span className="text-[11px] font-black uppercase italic tracking-tight text-slate-700">
-                                {selectedUser.status === UserStatus.SUSPENDED ? "Conta Suspensa / Banida" : `Conta Ativa (${selectedUser.status})`}
+                                {selectedUser.status === UserStatus.SUSPENDED ? "Conta Suspensa / Banida" : `Conta ${statusLabel(selectedUser.status)}`}
                               </span>
                             </div>
                             {selectedUser.admin_notes && (
@@ -2766,7 +2833,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                                     type="submit"
                                     className="relative w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-extrabold uppercase text-xs tracking-widest rounded-xl shadow-md transition-all active:scale-97 before:absolute before:inset-y-[-8px] before:inset-x-0 before:sm:hidden before:content-['']"
                                   >
-                                    Guardar Menu no Firestore
+                                    Guardar Menu
                                   </button>
                                 </form>
                               ))
@@ -2852,7 +2919,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   Hub de Moderação & Curadoria de Pratos (Big Data Scale)
                 </h2>
                 <p className="text-xs text-slate-500 mt-1">
-                  Painel corporativo otimizado para triagem em massa e curadoria de menus do ecossistema do Firestore.
+                  Painel corporativo otimizado para triagem em massa e curadoria de menus do ecossistema.
                 </p>
               </div>
               <button
@@ -3769,7 +3836,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       }}
                       className="relative w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold uppercase text-xs rounded-xl shadow-md transition-all active:scale-97 before:absolute before:inset-y-[-8px] before:inset-x-0 before:sm:hidden before:content-['']"
                     >
-                      Confirmar Reagendamento no Firestore
+                      Confirmar Reagendamento
                     </button>
                   </div>
 
@@ -3779,7 +3846,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <ICONS.MessageSquare size={14} /> Auditoria de Chat Interno
                     </span>
                     <p className="text-[9px] text-slate-500 leading-relaxed font-sans">
-                      Histórico confidencial das conversas trocadas no Firestore entre o cliente e o chef sobre esta reserva.
+                      Histórico confidencial das conversas trocadas entre o cliente e o chef sobre esta reserva.
                     </p>
                     <div className="bg-white border border-slate-200 rounded-lg p-3 max-h-[160px] overflow-y-auto space-y-2.5 custom-scrollbar text-[10px]">
                       {isLoadingDisputeMessages ? (
@@ -4196,7 +4263,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               {/* Financial growth mock metrics */}
               <div className="bg-white border border-slate-200 p-8 rounded-3xl text-left space-y-6 shadow-sm">
-                <h3 className="text-lg font-black uppercase italic text-orange-500 tracking-tight">Estatística do Mês</h3>
+                <h3 className="text-lg font-black uppercase italic text-orange-500 tracking-tight">Resumo Financeiro</h3>
                 <div className="space-y-4">
                   <div className="p-4 bg-slate-50 border border-slate-150 rounded-2xl flex justify-between items-center shadow-sm">
                     <span className="text-[10px] font-black uppercase text-slate-500">Total Faturado Coletivo</span>
@@ -4214,6 +4281,30 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
               </div>
+            </div>
+            {/* Pagamentos Stripe */}
+            <div className="bg-white border border-slate-200 p-8 rounded-3xl text-left space-y-4 shadow-sm">
+              <h3 className="text-lg font-black uppercase italic text-orange-500 tracking-tight">Pagamentos Stripe</h3>
+              {stripePayments.length === 0 ? (
+                <p className="text-xs text-slate-500">Ainda não há pagamentos registados.</p>
+              ) : (
+                <div className="space-y-2 max-h-[320px] overflow-y-auto pr-2">
+                  {stripePayments.map((pay) => (
+                    <div key={pay.booking_id} className="p-3 bg-slate-50 rounded-xl border border-slate-150 flex justify-between items-center gap-3 font-mono">
+                      <div>
+                        <p className="text-[10px] font-black text-slate-700">#{String(pay.booking_id).slice(0, 8)}</p>
+                        <p className="text-[9px] uppercase text-slate-500">{pay.status}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs font-black text-slate-700">{formatPrice((pay.amount_cents || 0) / 100)}</p>
+                        <p className="text-[8px] font-bold text-orange-600 uppercase">
+                          Comissão {formatPrice((pay.platform_fee_cents || 0) / 100)} • Chef {formatPrice((pay.chef_payout_cents || 0) / 100)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -4757,7 +4848,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* ---------------------------------------------------- */}
         {/* TAB 9: DEV OPERATIONS AND SEEDERS (BACKSTAGE) */}
         {/* ---------------------------------------------------- */}
-        {activeTab === "backstage" && (
+        {activeTab === "backstage" && import.meta.env.DEV && (
           <div className="max-w-2xl mx-auto space-y-8 animate-in slide-in-from-bottom-6 duration-200 py-6 text-left">
             <div className="text-center space-y-2">
               <div className="w-16 h-16 bg-orange-50 border border-orange-200 text-orange-500 rounded-full flex items-center justify-center mx-auto shadow-sm">
@@ -4769,32 +4860,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </p>
             </div>
 
-            {/* Seeds & Reset database buttons */}
+            {/* Sementeira de dados de teste: só em desenvolvimento (o separador está oculto em produção) */}
             <div className="bg-white p-8 border border-slate-200 rounded-3xl space-y-6 shadow-sm">
-              <h3 className="text-sm font-black uppercase text-orange-500 italic">Sementeira Realtime Supabase</h3>
+              <h3 className="text-sm font-black uppercase text-orange-500 italic">Sementeira de dados de teste (só desenvolvimento)</h3>
               <p className="text-[11px] text-slate-500 leading-relaxed">
-                Clique abaixo para injetar utilizadores teste (Cliente MASTER, Chef Maria, Chef Ricardo, Admin) e as respetivas relações de reservas e avaliações diretamente no Supabase PostgreSQL de produção.
+                Injeta utilizadores, menus e reservas de demonstração. Nunca usar em produção.
               </p>
-
               <button
                 onClick={handleSeedData}
                 disabled={isSeeding}
-                className="relative w-full py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-bold uppercase tracking-wider text-xs rounded-lg transition-all before:absolute before:inset-y-[-4px] before:inset-x-0 before:sm:hidden before:content-['']"
+                className="relative w-full py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white font-bold uppercase tracking-wider text-xs rounded-lg transition-all"
               >
                 {isSeeding ? "A Popular Supabase..." : "Popular Banco com Mock Data"}
               </button>
-            </div>
-
-            {/* Static instructions for fixing realtime */}
-            <div className="bg-white p-8 border border-slate-200 rounded-3xl space-y-4 shadow-sm">
-              <h3 className="text-sm font-black uppercase text-indigo-500 italic">Guia de Manutenção Realtime</h3>
-              <p className="text-[11px] text-slate-500 leading-relaxed">
-                Se as atualizações deixarem de sincronizar noutros clientes em tempo real, execute a seguinte query diretamente na infraestrutura correspondente:
-              </p>
-              <pre className="p-4 bg-slate-50 border border-slate-200 rounded-xl font-mono text-[10px] text-emerald-700 overflow-x-auto shadow-inner">
-                {`DROP PUBLICATION IF EXISTS supabase_realtime;
-CREATE PUBLICATION supabase_realtime FOR ALL TABLES;`}
-              </pre>
             </div>
           </div>
         )}
