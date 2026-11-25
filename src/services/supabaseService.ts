@@ -2771,9 +2771,19 @@ export const supabaseService = {
 
   createAdminLog: async (adminId: string, action: string, targetId: string, notes: string) => {
     try {
+      // Regista sempre quem fez a ação: se não vier um UUID, usa o utilizador autenticado.
+      let actor: string | null = (adminId && isValidUUID(adminId)) ? adminId : null;
+      if (!actor) {
+        try {
+          const { data: sess } = await supabase.auth.getSession();
+          actor = sess?.session?.user?.id || null;
+        } catch {
+          actor = null;
+        }
+      }
       await supabase.from('admin_logs').insert({
         id: crypto.randomUUID(),
-        admin_id: (adminId && isValidUUID(adminId)) ? adminId : null,
+        admin_id: actor,
         action,
         target_id: targetId,
         notes,
